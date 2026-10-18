@@ -438,11 +438,35 @@ impl WebhookPullRequestReviewRequestedVariant0PullRequestAutoMerge {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoCreatedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoCreatedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoCreatedAt branch accepts this payload"))
+    }
 }
 
 /// The policy controlling who can create pull requests: all or collaborators_only.
@@ -473,38 +497,4 @@ impl serde::Serialize
     {
         serializer.serialize_str(self.as_str())
     }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoPullRequestCreationPolicyEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "all" => Self::All,
-            "collaborators_only" => Self::CollaboratorsOnly,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoPullRequestCreationPolicyEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoLicense {
-    pub key: String,
-    pub name: String,
-    pub node_id: String,
-    pub spdx_id: String,
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub url: Option<String>,
 }

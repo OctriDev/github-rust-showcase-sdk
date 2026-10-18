@@ -6,10 +6,110 @@ use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{
-    CopilotOrganizationContentExclusionDetails, CopilotUsageMetrics1DayReport,
-    CopilotUsageMetrics28DayReport,
+    CopilotOrganizationContentExclusionDetails, CopilotOrganizationDetails,
+    CopilotUsageMetrics1DayReport, CopilotUsageMetrics28DayReport,
 };
 use crate::validation::{validate_date, validate_items, LengthOpts};
+
+/// Disables Copilot cloud agent for the specified organizations within the enterprise. The enterprise's coding agent policy must be set to `enabled_for_selected_orgs` before using this endpoint. Organizations can be specified by login or matched via custom properties. Only organizations that have Copilot enabled and belong to the enterprise will be affected. Only enterprise owners can remove organizations from the coding agent policy. OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `admin:enterprise` scopes to use this endpoint.
+///
+/// # Arguments
+///
+/// * `enterprise` - The slug version of the enterprise name.
+/// * `organizations` - List of organization logins within the enterprise to
+///   disable Copilot cloud agent for.
+/// * `custom_properties` - List of custom property filters to match
+///   organizations. Organizations matching any of the specified property
+///   name/value pairs will be included. This is a one-time operation, setting the
+///   property on an organization in the future will not automatically update its
+///   coding agent policy.
+pub fn copilot_remove_organizations_from_enterprise_coding_agent_policy(
+    config: &ClientConfig,
+    enterprise: String,
+    organizations: Option<Vec<String>>,
+    custom_properties: Option<
+        Vec<CopilotRemoveOrganizationsFromEnterpriseCodingAgentPolicyCustomPropertiesItem>,
+    >,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = organizations {
+        __body_map.insert(
+            "organizations".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = custom_properties {
+        __body_map.insert(
+            "custom_properties".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/enterprises/{}/copilot/policies/coding_agent/organizations",
+            crate::client::encode_path_segment(&enterprise)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "copilot_remove_organizations_from_enterprise_coding_agent_policy",
+            options,
+            errors: &[("400", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Retrieves an organization's Copilot subscription details, including its seat breakdown and feature policies. Use `org` to identify the organization; only organization owners can view these details. OAuth app tokens and classic personal access tokens need the `manage_billing:copilot` or `read:org` scope.
+///
+/// \> [!NOTE] \> This endpoint is in public preview and is subject to change. Gets information about an organization's Copilot subscription, including seat breakdown and feature policies. To configure these settings, go to your organization's settings on GitHub.com. For more information, see "[Managing policies for Copilot in your organization](https://docs.github.com/copilot/managing-copilot/managing-policies-for-copilot-business-in-your-organization)." Only organization owners can view details about the organization's Copilot Business or Copilot Enterprise subscription. OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `read:org` scopes to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+pub fn copilot_get_copilot_organization_details(
+    config: &ClientConfig,
+    org: String,
+    options: Option<&RequestOptions>,
+) -> Result<CopilotOrganizationDetails, SdkError> {
+    Ok(sdk_request::<CopilotOrganizationDetails>(
+        "GET",
+        &format!(
+            "/orgs/{}/copilot/billing",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "copilot_get_copilot_organization_details",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("500", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// \> [!NOTE] \> This endpoint is in public preview and is subject to change. Lists all Copilot seats for which an organization with a Copilot Business or Copilot Enterprise subscription is currently being billed. Only organization owners can view assigned seats. Each seat object contains information about the assigned user's most recent Copilot activity. Users must have telemetry enabled in their IDE for Copilot in the IDE activity to be reflected in `last_activity_at`. For more information about activity data, see [Metrics data properties for GitHub Copilot](https://docs.github.com/copilot/reference/metrics-data). OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `read:org` scopes to use this endpoint.
 ///
@@ -760,86 +860,6 @@ pub fn copilot_copilot_organization_repos_one_day_report(
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "copilot_copilot_organization_repos_one_day_report",
-            options,
-            errors: &[
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("500", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Use this endpoint to retrieve download links for the Copilot organization user-teams report for a specific day. The report provides user-team join data for Copilot across the organization, with one entry per user-team pair. The report contains user-team membership data for the specified day, enabling consumers to join with the existing organization user reports to compute team-level usage metrics. Reports are generated daily and made available for download through signed URLs with a limited expiration time. The response includes download links to the report files, along with the specific date of the report. The report covers a complete day for which data has been processed. Organization owners and authorized users with fine-grained "View Organization Copilot Metrics" permission can retrieve Copilot metrics reports for the organization. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint. For more information about organization metrics attribution, see [How are metrics attributed across organizations](https://docs.github.com/copilot/concepts/copilot-metrics#how-are-metrics-attributed-across-organizations).
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `day` - The day to request data for, in `YYYY-MM-DD` format.
-pub fn copilot_copilot_organization_user_teams_one_day_report(
-    config: &ClientConfig,
-    org: String,
-    day: String,
-    options: Option<&RequestOptions>,
-) -> Result<CopilotUsageMetrics1DayReport, SdkError> {
-    validate_date("day", &day)?;
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
-    __query.extend([("day", crate::client::query_value(&day))]);
-
-    Ok(sdk_request::<CopilotUsageMetrics1DayReport>(
-        "GET",
-        &format!(
-            "/orgs/{}/copilot/metrics/reports/user-teams-1-day",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "copilot_copilot_organization_user_teams_one_day_report",
-            options,
-            errors: &[
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("500", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Use this endpoint to retrieve download links for the Copilot organization user usage metrics report for a specific day. The report provides detailed user-level usage data and engagement metrics for Copilot features across the organization. The report contains user-specific metrics for the specified day, including individual user engagement statistics, feature usage patterns, and adoption metrics broken down by user. This report allows authorized users to analyze Copilot usage at the user level to understand adoption patterns and identify opportunities for increased engagement. Reports are generated daily and made available for download through signed URLs with a limited expiration time. The response includes download links to the report files, along with the specific date of the report. The report covers a complete day for which data has been processed. Organization owners and authorized users with fine-grained "View Organization Copilot Metrics" permission can retrieve Copilot metrics reports for the organization. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint. For more information about organization metrics attribution, see [How are metrics attributed across organizations](https://docs.github.com/copilot/concepts/copilot-metrics#how-are-metrics-attributed-across-organizations).
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `day` - The day to request data for, in `YYYY-MM-DD` format.
-pub fn copilot_copilot_organization_users_one_day_usage_metrics(
-    config: &ClientConfig,
-    org: String,
-    day: String,
-    options: Option<&RequestOptions>,
-) -> Result<CopilotUsageMetrics1DayReport, SdkError> {
-    validate_date("day", &day)?;
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
-    __query.extend([("day", crate::client::query_value(&day))]);
-
-    Ok(sdk_request::<CopilotUsageMetrics1DayReport>(
-        "GET",
-        &format!(
-            "/orgs/{}/copilot/metrics/reports/users-1-day",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "copilot_copilot_organization_users_one_day_usage_metrics",
             options,
             errors: &[
                 ("403", "BasicError"),

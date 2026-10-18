@@ -53,7 +53,9 @@ impl WebhookPullRequestEnqueuedPullRequest {
         node_id: String,
         number: i64,
         patch_url: String,
-        requested_reviewers: Vec<WebhookPullRequestEnqueuedPullRequestRequestedReviewersItem>,
+        requested_reviewers: Vec<
+            Option<WebhookPullRequestEnqueuedPullRequestRequestedReviewersItem>,
+        >,
         requested_teams: Vec<WebhookPullRequestEnqueuedPullRequestRequestedTeamsItem>,
         review_comment_url: String,
         review_comments_url: String,

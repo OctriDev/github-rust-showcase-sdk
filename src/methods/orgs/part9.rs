@@ -7,6 +7,78 @@ use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::SdkError;
 use crate::types::{OrganizationFull, OrganizationSimple};
 
+impl serde::Serialize for OrgsEnableOrDisableSecurityProductOnAllOrgReposQuerySuiteEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for OrgsEnableOrDisableSecurityProductOnAllOrgReposQuerySuiteEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "default" => Self::Default,
+            "extended" => Self::Extended,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for OrgsEnableOrDisableSecurityProductOnAllOrgReposQuerySuiteEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum OrgsListMembershipsForAuthenticatedUserEnum {
+    #[default]
+    Active,
+    Pending,
+    Unknown(String),
+}
+
+impl OrgsListMembershipsForAuthenticatedUserEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Active => "active",
+            Self::Pending => "pending",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for OrgsListMembershipsForAuthenticatedUserEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for OrgsListMembershipsForAuthenticatedUserEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "active" => Self::Active,
+            "pending" => Self::Pending,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for OrgsListMembershipsForAuthenticatedUserEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())

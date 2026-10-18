@@ -3,6 +3,152 @@
 
 // webhook_pull_request_review_comment_deleted domain models (part 6)
 
+impl serde::Serialize
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitMessageEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitMessageEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_BODY" => Self::PrBody,
+            "PR_TITLE" => Self::PrTitle,
+            "BLANK" => Self::Blank,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitMessageEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The default value for a merge commit title.
+///
+/// \- `PR_TITLE` \- default to the pull request's title.
+/// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitTitleEnum {
+    #[default]
+    PrTitle,
+    MergeMessage,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitTitleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrTitle => "PR_TITLE",
+            Self::MergeMessage => "MERGE_MESSAGE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitTitleEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitTitleEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_TITLE" => Self::PrTitle,
+            "MERGE_MESSAGE" => Self::MergeMessage,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoMergeCommitTitleEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Optional enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoOwnerTypeEnum {
+    #[default]
+    Bot,
+    User,
+    Organization,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoOwnerTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Bot => "Bot",
+            Self::User => "User",
+            Self::Organization => "Organization",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoOwnerTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoOwnerTypeEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "Bot" => Self::Bot,
+            "User" => Self::User,
+            "Organization" => Self::Organization,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoOwnerTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// Required object value serialized in the `owner` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoOwner {
@@ -164,11 +310,35 @@ impl WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoPushedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoPushedAt branch accepts this payload"))
+    }
 }
 
 /// The default value for a squash merge commit message:
@@ -333,11 +503,5 @@ impl<'de> serde::Deserialize<'de>
             "internal" => Self::Internal,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for WebhookPullRequestReviewCommentDeletedPullRequestHeadRepoVisibilityEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

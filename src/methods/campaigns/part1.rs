@@ -211,7 +211,7 @@ pub fn campaigns_list_org_campaigns(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "campaigns_list_org_campaigns",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("404", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -416,6 +416,7 @@ pub fn campaigns_create_campaign(
                 ("400", "BasicError"),
                 ("404", "BasicError"),
                 ("422", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -447,7 +448,11 @@ pub fn campaigns_get_campaign_summary(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "campaigns_get_campaign_summary",
             options,
-            errors: &[("404", "BasicError"), ("422", "BasicError")],
+            errors: &[
+                ("404", "BasicError"),
+                ("422", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?

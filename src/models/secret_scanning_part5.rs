@@ -3,6 +3,34 @@
 
 // secret_scanning domain models (part 5)
 
+impl SecretScanningCustomPatternToUpdate {
+    pub fn new(custom_pattern_version: Option<SecretScanningRowVersion>) -> Self {
+        Self {
+            pattern: None,
+            start_delimiter: None,
+            end_delimiter: None,
+            must_match: None,
+            must_not_match: None,
+            custom_pattern_version,
+        }
+    }
+}
+
+/// A machine-readable code describing the error.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum SecretScanningCustomPatternValidationErrorCodeEnum {
+    #[default]
+    Invalid,
+    Unprocessable,
+    StartDelimiter,
+    EndDelimiter,
+    Name,
+    MustMatch,
+    MustNotMatch,
+    CustomPatternVersionMismatch,
+    Unknown(String),
+}
+
 impl SecretScanningCustomPatternValidationErrorCodeEnum {
     pub fn as_str(&self) -> &str {
         match self {
@@ -240,7 +268,7 @@ impl SecretScanningLocationCommit {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum SecretScanningLocationDetails {
     SecretScanningLocationCommit(Box<SecretScanningLocationCommit>),
@@ -258,6 +286,134 @@ pub enum SecretScanningLocationDetails {
     SecretScanningLocationPullRequestReviewComment(
         Box<SecretScanningLocationPullRequestReviewComment>,
     ),
+}
+
+impl<'de> serde::Deserialize<'de> for SecretScanningLocationDetails {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationCommit>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationCommit(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationWikiCommit>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationWikiCommit(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationIssueTitle>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationIssueTitle(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationIssueBody>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationIssueBody(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationIssueComment>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationIssueComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationDiscussionTitle>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationDiscussionTitle(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationDiscussionBody>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationDiscussionBody(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationDiscussionComment>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationDiscussionComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestTitle>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestTitle(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestBody>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestBody(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestComment>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestReview>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestReview(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<SecretScanningLocationPullRequestReviewComment>,
+        >(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestReviewComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no SecretScanningLocationDetails branch accepts this payload")
+        })
+    }
 }
 
 /// Represents a 'discussion_body' secret scanning location type. This location type shows that a secret was detected in the body of a discussion.
@@ -361,154 +517,6 @@ pub struct SecretScanningLocationIssueComment {
     /// The API URL to get the issue comment where the secret was detected.
     pub issue_comment_url: String,
     /// The GitHub URL for the issue comment where the secret was detected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-}
-
-impl SecretScanningLocationIssueComment {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("issue_comment_url", &self.issue_comment_url)?;
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(issue_comment_url: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            issue_comment_url,
-            html_url: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Represents an 'issue_title' secret scanning location type. This location type shows that a secret was detected in the title of an issue.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SecretScanningLocationIssueTitle {
-    /// The API URL to get the issue where the secret was detected.
-    pub issue_title_url: String,
-    /// The GitHub URL for the issue where the secret was detected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-}
-
-impl SecretScanningLocationIssueTitle {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("issue_title_url", &self.issue_title_url)?;
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(issue_title_url: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            issue_title_url,
-            html_url: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Represents a 'pull_request_body' secret scanning location type. This location type shows that a secret was detected in the body of a pull request.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SecretScanningLocationPullRequestBody {
-    /// The API URL to get the pull request where the secret was detected.
-    pub pull_request_body_url: String,
-    /// The GitHub URL for the pull request where the secret was detected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-}
-
-impl SecretScanningLocationPullRequestBody {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("pull_request_body_url", &self.pull_request_body_url)?;
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(pull_request_body_url: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            pull_request_body_url,
-            html_url: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Represents a 'pull_request_comment' secret scanning location type. This location type shows that a secret was detected in a comment on a pull request.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SecretScanningLocationPullRequestComment {
-    /// The API URL to get the pull request comment where the secret was detected.
-    pub pull_request_comment_url: String,
-    /// The GitHub URL for the pull request comment where the secret was detected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-}
-
-impl SecretScanningLocationPullRequestComment {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri(
-            "pull_request_comment_url",
-            &self.pull_request_comment_url,
-        )?;
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(pull_request_comment_url: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            pull_request_comment_url,
-            html_url: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Represents a 'pull_request_review' secret scanning location type. This location type shows that a secret was detected in a review on a pull request.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SecretScanningLocationPullRequestReview {
-    /// The API URL to get the pull request review where the secret was detected.
-    pub pull_request_review_url: String,
-    /// The GitHub URL for the pull request review where the secret was detected.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-}
-
-impl SecretScanningLocationPullRequestReview {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("pull_request_review_url", &self.pull_request_review_url)?;
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(pull_request_review_url: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            pull_request_review_url,
-            html_url: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Represents a 'pull_request_review_comment' secret scanning location type. This location type shows that a secret was detected in a review comment on a pull request.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SecretScanningLocationPullRequestReviewComment {
-    /// The API URL to get the pull request review comment where the secret was detected.
-    pub pull_request_review_comment_url: String,
-    /// The GitHub URL for the pull request review comment where the secret was detected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub html_url: Option<String>,
 }

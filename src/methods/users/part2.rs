@@ -5,7 +5,218 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{Email, PrivateUser, SimpleUser};
+use crate::types::PrivateUser;
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct UsersDeleteAttestationsBulkVariant0 {
+    /// List of subject digests associated with the artifact attestations to delete.
+    pub subject_digests: Vec<String>,
+}
+
+impl UsersDeleteAttestationsBulkVariant0 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_items(
+            "subject_digests",
+            self.subject_digests.as_slice(),
+            crate::validation::LengthOpts {
+                min: Some(1),
+                max: Some(1024),
+            },
+        )?;
+        Ok(())
+    }
+
+    pub fn new(subject_digests: Vec<String>) -> Result<Self, crate::errors::SdkError> {
+        let value = Self { subject_digests };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct UsersDeleteAttestationsBulkVariant1 {
+    /// List of unique IDs associated with the artifact attestations to delete.
+    pub attestation_ids: Vec<i64>,
+}
+
+impl UsersDeleteAttestationsBulkVariant1 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_items(
+            "attestation_ids",
+            self.attestation_ids.as_slice(),
+            crate::validation::LengthOpts {
+                min: Some(1),
+                max: Some(1024),
+            },
+        )?;
+        Ok(())
+    }
+
+    pub fn new(attestation_ids: Vec<i64>) -> Result<Self, crate::errors::SdkError> {
+        let value = Self { attestation_ids };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum UsersDeleteAttestationsBulk {
+    Object(Box<UsersDeleteAttestationsBulkVariant0>),
+    Object2(Box<UsersDeleteAttestationsBulkVariant1>),
+}
+
+impl<'de> serde::Deserialize<'de> for UsersDeleteAttestationsBulk {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<UsersDeleteAttestationsBulkVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<UsersDeleteAttestationsBulkVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no UsersDeleteAttestationsBulk branch accepts this payload")
+        })
+    }
+}
+
+/// The attestation's Sigstore Bundle.
+/// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct UsersListAttestationsResponseAttestationsItemBundle {
+    #[serde(rename = "mediaType", skip_serializing_if = "Option::is_none")]
+    pub media_type: Option<String>,
+    #[serde(
+        rename = "verificationMaterial",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub verification_material: Option<std::collections::HashMap<String, serde_json::Value>>,
+    #[serde(rename = "dsseEnvelope", skip_serializing_if = "Option::is_none")]
+    pub dsse_envelope: Option<std::collections::HashMap<String, serde_json::Value>>,
+}
+
+impl UsersListAttestationsResponseAttestationsItemBundle {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            media_type: None,
+            verification_material: None,
+            dsse_envelope: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct UsersListAttestationsResponseAttestationsItem {
+    /// The attestation's Sigstore Bundle.
+    /// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bundle: Option<UsersListAttestationsResponseAttestationsItemBundle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repository_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bundle_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub initiator: Option<String>,
+}
+
+impl UsersListAttestationsResponseAttestationsItem {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            bundle: None,
+            repository_id: None,
+            bundle_url: None,
+            initiator: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct UsersListAttestationsResponse {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attestations: Option<Vec<UsersListAttestationsResponseAttestationsItem>>,
+}
+
+impl UsersListAttestationsResponse {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self { attestations: None }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
+    #[default]
+    Private,
+    Public,
+    Unknown(String),
+}
+
+impl UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Private => "private",
+            Self::Public => "public",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "private" => Self::Private,
+            "public" => Self::Public,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum UsersGetContextForUserEnum {
+    #[default]
+    Issue,
+    Organization,
+    PullRequest,
+    Repository,
+    Unknown(String),
+}
 
 impl UsersGetContextForUserEnum {
     pub fn as_str(&self) -> &str {
@@ -208,461 +419,6 @@ pub fn users_update_authenticated(
             body: Some(__body),
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "users_update_authenticated",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// List the users you've blocked on your personal account.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_blocked_by_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<SimpleUser>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<SimpleUser>>(
-        "GET",
-        "/user/blocks",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_blocked_by_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Returns a 204 if the given user is blocked by the authenticated user. Returns a 404 if the given user is not blocked by the authenticated user, or if the given user account has been identified as spam by GitHub.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_check_blocked(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "GET",
-        &format!(
-            "/user/blocks/{}",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_check_blocked",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Blocks the given user and returns a 204\. If the authenticated user cannot block the given user a 422 is returned.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_block(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/user/blocks/{}",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_block",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Removes a user from the authenticated user's block list. Use `username` to identify the account to unblock; the request returns no content when the removal succeeds.
-///
-/// Unblocks the given user and returns a 204.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_unblock(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/user/blocks/{}",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_unblock",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Sets the visibility for your primary email addresses.
-///
-/// # Arguments
-///
-/// * `visibility` - Denotes whether an email is publicly visible.
-pub fn users_set_primary_email_visibility_for_authenticated_user(
-    config: &ClientConfig,
-    visibility: UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Email>, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "visibility".to_string(),
-        serde_json::to_value(visibility).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<Vec<Email>>(
-        "PATCH",
-        "/user/email/visibility",
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_set_primary_email_visibility_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists all of your email addresses, and specifies which one is visible to the public. OAuth app tokens and personal access tokens (classic) need the `user:email` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_emails_for_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Email>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Email>>(
-        "GET",
-        "/user/emails",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_emails_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Adds one or more email addresses to the authenticated user's account. Supply at least one address in `emails`; the request can also be a direct email string or array instead of an object. OAuth app tokens and personal access tokens (classic) need the `user` scope.
-///
-/// OAuth app tokens and personal access tokens (classic) need the `user` scope to use this endpoint.
-pub fn users_add_email_for_authenticated_user(
-    config: &ClientConfig,
-    body: Option<UsersAddEmailForAuthenticatedUser>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Email>, SdkError> {
-    let __body = serde_json::to_value(body).map_err(|e| {
-        SdkError::Network(SdkNetworkError {
-            message: format!("encode body: {}", e),
-            request_id: None,
-        })
-    })?;
-
-    Ok(sdk_request::<Vec<Email>>(
-        "POST",
-        "/user/emails",
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_add_email_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Removes one or more email addresses from the authenticated user's account. Supply at least one address in `emails`; the request can also be a direct email string or array instead of an object. OAuth app tokens and personal access tokens (classic) need the `user` scope.
-///
-/// OAuth app tokens and personal access tokens (classic) need the `user` scope to use this endpoint.
-pub fn users_delete_email_for_authenticated_user(
-    config: &ClientConfig,
-    body: Option<UsersDeleteEmailForAuthenticatedUser>,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let __body = serde_json::to_value(body).map_err(|e| {
-        SdkError::Network(SdkNetworkError {
-            message: format!("encode body: {}", e),
-            request_id: None,
-        })
-    })?;
-
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        "/user/emails",
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_delete_email_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the people following the authenticated user.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_followers_for_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<SimpleUser>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<SimpleUser>>(
-        "GET",
-        "/user/followers",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_followers_for_authenticated_user",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the people who the authenticated user follows.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_followed_by_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<SimpleUser>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<SimpleUser>>(
-        "GET",
-        "/user/following",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_followed_by_authenticated_user",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Verifies whether the authenticated user follows a specified GitHub user account. Use `username` to identify the account whose follow status you want to check; the response distinguishes followed from not followed.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_check_person_is_followed_by_authenticated(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "GET",
-        &format!(
-            "/user/following/{}",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_check_person_is_followed_by_authenticated",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Note that you'll need to set `Content-Length` to zero when calling out to this endpoint. For more information, see "[HTTP verbs](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#http-method)." OAuth app tokens and personal access tokens (classic) need the `user:follow` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_follow(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/user/following/{}",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_follow",
             options,
             errors: &[
                 ("401", "BasicError"),

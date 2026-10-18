@@ -3,7 +3,9 @@
 
 use super::*;
 
-impl std::fmt::Display for RepositorySquashMergeCommitMessageEnum {
+impl std::fmt::Display
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitMessageEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -14,14 +16,14 @@ impl std::fmt::Display for RepositorySquashMergeCommitMessageEnum {
 /// \- `PR_TITLE` \- default to the pull request's title.
 /// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositoryMergeCommitTitleEnum {
+pub enum AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitTitleEnum {
     #[default]
     PrTitle,
     MergeMessage,
     Unknown(String),
 }
 
-impl RepositoryMergeCommitTitleEnum {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitTitleEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::PrTitle => "PR_TITLE",
@@ -31,7 +33,9 @@ impl RepositoryMergeCommitTitleEnum {
     }
 }
 
-impl serde::Serialize for RepositoryMergeCommitTitleEnum {
+impl serde::Serialize
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitTitleEnum
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -40,7 +44,9 @@ impl serde::Serialize for RepositoryMergeCommitTitleEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for RepositoryMergeCommitTitleEnum {
+impl<'de> serde::Deserialize<'de>
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitTitleEnum
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -54,7 +60,9 @@ impl<'de> serde::Deserialize<'de> for RepositoryMergeCommitTitleEnum {
     }
 }
 
-impl std::fmt::Display for RepositoryMergeCommitTitleEnum {
+impl std::fmt::Display
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitTitleEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -66,7 +74,7 @@ impl std::fmt::Display for RepositoryMergeCommitTitleEnum {
 /// \- `PR_BODY` \- default to the pull request's body.
 /// \- `BLANK` \- default to a blank commit message.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositoryMergeCommitMessageEnum {
+pub enum AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitMessageEnum {
     #[default]
     PrBody,
     PrTitle,
@@ -74,7 +82,7 @@ pub enum RepositoryMergeCommitMessageEnum {
     Unknown(String),
 }
 
-impl RepositoryMergeCommitMessageEnum {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitMessageEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::PrBody => "PR_BODY",
@@ -85,7 +93,9 @@ impl RepositoryMergeCommitMessageEnum {
     }
 }
 
-impl serde::Serialize for RepositoryMergeCommitMessageEnum {
+impl serde::Serialize
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitMessageEnum
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -94,7 +104,9 @@ impl serde::Serialize for RepositoryMergeCommitMessageEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for RepositoryMergeCommitMessageEnum {
+impl<'de> serde::Deserialize<'de>
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitMessageEnum
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -109,7 +121,9 @@ impl<'de> serde::Deserialize<'de> for RepositoryMergeCommitMessageEnum {
     }
 }
 
-impl std::fmt::Display for RepositoryMergeCommitMessageEnum {
+impl std::fmt::Display
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitMessageEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -117,7 +131,7 @@ impl std::fmt::Display for RepositoryMergeCommitMessageEnum {
 
 /// The status of the code search index for this repository
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryCodeSearchIndexStatus {
+pub struct AppsListReposAccessibleToInstallationResponseRepositoriesItemCodeSearchIndexStatus {
     /// Optional `boolean` value serialized in the `lexical_search_ok` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lexical_search_ok: Option<bool>,
@@ -126,7 +140,7 @@ pub struct RepositoryCodeSearchIndexStatus {
     pub lexical_commit_sha: Option<String>,
 }
 
-impl RepositoryCodeSearchIndexStatus {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemCodeSearchIndexStatus {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {

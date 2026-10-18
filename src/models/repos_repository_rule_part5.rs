@@ -3,6 +3,198 @@
 
 // repos_repository_rule domain models (part 5)
 
+/// Optional object value serialized in the `parameters` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleFileExtensionRestrictionParameters {
+    /// The file extensions that are restricted from being pushed to the commit graph.
+    pub restricted_file_extensions: Vec<String>,
+}
+
+impl RepositoryRuleFileExtensionRestrictionParameters {
+    pub fn new(restricted_file_extensions: Vec<String>) -> Self {
+        Self {
+            restricted_file_extensions,
+        }
+    }
+}
+
+/// Prevent commits that include files with specified file extensions from being pushed to the commit graph.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleFileExtensionRestriction {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRuleFileExtensionRestrictionTypeEnum,
+    /// Optional object value serialized in the `parameters` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<RepositoryRuleFileExtensionRestrictionParameters>,
+}
+
+impl RepositoryRuleFileExtensionRestriction {
+    pub fn new(type_: RepositoryRuleFileExtensionRestrictionTypeEnum) -> Self {
+        Self {
+            type_,
+            parameters: None,
+        }
+    }
+}
+
+/// Required enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RepositoryRuleFilePathRestrictionTypeEnum {
+    #[serde(rename = "file_path_restriction")]
+    #[default]
+    FilePathRestriction,
+}
+
+impl RepositoryRuleFilePathRestrictionTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::FilePathRestriction => "file_path_restriction",
+        }
+    }
+}
+
+impl std::fmt::Display for RepositoryRuleFilePathRestrictionTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryRuleFilePathRestrictionTypeEnum::FilePathRestriction => {
+                f.write_str("file_path_restriction")
+            }
+        }
+    }
+}
+
+/// Optional object value serialized in the `parameters` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleFilePathRestrictionParameters {
+    /// The file paths that are restricted from being pushed to the commit graph.
+    pub restricted_file_paths: Vec<String>,
+}
+
+impl RepositoryRuleFilePathRestrictionParameters {
+    pub fn new(restricted_file_paths: Vec<String>) -> Self {
+        Self {
+            restricted_file_paths,
+        }
+    }
+}
+
+/// Prevent commits that include changes in specified file and folder paths from being pushed to the commit graph. This includes absolute paths that contain file names.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleFilePathRestriction {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRuleFilePathRestrictionTypeEnum,
+    /// Optional object value serialized in the `parameters` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<RepositoryRuleFilePathRestrictionParameters>,
+}
+
+impl RepositoryRuleFilePathRestriction {
+    pub fn new(type_: RepositoryRuleFilePathRestrictionTypeEnum) -> Self {
+        Self {
+            type_,
+            parameters: None,
+        }
+    }
+}
+
+/// Required enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RepositoryRuleLicenseComplianceScanningTypeEnum {
+    #[serde(rename = "license_compliance_scanning")]
+    #[default]
+    LicenseComplianceScanning,
+}
+
+impl RepositoryRuleLicenseComplianceScanningTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::LicenseComplianceScanning => "license_compliance_scanning",
+        }
+    }
+}
+
+impl std::fmt::Display for RepositoryRuleLicenseComplianceScanningTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryRuleLicenseComplianceScanningTypeEnum::LicenseComplianceScanning => {
+                f.write_str("license_compliance_scanning")
+            }
+        }
+    }
+}
+
+/// Enforce any added or changed dependencies to comply with the organization's license policy.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleLicenseComplianceScanning {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRuleLicenseComplianceScanningTypeEnum,
+}
+
+impl RepositoryRuleLicenseComplianceScanning {
+    pub fn new(type_: RepositoryRuleLicenseComplianceScanningTypeEnum) -> Self {
+        Self { type_ }
+    }
+}
+
+/// Required enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RepositoryRuleMaxFilePathLengthTypeEnum {
+    #[serde(rename = "max_file_path_length")]
+    #[default]
+    MaxFilePathLength,
+}
+
+impl RepositoryRuleMaxFilePathLengthTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::MaxFilePathLength => "max_file_path_length",
+        }
+    }
+}
+
+impl std::fmt::Display for RepositoryRuleMaxFilePathLengthTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryRuleMaxFilePathLengthTypeEnum::MaxFilePathLength => {
+                f.write_str("max_file_path_length")
+            }
+        }
+    }
+}
+
+/// Optional object value serialized in the `parameters` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleMaxFilePathLengthParameters {
+    /// The maximum amount of characters allowed in file paths.
+    pub max_file_path_length: i64,
+}
+
+impl RepositoryRuleMaxFilePathLengthParameters {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_range(
+            "max_file_path_length",
+            self.max_file_path_length as f64,
+            crate::validation::RangeOpts {
+                min: Some(1_f64),
+                max: Some(32767_f64),
+                ..Default::default()
+            },
+        )?;
+        Ok(())
+    }
+
+    pub fn new(max_file_path_length: i64) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            max_file_path_length,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 /// Prevent commits that include file paths that exceed the specified character limit from being pushed to the commit graph.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct RepositoryRuleMaxFilePathLength {
@@ -350,169 +542,6 @@ impl std::fmt::Display for RepositoryRuleNonFastForwardTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             RepositoryRuleNonFastForwardTypeEnum::NonFastForward => f.write_str("non_fast_forward"),
-        }
-    }
-}
-
-/// Prevent users with push access from force pushing to refs.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleNonFastForward {
-    /// Required enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleNonFastForwardTypeEnum,
-}
-
-impl RepositoryRuleNonFastForward {
-    pub fn new(type_: RepositoryRuleNonFastForwardTypeEnum) -> Self {
-        Self { type_ }
-    }
-}
-
-/// The type of the actor
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositoryRuleParamsActorTypeEnum {
-    #[default]
-    User,
-    Team,
-    Integrationinstallation,
-    Repositoryrole,
-    Unknown(String),
-}
-
-impl RepositoryRuleParamsActorTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::User => "User",
-            Self::Team => "Team",
-            Self::Integrationinstallation => "IntegrationInstallation",
-            Self::Repositoryrole => "RepositoryRole",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for RepositoryRuleParamsActorTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for RepositoryRuleParamsActorTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "User" => Self::User,
-            "Team" => Self::Team,
-            "IntegrationInstallation" => Self::Integrationinstallation,
-            "RepositoryRole" => Self::Repositoryrole,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for RepositoryRuleParamsActorTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// An actor allowed to dismiss pull request reviews
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleParamsActor {
-    /// ID of the actor that can dismiss reviews.
-    pub id: i64,
-    /// The type of the actor
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleParamsActorTypeEnum,
-}
-
-impl RepositoryRuleParamsActor {
-    pub fn new(id: i64, type_: RepositoryRuleParamsActorTypeEnum) -> Self {
-        Self { id, type_ }
-    }
-}
-
-/// The severity level at which code scanning results that raise alerts block a reference update. For more information on alert severity levels, see "[About code scanning alerts](https://docs.github.com/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts#about-alert-severity-and-security-severity-levels)."
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositoryRuleParamsCodeScanningToolAlertsThresholdEnum {
-    #[default]
-    None,
-    Errors,
-    ErrorsAndWarnings,
-    All,
-    Unknown(String),
-}
-
-impl RepositoryRuleParamsCodeScanningToolAlertsThresholdEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::None => "none",
-            Self::Errors => "errors",
-            Self::ErrorsAndWarnings => "errors_and_warnings",
-            Self::All => "all",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for RepositoryRuleParamsCodeScanningToolAlertsThresholdEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for RepositoryRuleParamsCodeScanningToolAlertsThresholdEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "none" => Self::None,
-            "errors" => Self::Errors,
-            "errors_and_warnings" => Self::ErrorsAndWarnings,
-            "all" => Self::All,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for RepositoryRuleParamsCodeScanningToolAlertsThresholdEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The severity level at which code scanning results that raise security alerts block a reference update. For more information on security severity levels, see "[About code scanning alerts](https://docs.github.com/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts#about-alert-severity-and-security-severity-levels)."
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositoryRuleParamsCodeScanningToolSecurityAlertsThresholdEnum {
-    #[default]
-    None,
-    Critical,
-    HighOrHigher,
-    MediumOrHigher,
-    All,
-    Unknown(String),
-}
-
-impl RepositoryRuleParamsCodeScanningToolSecurityAlertsThresholdEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::None => "none",
-            Self::Critical => "critical",
-            Self::HighOrHigher => "high_or_higher",
-            Self::MediumOrHigher => "medium_or_higher",
-            Self::All => "all",
-            Self::Unknown(value) => value.as_str(),
         }
     }
 }

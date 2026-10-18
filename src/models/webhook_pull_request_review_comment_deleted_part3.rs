@@ -3,6 +3,39 @@
 
 // webhook_pull_request_review_comment_deleted domain models (part 3)
 
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoCreatedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoCreatedAt branch accepts this payload"))
+    }
+}
+
+/// The policy controlling who can create pull requests: all or collaborators_only.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoPullRequestCreationPolicyEnum {
+    #[default]
+    All,
+    CollaboratorsOnly,
+    Unknown(String),
+}
+
 impl WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoPullRequestCreationPolicyEnum {
     pub fn as_str(&self) -> &str {
         match self {
@@ -423,11 +456,35 @@ impl WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoPushedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoPushedAt branch accepts this payload"))
+    }
 }
 
 /// The default value for a squash merge commit message:
@@ -450,64 +507,6 @@ impl WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoSquashMergeCommitM
             Self::PrBody => "PR_BODY",
             Self::CommitMessages => "COMMIT_MESSAGES",
             Self::Blank => "BLANK",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoSquashMergeCommitMessageEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoSquashMergeCommitMessageEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_BODY" => Self::PrBody,
-            "COMMIT_MESSAGES" => Self::CommitMessages,
-            "BLANK" => Self::Blank,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoSquashMergeCommitMessageEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The default value for a squash merge commit title:
-///
-/// \- `PR_TITLE` \- default to the pull request's title.
-/// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoSquashMergeCommitTitleEnum {
-    #[default]
-    PrTitle,
-    CommitOrPrTitle,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewCommentDeletedPullRequestBaseRepoSquashMergeCommitTitleEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrTitle => "PR_TITLE",
-            Self::CommitOrPrTitle => "COMMIT_OR_PR_TITLE",
             Self::Unknown(value) => value.as_str(),
         }
     }

@@ -4,19 +4,540 @@
 use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::SdkError;
-use crate::types::{Installation, MarketplacePurchase, UserMarketplacePurchase};
+use crate::errors::{SdkError, SdkNetworkError};
+use crate::types::{
+    AppPermissions, Authorization, Integration, MarketplaceListingPlan, MarketplacePurchase,
+};
+
+/// Suspends a GitHub App on a user, organization, or enterprise account, which blocks the app from accessing the account's resources. When a GitHub App is suspended, the app's access to the GitHub API or webhook events is blocked for that account. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
+///
+/// # Arguments
+///
+/// * `installation_id` - The unique identifier of the installation.
+pub fn apps_suspend_installation(
+    config: &ClientConfig,
+    installation_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/app/installations/{}/suspended",
+            crate::client::encode_path_segment(&installation_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "apps_suspend_installation",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Removes a GitHub App installation suspension. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
+///
+/// # Arguments
+///
+/// * `installation_id` - The unique identifier of the installation.
+pub fn apps_unsuspend_installation(
+    config: &ClientConfig,
+    installation_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/app/installations/{}/suspended",
+            crate::client::encode_path_segment(&installation_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "apps_unsuspend_installation",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// OAuth and GitHub application owners can revoke a grant for their application and a specific user. You must provide a valid OAuth `access_token` as an input parameter and the grant for the token's owner will be deleted. Deleting an application's grant will also delete all OAuth tokens associated with the application for the user. Once deleted, the application will have no access to the user's account and will no longer be listed on [the application authorizations settings screen within GitHub](https://github.com/settings/applications#authorized).
+///
+/// # Arguments
+///
+/// * `client_id` - The client ID of the GitHub app.
+/// * `access_token` - The OAuth access token used to authenticate to the GitHub
+///   API.
+pub fn apps_delete_authorization(
+    config: &ClientConfig,
+    client_id: String,
+    access_token: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "access_token".to_string(),
+        serde_json::to_value(access_token).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/applications/{}/grant",
+            crate::client::encode_path_segment(&client_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "apps_delete_authorization",
+            options,
+            errors: &[("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// OAuth applications and GitHub applications with OAuth authorizations can use this API method for checking OAuth token validity without exceeding the normal rate limits for failed login attempts. Authentication works differently with this particular endpoint. Invalid tokens will return `404 NOT FOUND`.
+///
+/// # Arguments
+///
+/// * `client_id` - The client ID of the GitHub app.
+/// * `access_token` - The access_token of the OAuth or GitHub application.
+pub fn apps_check_token(
+    config: &ClientConfig,
+    client_id: String,
+    access_token: String,
+    options: Option<&RequestOptions>,
+) -> Result<Authorization, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "access_token".to_string(),
+        serde_json::to_value(access_token).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Authorization>(
+        "POST",
+        &format!(
+            "/applications/{}/token",
+            crate::client::encode_path_segment(&client_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_check_token",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// OAuth applications and GitHub applications with OAuth authorizations can use this API method to reset a valid OAuth token without end-user involvement. Applications must save the "token" property in the response because changes take effect immediately. Invalid tokens will return `404 NOT FOUND`.
+///
+/// # Arguments
+///
+/// * `client_id` - The client ID of the GitHub app.
+/// * `access_token` - The access_token of the OAuth or GitHub application.
+pub fn apps_reset_token(
+    config: &ClientConfig,
+    client_id: String,
+    access_token: String,
+    options: Option<&RequestOptions>,
+) -> Result<Authorization, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "access_token".to_string(),
+        serde_json::to_value(access_token).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Authorization>(
+        "PATCH",
+        &format!(
+            "/applications/{}/token",
+            crate::client::encode_path_segment(&client_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_reset_token",
+            options,
+            errors: &[("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// OAuth or GitHub application owners can revoke a single token for an OAuth application or a GitHub application with an OAuth authorization.
+///
+/// # Arguments
+///
+/// * `client_id` - The client ID of the GitHub app.
+/// * `access_token` - The OAuth access token used to authenticate to the GitHub
+///   API.
+pub fn apps_delete_token(
+    config: &ClientConfig,
+    client_id: String,
+    access_token: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "access_token".to_string(),
+        serde_json::to_value(access_token).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/applications/{}/token",
+            crate::client::encode_path_segment(&client_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "apps_delete_token",
+            options,
+            errors: &[("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 #[derive(Debug, Clone, Default)]
-pub struct AppsListAccountsForPlanStubbedParams {
+pub struct AppsScopeTokenParams {
+    pub client_id: String,
+    pub access_token: String,
+    pub target: Option<String>,
+    pub target_id: Option<i64>,
+    pub repositories: Option<Vec<String>>,
+    pub repository_ids: Option<Vec<i64>>,
+    pub permissions: Option<AppPermissions>,
+}
+
+/// Use a non-scoped user access token to create a repository-scoped and/or permission-scoped user access token. You can specify which repositories the token can access and which permissions are granted to the token. Invalid tokens will return `404 NOT FOUND`.
+///
+/// # Arguments
+///
+/// * `client_id` - The client ID of the GitHub app.
+/// * `access_token` - The access token used to authenticate to the GitHub API.
+/// * `target` - The name of the user or organization to scope the user access
+///   token to. \*\*Required\*\* unless `target_id` is specified.
+/// * `target_id` - The ID of the user or organization to scope the user access
+///   token to. \*\*Required\*\* unless `target` is specified.
+/// * `repositories` - The list of repository names to scope the user access
+///   token to. `repositories` may not be specified if `repository_ids` is
+///   specified.
+/// * `repository_ids` - The list of repository IDs to scope the user access
+///   token to. `repository_ids` may not be specified if `repositories` is
+///   specified.
+/// * `permissions` - The permissions granted to the fine-grained access token.
+pub fn apps_scope_token(
+    config: &ClientConfig,
+    params: AppsScopeTokenParams,
+    options: Option<&RequestOptions>,
+) -> Result<Authorization, SdkError> {
+    let AppsScopeTokenParams {
+        client_id,
+        access_token,
+        target,
+        target_id,
+        repositories,
+        repository_ids,
+        permissions,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "access_token".to_string(),
+        serde_json::to_value(access_token).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = target {
+        __body_map.insert(
+            "target".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = target_id {
+        __body_map.insert(
+            "target_id".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = repositories {
+        __body_map.insert(
+            "repositories".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = repository_ids {
+        __body_map.insert(
+            "repository_ids".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = permissions {
+        __body_map.insert(
+            "permissions".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Authorization>(
+        "POST",
+        &format!(
+            "/applications/{}/token/scoped",
+            crate::client::encode_path_segment(&client_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_scope_token",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Retrieves a GitHub App by its URL-friendly slug. Use the `app_slug` path parameter shown in the app's settings URL to identify the app.
+///
+/// \> [!NOTE] \> The `:app_slug` is just the URL-friendly name of your GitHub App. You can find this on the settings page for your GitHub App (e.g., `https://github.com/settings/apps/:app_slug`).
+pub fn apps_get_by_slug(
+    config: &ClientConfig,
+    app_slug: String,
+    options: Option<&RequestOptions>,
+) -> Result<Integration, SdkError> {
+    Ok(sdk_request::<Integration>(
+        "GET",
+        &format!("/apps/{}", crate::client::encode_path_segment(&app_slug)),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_get_by_slug",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// List repositories that an app installation can access.
+///
+/// # Arguments
+///
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn apps_list_repos_accessible_to_installation(
+    config: &ClientConfig,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<AppsListReposAccessibleToInstallationResponse, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(
+        sdk_request::<AppsListReposAccessibleToInstallationResponse>(
+            "GET",
+            "/installation/repositories",
+            config,
+            RequestOpts {
+                query: &__query,
+                decoder: crate::client::ResponseDecoder::Json,
+                operation_id: "apps_list_repos_accessible_to_installation",
+                options,
+                errors: &[("401", "BasicError"), ("403", "BasicError")],
+                ..Default::default()
+            },
+        )?
+        .data,
+    )
+}
+
+/// Revokes the installation token you're using to authenticate as an installation and access this endpoint. Once an installation token is revoked, the token is invalidated and cannot be used. Other endpoints that require the revoked installation token must have a new installation token to work. You can create a new token using the "[Create an installation access token for an app](https://docs.github.com/rest/apps/apps#create-an-installation-access-token-for-an-app)" endpoint.
+pub fn apps_revoke_installation_access_token(
+    config: &ClientConfig,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        "/installation/token",
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "apps_revoke_installation_access_token",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Shows whether the user or organization account actively subscribes to a plan listed by the authenticated GitHub App. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change. GitHub Apps must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint. OAuth apps must use [basic authentication](https://docs.github.com/rest/authentication/authenticating-to-the-rest-api#using-basic-authentication) with their client ID and client secret to access this endpoint.
+///
+/// # Arguments
+///
+/// * `account_id` - account_id parameter
+pub fn apps_get_subscription_plan_for_account(
+    config: &ClientConfig,
+    account_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<MarketplacePurchase, SdkError> {
+    Ok(sdk_request::<MarketplacePurchase>(
+        "GET",
+        &format!(
+            "/marketplace_listing/accounts/{}",
+            crate::client::encode_path_segment(&account_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_get_subscription_plan_for_account",
+            options,
+            errors: &[("401", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Lists all plans that are part of your GitHub Marketplace listing. GitHub Apps must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint. OAuth apps must use [basic authentication](https://docs.github.com/rest/authentication/authenticating-to-the-rest-api#using-basic-authentication) with their client ID and client secret to access this endpoint.
+///
+/// # Arguments
+///
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn apps_list_plans(
+    config: &ClientConfig,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<MarketplaceListingPlan>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<MarketplaceListingPlan>>(
+        "GET",
+        "/marketplace_listing/plans",
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_list_plans",
+            options,
+            errors: &[("401", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct AppsListAccountsForPlanParams {
     pub plan_id: i64,
     pub sort: Option<AppsListAccountsForPlanEnum>,
-    pub direction: Option<AppsListAccountsForPlanStubbedEnum>,
+    pub direction: Option<AppsListAccountsForPlanEnumfe431365>,
     pub per_page: Option<i64>,
     pub page: Option<i64>,
 }
 
-/// Returns repository and organization accounts associated with the specified plan, including free plans. For per-seat pricing, you see the list of accounts that have purchased the plan, including the number of seats purchased. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change. GitHub Apps must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint. OAuth apps must use [basic authentication](https://docs.github.com/rest/authentication/authenticating-to-the-rest-api#using-basic-authentication) with their client ID and client secret to access this endpoint.
+/// Returns user and organization accounts associated with the specified plan, including free plans. For per-seat pricing, you see the list of accounts that have purchased the plan, including the number of seats purchased. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change. GitHub Apps must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint. OAuth apps must use [basic authentication](https://docs.github.com/rest/authentication/authenticating-to-the-rest-api#using-basic-authentication) with their client ID and client secret to access this endpoint.
 ///
 /// # Arguments
 ///
@@ -32,12 +553,12 @@ pub struct AppsListAccountsForPlanStubbedParams {
 ///   see "[Using pagination in the REST
 ///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
 ///   -rest-api)."
-pub fn apps_list_accounts_for_plan_stubbed(
+pub fn apps_list_accounts_for_plan(
     config: &ClientConfig,
-    params: AppsListAccountsForPlanStubbedParams,
+    params: AppsListAccountsForPlanParams,
     options: Option<&RequestOptions>,
 ) -> Result<Vec<MarketplacePurchase>, SdkError> {
-    let AppsListAccountsForPlanStubbedParams {
+    let AppsListAccountsForPlanParams {
         plan_id,
         sort,
         direction,
@@ -61,14 +582,46 @@ pub fn apps_list_accounts_for_plan_stubbed(
     Ok(sdk_request::<Vec<MarketplacePurchase>>(
         "GET",
         &format!(
-            "/marketplace_listing/stubbed/plans/{}/accounts",
+            "/marketplace_listing/plans/{}/accounts",
             crate::client::encode_path_segment(&plan_id)
         ),
         config,
         RequestOpts {
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_list_accounts_for_plan_stubbed",
+            operation_id: "apps_list_accounts_for_plan",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Shows whether the user or organization account actively subscribes to a plan listed by the authenticated GitHub App. When someone submits a plan change that won't be processed until the end of their billing cycle, you will also see the upcoming pending change. GitHub Apps must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint. OAuth apps must use [basic authentication](https://docs.github.com/rest/authentication/authenticating-to-the-rest-api#using-basic-authentication) with their client ID and client secret to access this endpoint.
+///
+/// # Arguments
+///
+/// * `account_id` - account_id parameter
+pub fn apps_get_subscription_plan_for_account_stubbed(
+    config: &ClientConfig,
+    account_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<MarketplacePurchase, SdkError> {
+    Ok(sdk_request::<MarketplacePurchase>(
+        "GET",
+        &format!(
+            "/marketplace_listing/stubbed/accounts/{}",
+            crate::client::encode_path_segment(&account_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "apps_get_subscription_plan_for_account_stubbed",
             options,
             errors: &[("401", "BasicError")],
             ..Default::default()
@@ -77,67 +630,7 @@ pub fn apps_list_accounts_for_plan_stubbed(
     .data)
 }
 
-/// Enables an authenticated GitHub App to find the organization's installation information. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-pub fn apps_get_org_installation(
-    config: &ClientConfig,
-    org: String,
-    options: Option<&RequestOptions>,
-) -> Result<Installation, SdkError> {
-    Ok(sdk_request::<Installation>(
-        "GET",
-        &format!(
-            "/orgs/{}/installation",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_org_installation",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Enables an authenticated GitHub App to find the repository's installation information. The installation's account type will be either an organization or a user account, depending which account the repository belongs to. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn apps_get_repo_installation(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    options: Option<&RequestOptions>,
-) -> Result<Installation, SdkError> {
-    Ok(sdk_request::<Installation>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/installation",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_repo_installation",
-            options,
-            errors: &[("301", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists installations of your GitHub App that the authenticated user has explicit permission (`:read`, `:write`, or `:admin`) to access. The authenticated user has explicit permission to access repositories they own, repositories where they are a collaborator, and repositories that they can access through an organization membership. You can find the permissions for the installation under the `permissions` key.
+/// Lists all plans that are part of your GitHub Marketplace listing. GitHub Apps must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint. OAuth apps must use [basic authentication](https://docs.github.com/rest/authentication/authenticating-to-the-rest-api#using-basic-authentication) with their client ID and client secret to access this endpoint.
 ///
 /// # Arguments
 ///
@@ -149,12 +642,12 @@ pub fn apps_get_repo_installation(
 ///   see "[Using pagination in the REST
 ///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
 ///   -rest-api)."
-pub fn apps_list_installations_for_authenticated_user(
+pub fn apps_list_plans_stubbed(
     config: &ClientConfig,
     per_page: Option<i64>,
     page: Option<i64>,
     options: Option<&RequestOptions>,
-) -> Result<AppsListInstallationsForAuthenticatedUserResponse, SdkError> {
+) -> Result<Vec<MarketplaceListingPlan>, SdkError> {
     let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
     if let Some(ref v) = per_page {
         __query.push(("per_page", crate::client::query_value(v)));
@@ -163,240 +656,16 @@ pub fn apps_list_installations_for_authenticated_user(
         __query.push(("page", crate::client::query_value(v)));
     }
 
-    Ok(
-        sdk_request::<AppsListInstallationsForAuthenticatedUserResponse>(
-            "GET",
-            "/user/installations",
-            config,
-            RequestOpts {
-                query: &__query,
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "apps_list_installations_for_authenticated_user",
-                options,
-                errors: &[("401", "BasicError"), ("403", "BasicError")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
-}
-
-/// List repositories that the authenticated user has explicit permission (`:read`, `:write`, or `:admin`) to access for an installation. The authenticated user has explicit permission to access repositories they own, repositories where they are a collaborator, and repositories that they can access through an organization membership. The access the user has to each repository is included in the hash under the `permissions` key.
-///
-/// # Arguments
-///
-/// * `installation_id` - The unique identifier of the installation.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn apps_list_installation_repos_for_authenticated_user(
-    config: &ClientConfig,
-    installation_id: i64,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<AppsListInstallationReposForAuthenticatedUserResponse, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(
-        sdk_request::<AppsListInstallationReposForAuthenticatedUserResponse>(
-            "GET",
-            &format!(
-                "/user/installations/{}/repositories",
-                crate::client::encode_path_segment(&installation_id)
-            ),
-            config,
-            RequestOpts {
-                query: &__query,
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "apps_list_installation_repos_for_authenticated_user",
-                options,
-                errors: &[("403", "BasicError"), ("404", "BasicError")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
-}
-
-/// Add a single repository to an installation. The authenticated user must have admin access to the repository.
-///
-/// # Arguments
-///
-/// * `installation_id` - The unique identifier of the installation.
-/// * `repository_id` - The unique identifier of the repository.
-pub fn apps_add_repo_to_installation_for_authenticated_user(
-    config: &ClientConfig,
-    installation_id: i64,
-    repository_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/user/installations/{}/repositories/{}",
-            crate::client::encode_path_segment(&installation_id),
-            crate::client::encode_path_segment(&repository_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "apps_add_repo_to_installation_for_authenticated_user",
-            options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Remove a single repository from an installation. The authenticated user must have admin access to the repository. The installation must have the `repository_selection` of `selected`. To use a PAT (classic) with this endpoint, the `repo` scope is required
-///
-/// # Arguments
-///
-/// * `installation_id` - The unique identifier of the installation.
-/// * `repository_id` - The unique identifier of the repository.
-pub fn apps_remove_repo_from_installation_for_authenticated_user(
-    config: &ClientConfig,
-    installation_id: i64,
-    repository_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/user/installations/{}/repositories/{}",
-            crate::client::encode_path_segment(&installation_id),
-            crate::client::encode_path_segment(&repository_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "apps_remove_repo_from_installation_for_authenticated_user",
-            options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the active subscriptions for the authenticated user.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn apps_list_subscriptions_for_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<UserMarketplacePurchase>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<UserMarketplacePurchase>>(
+    Ok(sdk_request::<Vec<MarketplaceListingPlan>>(
         "GET",
-        "/user/marketplace_purchases",
+        "/marketplace_listing/stubbed/plans",
         config,
         RequestOpts {
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_list_subscriptions_for_authenticated_user",
-            options,
-            errors: &[("401", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the active subscriptions for the authenticated user.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn apps_list_subscriptions_for_authenticated_user_stubbed(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<UserMarketplacePurchase>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<UserMarketplacePurchase>>(
-        "GET",
-        "/user/marketplace_purchases/stubbed",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_list_subscriptions_for_authenticated_user_stubbed",
+            operation_id: "apps_list_plans_stubbed",
             options,
             errors: &[("401", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Enables an authenticated GitHub App to find the user’s installation information. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn apps_get_user_installation(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<Installation, SdkError> {
-    Ok(sdk_request::<Installation>(
-        "GET",
-        &format!(
-            "/users/{}/installation",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_user_installation",
-            options,
             ..Default::default()
         },
     )?

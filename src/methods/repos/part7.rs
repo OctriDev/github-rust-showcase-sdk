@@ -3,6 +3,22 @@
 
 use super::*;
 
+impl std::fmt::Display for ReposGetOrgRuleSuitesEnum7b29ef42 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposGetOrgRuleSuitesEnum7f640cd8 {
+    #[default]
+    All,
+    Bypass,
+    Fail,
+    Pass,
+    Unknown(String),
+}
+
 impl ReposGetOrgRuleSuitesEnum7f640cd8 {
     pub fn as_str(&self) -> &str {
         match self {

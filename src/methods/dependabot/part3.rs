@@ -8,6 +8,59 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{DependabotAlertWithRepository, DependabotRepositoryAccessDetails};
 use crate::validation::{validate_range, RangeOpts};
 
+impl serde::Serialize for DependabotUpdateAlertStateEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for DependabotUpdateAlertStateEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "dismissed" => Self::Dismissed,
+            "open" => Self::Open,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for DependabotUpdateAlertStateEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum DependabotUpdateAlertDismissedReasonEnum {
+    #[default]
+    FixStarted,
+    Inaccurate,
+    NoBandwidth,
+    NotUsed,
+    TolerableRisk,
+    Unknown(String),
+}
+
+impl DependabotUpdateAlertDismissedReasonEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::FixStarted => "fix_started",
+            Self::Inaccurate => "inaccurate",
+            Self::NoBandwidth => "no_bandwidth",
+            Self::NotUsed => "not_used",
+            Self::TolerableRisk => "tolerable_risk",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for DependabotUpdateAlertDismissedReasonEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where

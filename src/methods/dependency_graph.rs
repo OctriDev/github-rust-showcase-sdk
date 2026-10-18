@@ -92,6 +92,7 @@ pub fn dependency_graph_diff_range(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

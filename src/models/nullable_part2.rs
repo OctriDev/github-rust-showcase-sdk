@@ -3,29 +3,6 @@
 
 // nullable domain models (part 2)
 
-impl<'de> serde::Deserialize<'de>
-    for NullableRepositoryWebhooksTemplateRepositoryMergeCommitMessageEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_BODY" => Self::PrBody,
-            "PR_TITLE" => Self::PrTitle,
-            "BLANK" => Self::Blank,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for NullableRepositoryWebhooksTemplateRepositoryMergeCommitMessageEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
 /// Optional object value serialized in the `template_repository` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct NullableRepositoryWebhooksTemplateRepository {
@@ -487,5 +464,26 @@ impl serde::Serialize for NullableRepositoryWebhooksSquashMergeCommitMessageEnum
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for NullableRepositoryWebhooksSquashMergeCommitMessageEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_BODY" => Self::PrBody,
+            "COMMIT_MESSAGES" => Self::CommitMessages,
+            "BLANK" => Self::Blank,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for NullableRepositoryWebhooksSquashMergeCommitMessageEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
     }
 }

@@ -483,18 +483,9 @@ impl WebhookPullRequestReviewThreadResolvedPullRequestAutoMerge {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoCreatedAt {
     Integer(i64),
     String(String),
-}
-
-/// The policy controlling who can create pull requests: all or collaborators_only.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPullRequestCreationPolicyEnum {
-    #[default]
-    All,
-    CollaboratorsOnly,
-    Unknown(String),
 }

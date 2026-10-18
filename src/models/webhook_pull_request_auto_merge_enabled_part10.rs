@@ -388,7 +388,7 @@ pub struct WebhookPullRequestAutoMergeEnabledPullRequest {
     pub rebaseable: Option<Option<bool>>,
     /// Required array value serialized in the `requested_reviewers` wire field.
     pub requested_reviewers:
-        Vec<WebhookPullRequestAutoMergeEnabledPullRequestRequestedReviewersItem>,
+        Vec<Option<WebhookPullRequestAutoMergeEnabledPullRequestRequestedReviewersItem>>,
     /// Required array value serialized in the `requested_teams` wire field.
     pub requested_teams: Vec<WebhookPullRequestAutoMergeEnabledPullRequestRequestedTeamsItem>,
     /// Required `uri-template`-formatted value serialized in the `review_comment_url` wire field.

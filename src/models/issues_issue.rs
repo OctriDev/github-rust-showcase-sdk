@@ -230,7 +230,7 @@ impl IssueEventDismissedReview {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum IssueEventForIssue {
     LabeledIssueEvent(Box<LabeledIssueEvent>),
@@ -259,6 +259,216 @@ pub enum IssueEventForIssue {
     BlockedByRemovedIssueEvent(Box<BlockedByRemovedIssueEvent>),
     BlockingAddedIssueEvent(Box<BlockingAddedIssueEvent>),
     BlockingRemovedIssueEvent(Box<BlockingRemovedIssueEvent>),
+}
+
+impl<'de> serde::Deserialize<'de> for IssueEventForIssue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<LabeledIssueEvent>>(value.clone()) {
+            let candidate = Self::LabeledIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<UnlabeledIssueEvent>>(value.clone()) {
+            let candidate = Self::UnlabeledIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<AssignedIssueEvent>>(value.clone()) {
+            let candidate = Self::AssignedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<UnassignedIssueEvent>>(value.clone()) {
+            let candidate = Self::UnassignedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<MilestonedIssueEvent>>(value.clone()) {
+            let candidate = Self::MilestonedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<DemilestonedIssueEvent>>(value.clone()) {
+            let candidate = Self::DemilestonedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<RenamedIssueEvent>>(value.clone()) {
+            let candidate = Self::RenamedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ReviewRequestedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ReviewRequestedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ReviewRequestRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ReviewRequestRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ReviewDismissedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ReviewDismissedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<LockedIssueEvent>>(value.clone()) {
+            let candidate = Self::LockedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<AddedToProjectIssueEvent>>(value.clone()) {
+            let candidate = Self::AddedToProjectIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<MovedColumnInProjectIssueEvent>>(value.clone())
+        {
+            let candidate = Self::MovedColumnInProjectIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RemovedFromProjectIssueEvent>>(value.clone())
+        {
+            let candidate = Self::RemovedFromProjectIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ConvertedNoteToIssueIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ConvertedNoteToIssueIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueTypeAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::IssueTypeAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueTypeRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::IssueTypeRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueTypeChangedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::IssueTypeChangedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<SubIssueAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::SubIssueAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<SubIssueRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::SubIssueRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ParentIssueAddedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ParentIssueAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ParentIssueRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ParentIssueRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockedByAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::BlockedByAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockedByRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::BlockedByRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockingAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::BlockingAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockingRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::BlockingRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no IssueEventForIssue branch accepts this payload")
+        })
+    }
 }
 
 /// Issue Event Label
@@ -307,193 +517,4 @@ pub struct IssueEventProjectCard {
     /// Optional `string` value serialized in the `previous_column_name` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub previous_column_name: Option<String>,
-}
-
-impl IssueEventProjectCard {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("url", &self.url)?;
-        crate::validation::validate_uri("project_url", &self.project_url)?;
-        Ok(())
-    }
-
-    pub fn new(
-        url: String,
-        id: i64,
-        project_url: String,
-        project_id: i64,
-        column_name: String,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            url,
-            id,
-            project_url,
-            project_id,
-            column_name,
-            previous_column_name: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Issue Event Rename
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IssueEventRename {
-    /// Required `string` value serialized in the `from` wire field.
-    pub from: String,
-    /// Required `string` value serialized in the `to` wire field.
-    pub to: String,
-}
-
-impl IssueEventRename {
-    pub fn new(from: String, to: String) -> Self {
-        Self { from, to }
-    }
-}
-
-/// The kind of change proposed.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssueSuggestionActionEnum {
-    #[default]
-    SetType,
-    AddLabel,
-    AddField,
-    AddAssignee,
-    CloseIssue,
-    Unknown(String),
-}
-
-impl IssueSuggestionActionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::SetType => "set_type",
-            Self::AddLabel => "add_label",
-            Self::AddField => "add_field",
-            Self::AddAssignee => "add_assignee",
-            Self::CloseIssue => "close_issue",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssueSuggestionActionEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssueSuggestionActionEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "set_type" => Self::SetType,
-            "add_label" => Self::AddLabel,
-            "add_field" => Self::AddField,
-            "add_assignee" => Self::AddAssignee,
-            "close_issue" => Self::CloseIssue,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssueSuggestionActionEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The suggestion's lifecycle state.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssueSuggestionStateEnum {
-    #[default]
-    Pending,
-    Applied,
-    Approved,
-    Dismissed,
-    Replaced,
-    Invalidated,
-    Unknown(String),
-}
-
-impl IssueSuggestionStateEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Pending => "pending",
-            Self::Applied => "applied",
-            Self::Approved => "approved",
-            Self::Dismissed => "dismissed",
-            Self::Replaced => "replaced",
-            Self::Invalidated => "invalidated",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssueSuggestionStateEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssueSuggestionStateEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "pending" => Self::Pending,
-            "applied" => Self::Applied,
-            "approved" => Self::Approved,
-            "dismissed" => Self::Dismissed,
-            "replaced" => Self::Replaced,
-            "invalidated" => Self::Invalidated,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssueSuggestionStateEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum IssueSuggestionTargetValue {
-    String(String),
-    Number(f64),
-    Bool(bool),
-    StringArray(Vec<String>),
-}
-
-/// The actor's confidence level in the suggestion.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssueSuggestionConfidenceEnum {
-    #[default]
-    Low,
-    Medium,
-    High,
-    Unknown(String),
-}
-
-impl IssueSuggestionConfidenceEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Low => "LOW",
-            Self::Medium => "MEDIUM",
-            Self::High => "HIGH",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
 }

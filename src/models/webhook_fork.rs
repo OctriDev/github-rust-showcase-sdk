@@ -3,9 +3,9 @@
 
 // webhook_fork domain models
 
-/// Optional object value serialized in the `owner` wire field.
+/// Required object value serialized in the `owner` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookForkForkeeVariant1Owner {
+pub struct WebhookForkForkeeOwner {
     /// Optional `string` value serialized in the `avatar_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -62,7 +62,7 @@ pub struct WebhookForkForkeeVariant1Owner {
     pub url: Option<String>,
 }
 
-impl WebhookForkForkeeVariant1Owner {
+impl WebhookForkForkeeOwner {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -90,7 +90,7 @@ impl WebhookForkForkeeVariant1Owner {
 
 /// Optional object value serialized in the `permissions` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookForkForkeeVariant0Permissions {
+pub struct WebhookForkForkeePermissions {
     /// Required `boolean` value serialized in the `admin` wire field.
     pub admin: bool,
     /// Optional `boolean` value serialized in the `maintain` wire field.
@@ -105,7 +105,7 @@ pub struct WebhookForkForkeeVariant0Permissions {
     pub triage: Option<bool>,
 }
 
-impl WebhookForkForkeeVariant0Permissions {
+impl WebhookForkForkeePermissions {
     pub fn new(admin: bool, pull: bool, push: bool) -> Self {
         Self {
             admin,
@@ -138,145 +138,145 @@ pub struct WebhookForkForkee {
     /// Optional `boolean` value serialized in the `allow_update_branch` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_update_branch: Option<bool>,
-    /// Optional `string` value serialized in the `archive_url` wire field.
+    /// Required `string` value serialized in the `archive_url` wire field.
     pub archive_url: String,
-    /// Optional `boolean` value serialized in the `archived` wire field.
+    /// Required `boolean` value serialized in the `archived` wire field.
     pub archived: bool,
-    /// Optional `string` value serialized in the `assignees_url` wire field.
+    /// Required `string` value serialized in the `assignees_url` wire field.
     pub assignees_url: String,
-    /// Optional `string` value serialized in the `blobs_url` wire field.
+    /// Required `string` value serialized in the `blobs_url` wire field.
     pub blobs_url: String,
-    /// Optional `string` value serialized in the `branches_url` wire field.
+    /// Required `string` value serialized in the `branches_url` wire field.
     pub branches_url: String,
-    /// Optional `string` value serialized in the `clone_url` wire field.
+    /// Required `string` value serialized in the `clone_url` wire field.
     pub clone_url: String,
-    /// Optional `string` value serialized in the `collaborators_url` wire field.
+    /// Required `string` value serialized in the `collaborators_url` wire field.
     pub collaborators_url: String,
-    /// Optional `string` value serialized in the `comments_url` wire field.
+    /// Required `string` value serialized in the `comments_url` wire field.
     pub comments_url: String,
-    /// Optional `string` value serialized in the `commits_url` wire field.
+    /// Required `string` value serialized in the `commits_url` wire field.
     pub commits_url: String,
-    /// Optional `string` value serialized in the `compare_url` wire field.
+    /// Required `string` value serialized in the `compare_url` wire field.
     pub compare_url: String,
-    /// Optional `string` value serialized in the `contents_url` wire field.
+    /// Required `string` value serialized in the `contents_url` wire field.
     pub contents_url: String,
-    /// Optional `string` value serialized in the `contributors_url` wire field.
+    /// Required `string` value serialized in the `contributors_url` wire field.
     pub contributors_url: String,
-    /// Optional `string` value serialized in the `created_at` wire field.
+    /// Required `string` value serialized in the `created_at` wire field.
     pub created_at: String,
-    /// Optional `string` value serialized in the `default_branch` wire field.
+    /// Required `string` value serialized in the `default_branch` wire field.
     pub default_branch: String,
     /// Whether to delete head branches when pull requests are merged
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delete_branch_on_merge: Option<bool>,
-    /// Optional `string` value serialized in the `deployments_url` wire field.
+    /// Required `string` value serialized in the `deployments_url` wire field.
     pub deployments_url: String,
-    /// Optional `string` value serialized in the `description` wire field.
+    /// Required `string` value serialized in the `description` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub description: Option<String>,
     /// Optional `boolean` value serialized in the `disabled` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
-    /// Optional `string` value serialized in the `downloads_url` wire field.
+    /// Required `string` value serialized in the `downloads_url` wire field.
     pub downloads_url: String,
-    /// Optional `string` value serialized in the `events_url` wire field.
+    /// Required `string` value serialized in the `events_url` wire field.
     pub events_url: String,
-    /// Optional enumerated value serialized in the `fork` wire field.
+    /// Required enumerated value serialized in the `fork` wire field.
     pub fork: bool,
-    /// Optional `integer` value serialized in the `forks` wire field.
+    /// Required `integer` value serialized in the `forks` wire field.
     pub forks: i64,
-    /// Optional `integer` value serialized in the `forks_count` wire field.
+    /// Required `integer` value serialized in the `forks_count` wire field.
     pub forks_count: i64,
-    /// Optional `string` value serialized in the `forks_url` wire field.
+    /// Required `string` value serialized in the `forks_url` wire field.
     pub forks_url: String,
-    /// Optional `string` value serialized in the `full_name` wire field.
+    /// Required `string` value serialized in the `full_name` wire field.
     pub full_name: String,
-    /// Optional `string` value serialized in the `git_commits_url` wire field.
+    /// Required `string` value serialized in the `git_commits_url` wire field.
     pub git_commits_url: String,
-    /// Optional `string` value serialized in the `git_refs_url` wire field.
+    /// Required `string` value serialized in the `git_refs_url` wire field.
     pub git_refs_url: String,
-    /// Optional `string` value serialized in the `git_tags_url` wire field.
+    /// Required `string` value serialized in the `git_tags_url` wire field.
     pub git_tags_url: String,
-    /// Optional `string` value serialized in the `git_url` wire field.
+    /// Required `string` value serialized in the `git_url` wire field.
     pub git_url: String,
-    /// Optional `boolean` value serialized in the `has_downloads` wire field.
+    /// Required `boolean` value serialized in the `has_downloads` wire field.
     pub has_downloads: bool,
-    /// Optional `boolean` value serialized in the `has_issues` wire field.
+    /// Required `boolean` value serialized in the `has_issues` wire field.
     pub has_issues: bool,
-    /// Optional `boolean` value serialized in the `has_pages` wire field.
+    /// Required `boolean` value serialized in the `has_pages` wire field.
     pub has_pages: bool,
-    /// Optional `boolean` value serialized in the `has_projects` wire field.
+    /// Required `boolean` value serialized in the `has_projects` wire field.
     pub has_projects: bool,
-    /// Optional `boolean` value serialized in the `has_wiki` wire field.
+    /// Required `boolean` value serialized in the `has_wiki` wire field.
     pub has_wiki: bool,
-    /// Optional `string` value serialized in the `homepage` wire field.
+    /// Required `string` value serialized in the `homepage` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub homepage: Option<String>,
-    /// Optional `string` value serialized in the `hooks_url` wire field.
+    /// Required `string` value serialized in the `hooks_url` wire field.
     pub hooks_url: String,
-    /// Optional `string` value serialized in the `html_url` wire field.
+    /// Required `string` value serialized in the `html_url` wire field.
     pub html_url: String,
-    /// Optional `integer` value serialized in the `id` wire field.
+    /// Required `integer` value serialized in the `id` wire field.
     pub id: i64,
     /// Optional `boolean` value serialized in the `is_template` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_template: Option<bool>,
-    /// Optional `string` value serialized in the `issue_comment_url` wire field.
+    /// Required `string` value serialized in the `issue_comment_url` wire field.
     pub issue_comment_url: String,
-    /// Optional `string` value serialized in the `issue_events_url` wire field.
+    /// Required `string` value serialized in the `issue_events_url` wire field.
     pub issue_events_url: String,
-    /// Optional `string` value serialized in the `issues_url` wire field.
+    /// Required `string` value serialized in the `issues_url` wire field.
     pub issues_url: String,
-    /// Optional `string` value serialized in the `keys_url` wire field.
+    /// Required `string` value serialized in the `keys_url` wire field.
     pub keys_url: String,
-    /// Optional `string` value serialized in the `labels_url` wire field.
+    /// Required `string` value serialized in the `labels_url` wire field.
     pub labels_url: String,
-    /// Optional API value serialized in the `language` wire field.
+    /// Required API value serialized in the `language` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub language: Option<serde_json::Value>,
-    /// Optional `string` value serialized in the `languages_url` wire field.
+    /// Required `string` value serialized in the `languages_url` wire field.
     pub languages_url: String,
-    /// Optional object value serialized in the `license` wire field.
+    /// Required object value serialized in the `license` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub license: Option<serde_json::Value>,
     /// Optional `string` value serialized in the `master_branch` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub master_branch: Option<String>,
-    /// Optional `string` value serialized in the `merges_url` wire field.
+    /// Required `string` value serialized in the `merges_url` wire field.
     pub merges_url: String,
-    /// Optional `string` value serialized in the `milestones_url` wire field.
+    /// Required `string` value serialized in the `milestones_url` wire field.
     pub milestones_url: String,
-    /// Optional API value serialized in the `mirror_url` wire field.
+    /// Required API value serialized in the `mirror_url` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub mirror_url: Option<serde_json::Value>,
-    /// Optional `string` value serialized in the `name` wire field.
+    /// Required `string` value serialized in the `name` wire field.
     pub name: String,
-    /// Optional `string` value serialized in the `node_id` wire field.
+    /// Required `string` value serialized in the `node_id` wire field.
     pub node_id: String,
-    /// Optional `string` value serialized in the `notifications_url` wire field.
+    /// Required `string` value serialized in the `notifications_url` wire field.
     pub notifications_url: String,
-    /// Optional `integer` value serialized in the `open_issues` wire field.
+    /// Required `integer` value serialized in the `open_issues` wire field.
     pub open_issues: i64,
-    /// Optional `integer` value serialized in the `open_issues_count` wire field.
+    /// Required `integer` value serialized in the `open_issues_count` wire field.
     pub open_issues_count: i64,
     /// Optional `string` value serialized in the `organization` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub organization: Option<String>,
-    /// Optional object value serialized in the `owner` wire field.
-    pub owner: WebhookForkForkeeVariant1Owner,
+    /// Required object value serialized in the `owner` wire field.
+    pub owner: WebhookForkForkeeOwner,
     /// Optional object value serialized in the `permissions` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<WebhookForkForkeeVariant0Permissions>,
-    /// Optional `boolean` value serialized in the `private` wire field.
+    pub permissions: Option<WebhookForkForkeePermissions>,
+    /// Required `boolean` value serialized in the `private` wire field.
     pub private: bool,
     /// Optional `boolean` value serialized in the `public` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub public: Option<bool>,
-    /// Optional `string` value serialized in the `pulls_url` wire field.
+    /// Required `string` value serialized in the `pulls_url` wire field.
     pub pulls_url: String,
-    /// Optional `string` value serialized in the `pushed_at` wire field.
+    /// Required `string` value serialized in the `pushed_at` wire field.
     pub pushed_at: String,
-    /// Optional `string` value serialized in the `releases_url` wire field.
+    /// Required `string` value serialized in the `releases_url` wire field.
     pub releases_url: String,
     /// Optional `string` value serialized in the `role_name` wire field.
     #[serde(
@@ -285,42 +285,42 @@ pub struct WebhookForkForkee {
         with = "crate::client::double_option"
     )]
     pub role_name: Option<Option<String>>,
-    /// Optional `integer` value serialized in the `size` wire field.
+    /// Required `integer` value serialized in the `size` wire field.
     pub size: i64,
-    /// Optional `string` value serialized in the `ssh_url` wire field.
+    /// Required `string` value serialized in the `ssh_url` wire field.
     pub ssh_url: String,
     /// Optional `integer` value serialized in the `stargazers` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stargazers: Option<i64>,
-    /// Optional `integer` value serialized in the `stargazers_count` wire field.
+    /// Required `integer` value serialized in the `stargazers_count` wire field.
     pub stargazers_count: i64,
-    /// Optional `string` value serialized in the `stargazers_url` wire field.
+    /// Required `string` value serialized in the `stargazers_url` wire field.
     pub stargazers_url: String,
-    /// Optional `string` value serialized in the `statuses_url` wire field.
+    /// Required `string` value serialized in the `statuses_url` wire field.
     pub statuses_url: String,
-    /// Optional `string` value serialized in the `subscribers_url` wire field.
+    /// Required `string` value serialized in the `subscribers_url` wire field.
     pub subscribers_url: String,
-    /// Optional `string` value serialized in the `subscription_url` wire field.
+    /// Required `string` value serialized in the `subscription_url` wire field.
     pub subscription_url: String,
-    /// Optional `string` value serialized in the `svn_url` wire field.
+    /// Required `string` value serialized in the `svn_url` wire field.
     pub svn_url: String,
-    /// Optional `string` value serialized in the `tags_url` wire field.
+    /// Required `string` value serialized in the `tags_url` wire field.
     pub tags_url: String,
-    /// Optional `string` value serialized in the `teams_url` wire field.
+    /// Required `string` value serialized in the `teams_url` wire field.
     pub teams_url: String,
-    /// Optional array value serialized in the `topics` wire field.
+    /// Required array value serialized in the `topics` wire field.
     pub topics: Vec<Option<serde_json::Value>>,
-    /// Optional `string` value serialized in the `trees_url` wire field.
+    /// Required `string` value serialized in the `trees_url` wire field.
     pub trees_url: String,
-    /// Optional `string` value serialized in the `updated_at` wire field.
+    /// Required `string` value serialized in the `updated_at` wire field.
     pub updated_at: String,
-    /// Optional `string` value serialized in the `url` wire field.
+    /// Required `string` value serialized in the `url` wire field.
     pub url: String,
-    /// Optional `string` value serialized in the `visibility` wire field.
+    /// Required `string` value serialized in the `visibility` wire field.
     pub visibility: String,
-    /// Optional `integer` value serialized in the `watchers` wire field.
+    /// Required `integer` value serialized in the `watchers` wire field.
     pub watchers: i64,
-    /// Optional `integer` value serialized in the `watchers_count` wire field.
+    /// Required `integer` value serialized in the `watchers_count` wire field.
     pub watchers_count: i64,
     /// Whether to require contributors to sign off on web-based commits
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -382,7 +382,7 @@ impl WebhookForkForkee {
         notifications_url: String,
         open_issues: i64,
         open_issues_count: i64,
-        owner: WebhookForkForkeeVariant1Owner,
+        owner: WebhookForkForkeeOwner,
         private: bool,
         pulls_url: String,
         pushed_at: String,

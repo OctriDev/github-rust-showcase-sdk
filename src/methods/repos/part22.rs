@@ -316,6 +316,7 @@ pub fn repos_get_commit(
                 ("422", "ValidationError"),
                 ("429", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

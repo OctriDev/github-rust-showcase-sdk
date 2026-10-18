@@ -184,49 +184,35 @@ impl WebhookPackagePublishedPackagePackageVersionNpmMetadata {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPackagePublishedPackagePackageVersionNugetMetadataItemId {
     Integer(i64),
     String(String),
 }
 
-/// Optional object value serialized in the `value` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPackagePublishedPackagePackageVersionNugetMetadataItemValueVariant3 {
-    /// Optional `string` value serialized in the `url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
-    /// Optional `string` value serialized in the `branch` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub branch: Option<String>,
-    /// Optional `string` value serialized in the `commit` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub commit: Option<String>,
-    /// Optional `string` value serialized in the `type` wire field.
-    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
-}
-
-impl WebhookPackagePublishedPackagePackageVersionNugetMetadataItemValueVariant3 {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            url: None,
-            branch: None,
-            commit: None,
-            type_: None,
+impl<'de> serde::Deserialize<'de>
+    for WebhookPackagePublishedPackagePackageVersionNugetMetadataItemId
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
         }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPackagePublishedPackagePackageVersionNugetMetadataItemId branch accepts this payload"))
     }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum WebhookPackagePublishedPackagePackageVersionNugetMetadataItemValue {
-    Bool(bool),
-    String(String),
-    Integer(i64),
-    Object(Box<WebhookPackagePublishedPackagePackageVersionNugetMetadataItemValueVariant3>),
 }
 
 /// Required object value serialized in the `nuget_metadata[]` wire field.

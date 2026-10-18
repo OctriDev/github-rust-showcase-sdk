@@ -2,11 +2,136 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::{CheckRun, CheckSuite};
+
+impl std::fmt::Display for ChecksUpdateVariant0ConclusionEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The level of the annotation.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum {
+    #[default]
+    Notice,
+    Warning,
+    Failure,
+    Unknown(String),
+}
+
+impl ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Notice => "notice",
+            Self::Warning => "warning",
+            Self::Failure => "failure",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "notice" => Self::Notice,
+            "warning" => Self::Warning,
+            "failure" => Self::Failure,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChecksUpdateVariant0OutputAnnotationsItem {
+    /// The path of the file to add an annotation to. For example, `assets/css/main.css`.
+    pub path: String,
+    /// The start line of the annotation. Line numbers start at 1.
+    pub start_line: i64,
+    /// The end line of the annotation.
+    pub end_line: i64,
+    /// The start column of the annotation. Annotations only support `start_column` and `end_column` on the same line. Omit this parameter if `start_line` and `end_line` have different values. Column numbers start at 1.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_column: Option<i64>,
+    /// The end column of the annotation. Annotations only support `start_column` and `end_column` on the same line. Omit this parameter if `start_line` and `end_line` have different values.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_column: Option<i64>,
+    /// The level of the annotation.
+    pub annotation_level: ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum,
+    /// A short description of the feedback for these lines of code. The maximum size is 64 KB.
+    pub message: String,
+    /// The title that represents the annotation. The maximum size is 255 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    /// Details about this annotation. The maximum size is 64 KB.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub raw_details: Option<String>,
+}
+
+impl ChecksUpdateVariant0OutputAnnotationsItem {
+    pub fn new(
+        path: String,
+        start_line: i64,
+        end_line: i64,
+        annotation_level: ChecksUpdateVariant0OutputAnnotationsItemAnnotationLevelEnum,
+        message: String,
+    ) -> Self {
+        Self {
+            path,
+            start_line,
+            end_line,
+            start_column: None,
+            end_column: None,
+            annotation_level,
+            message,
+            title: None,
+            raw_details: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChecksUpdateVariant0OutputImagesItem {
+    /// The alternative text for the image.
+    pub alt: String,
+    /// The full URL of the image.
+    pub image_url: String,
+    /// A short image description.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption: Option<String>,
+}
+
+impl ChecksUpdateVariant0OutputImagesItem {
+    pub fn new(alt: String, image_url: String) -> Self {
+        Self {
+            alt,
+            image_url,
+            caption: None,
+        }
+    }
+}
 
 /// Check runs can accept a variety of data in the `output` object, including a `title` and `summary` and can optionally provide descriptive details about the run.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksUpdateOutput {
+pub struct ChecksUpdateVariant0Output {
     /// \*\*Required\*\*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -17,13 +142,13 @@ pub struct ChecksUpdateOutput {
     pub text: Option<String>,
     /// Adds information from your analysis to specific lines of code. Annotations are visible in GitHub's pull request UI. Annotations are visible in GitHub's pull request UI. The Checks API limits the number of annotations to a maximum of 50 per API request. To create more than 50 annotations, you have to make multiple requests to the [Update a check run](https://docs.github.com/rest/checks/runs#update-a-check-run) endpoint. Each time you update the check run, annotations are appended to the list of annotations that already exist for the check run. GitHub Actions are limited to 10 warning annotations and 10 error annotations per step. For details about annotations in the UI, see "[About status checks](https://docs.github.com/articles/about-status-checks#checks)".
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<Vec<ChecksUpdateOutputAnnotationsItem>>,
+    pub annotations: Option<Vec<ChecksUpdateVariant0OutputAnnotationsItem>>,
     /// Adds images to the output displayed in the GitHub pull request UI.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<ChecksUpdateOutputImagesItem>>,
+    pub images: Option<Vec<ChecksUpdateVariant0OutputImagesItem>>,
 }
 
-impl ChecksUpdateOutput {
+impl ChecksUpdateVariant0Output {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         crate::validation::validate_length(
             "summary",
@@ -70,7 +195,7 @@ impl ChecksUpdateOutput {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksUpdateActionsItem {
+pub struct ChecksUpdateVariant0ActionsItem {
     /// The text to be displayed on a button in the web UI. The maximum size is 20 characters.
     pub label: String,
     /// A short explanation of what this action would do. The maximum size is 40 characters.
@@ -79,7 +204,7 @@ pub struct ChecksUpdateActionsItem {
     pub identifier: String,
 }
 
-impl ChecksUpdateActionsItem {
+impl ChecksUpdateVariant0ActionsItem {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         crate::validation::validate_length(
             "label",
@@ -124,91 +249,97 @@ impl ChecksUpdateActionsItem {
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksSetSuitesPreferencesAutoTriggerChecksItem {
-    /// The `id` of the GitHub App.
-    pub app_id: i64,
-    /// Set to `true` to enable automatic creation of CheckSuite events upon pushes to the repository, or `false` to disable them.
-    pub setting: bool,
+pub struct ChecksUpdateVariant0 {
+    /// The name of the check. For example, "code-coverage".
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The URL of the integrator's site that has the full details of the check.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details_url: Option<String>,
+    /// A reference for the run on the integrator's system.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_id: Option<String>,
+    /// This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub started_at: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<ChecksUpdateVariant0StatusEnum>,
+    /// \*\*Required if you provide `completed_at` or a `status` of `completed`\*\*. The final conclusion of the check.
+    /// \*\*Note:\*\* Providing `conclusion` will automatically set the `status` parameter to `completed`. You cannot change a check run conclusion to `stale`, only GitHub can set this.
+    pub conclusion: ChecksUpdateVariant0ConclusionEnum,
+    /// The time the check completed. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub completed_at: Option<String>,
+    /// Check runs can accept a variety of data in the `output` object, including a `title` and `summary` and can optionally provide descriptive details about the run.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output: Option<ChecksUpdateVariant0Output>,
+    /// Possible further actions the integrator can perform, which a user may trigger. Each action includes a `label`, `identifier` and `description`. A maximum of three actions are accepted. To learn more about check runs and requested actions, see "[Check runs and requested actions](https://docs.github.com/rest/guides/using-the-rest-api-to-interact-with-checks#check-runs-and-requested-actions)."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub actions: Option<Vec<ChecksUpdateVariant0ActionsItem>>,
+    #[serde(flatten)]
+    pub additional_properties: std::collections::HashMap<String, serde_json::Value>,
 }
 
-impl ChecksSetSuitesPreferencesAutoTriggerChecksItem {
-    pub fn new(app_id: i64, setting: bool) -> Self {
-        Self { app_id, setting }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksListForSuiteResponse {
-    pub total_count: i64,
-    pub check_runs: Vec<CheckRun>,
-}
-
-impl ChecksListForSuiteResponse {
-    pub fn new(total_count: i64, check_runs: Vec<CheckRun>) -> Self {
-        Self {
-            total_count,
-            check_runs,
+impl ChecksUpdateVariant0 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.started_at.as_ref() {
+            crate::validation::validate_model_date_time("started_at", value)?;
         }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksListForRefResponse {
-    pub total_count: i64,
-    pub check_runs: Vec<CheckRun>,
-}
-
-impl ChecksListForRefResponse {
-    pub fn new(total_count: i64, check_runs: Vec<CheckRun>) -> Self {
-        Self {
-            total_count,
-            check_runs,
+        if let Some(value) = self.completed_at.as_ref() {
+            crate::validation::validate_model_date_time("completed_at", value)?;
         }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksListSuitesForRefResponse {
-    pub total_count: i64,
-    pub check_suites: Vec<CheckSuite>,
-}
-
-impl ChecksListSuitesForRefResponse {
-    pub fn new(total_count: i64, check_suites: Vec<CheckSuite>) -> Self {
-        Self {
-            total_count,
-            check_suites,
+        if let Some(value) = self.actions.as_ref() {
+            crate::validation::validate_items(
+                "actions",
+                value.as_slice(),
+                crate::validation::LengthOpts {
+                    max: Some(3),
+                    ..Default::default()
+                },
+            )?;
         }
+        Ok(())
+    }
+
+    pub fn new(
+        conclusion: ChecksUpdateVariant0ConclusionEnum,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            name: None,
+            details_url: None,
+            external_id: None,
+            started_at: None,
+            status: None,
+            conclusion,
+            completed_at: None,
+            output: None,
+            actions: None,
+            additional_properties: Default::default(),
+        };
+        value.validate_constraints()?;
+        Ok(value)
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum ChecksCreateStatusEnum {
+pub enum ChecksUpdateVariant1StatusEnum {
     #[default]
-    Completed,
-    InProgress,
-    Pending,
     Queued,
-    Requested,
-    Waiting,
+    InProgress,
     Unknown(String),
 }
 
-impl ChecksCreateStatusEnum {
+impl ChecksUpdateVariant1StatusEnum {
     pub fn as_str(&self) -> &str {
         match self {
-            Self::Completed => "completed",
-            Self::InProgress => "in_progress",
-            Self::Pending => "pending",
             Self::Queued => "queued",
-            Self::Requested => "requested",
-            Self::Waiting => "waiting",
+            Self::InProgress => "in_progress",
             Self::Unknown(value) => value.as_str(),
         }
     }
 }
 
-impl serde::Serialize for ChecksCreateStatusEnum {
+impl serde::Serialize for ChecksUpdateVariant1StatusEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -217,117 +348,16 @@ impl serde::Serialize for ChecksCreateStatusEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for ChecksCreateStatusEnum {
+impl<'de> serde::Deserialize<'de> for ChecksUpdateVariant1StatusEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         let value = <String as serde::Deserialize>::deserialize(deserializer)?;
         Ok(match value.as_str() {
-            "completed" => Self::Completed,
-            "in_progress" => Self::InProgress,
-            "pending" => Self::Pending,
             "queued" => Self::Queued,
-            "requested" => Self::Requested,
-            "waiting" => Self::Waiting,
+            "in_progress" => Self::InProgress,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for ChecksCreateStatusEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ChecksCreateConclusionEnum {
-    #[default]
-    ActionRequired,
-    Cancelled,
-    Failure,
-    Neutral,
-    Skipped,
-    Stale,
-    Success,
-    TimedOut,
-    Unknown(String),
-}
-
-impl ChecksCreateConclusionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::ActionRequired => "action_required",
-            Self::Cancelled => "cancelled",
-            Self::Failure => "failure",
-            Self::Neutral => "neutral",
-            Self::Skipped => "skipped",
-            Self::Stale => "stale",
-            Self::Success => "success",
-            Self::TimedOut => "timed_out",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ChecksCreateConclusionEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ChecksCreateConclusionEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "action_required" => Self::ActionRequired,
-            "cancelled" => Self::Cancelled,
-            "failure" => Self::Failure,
-            "neutral" => Self::Neutral,
-            "skipped" => Self::Skipped,
-            "stale" => Self::Stale,
-            "success" => Self::Success,
-            "timed_out" => Self::TimedOut,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ChecksCreateConclusionEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ChecksUpdateStatusEnum {
-    #[default]
-    Completed,
-    InProgress,
-    Pending,
-    Queued,
-    Requested,
-    Waiting,
-    Unknown(String),
-}
-
-impl ChecksUpdateStatusEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Completed => "completed",
-            Self::InProgress => "in_progress",
-            Self::Pending => "pending",
-            Self::Queued => "queued",
-            Self::Requested => "requested",
-            Self::Waiting => "waiting",
-            Self::Unknown(value) => value.as_str(),
-        }
     }
 }

@@ -90,6 +90,35 @@ impl EnvironmentProtectionRulesItemVariant0 {
     }
 }
 
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum EnvironmentProtectionRulesItemVariant1ReviewersItemReviewer {
+    SimpleUser(Box<SimpleUser>),
+    Team(Box<Team>),
+}
+
+impl<'de> serde::Deserialize<'de> for EnvironmentProtectionRulesItemVariant1ReviewersItemReviewer {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<SimpleUser>>(value.clone()) {
+            let candidate = Self::SimpleUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<Team>>(value.clone()) {
+            let candidate = Self::Team(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no EnvironmentProtectionRulesItemVariant1ReviewersItemReviewer branch accepts this payload"))
+    }
+}
+
 /// Required object value serialized in the `reviewers[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct EnvironmentProtectionRulesItemVariant1ReviewersItem {
@@ -98,7 +127,7 @@ pub struct EnvironmentProtectionRulesItemVariant1ReviewersItem {
     pub type_: Option<DeploymentReviewerType>,
     /// Optional API value serialized in the `reviewer` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reviewer: Option<ReviewersItemReviewer>,
+    pub reviewer: Option<EnvironmentProtectionRulesItemVariant1ReviewersItemReviewer>,
 }
 
 impl EnvironmentProtectionRulesItemVariant1ReviewersItem {
@@ -159,10 +188,49 @@ impl EnvironmentProtectionRulesItemVariant2 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum EnvironmentProtectionRulesItem {
     Object(Box<EnvironmentProtectionRulesItemVariant0>),
     Object2(Box<EnvironmentProtectionRulesItemVariant1>),
     Object3(Box<EnvironmentProtectionRulesItemVariant2>),
+}
+
+impl<'de> serde::Deserialize<'de> for EnvironmentProtectionRulesItem {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<EnvironmentProtectionRulesItemVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<EnvironmentProtectionRulesItemVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<EnvironmentProtectionRulesItemVariant2>>(value.clone())
+        {
+            let candidate = Self::Object3(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no EnvironmentProtectionRulesItem branch accepts this payload",
+            )
+        })
+    }
 }

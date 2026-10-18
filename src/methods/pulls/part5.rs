@@ -521,6 +521,7 @@ pub fn pulls_get(
                 ("406", "BasicError"),
                 ("422", "ValidationError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

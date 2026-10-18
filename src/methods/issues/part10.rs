@@ -2,206 +2,6 @@
 // This file is machine-generated from your OpenAPI spec.
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesListCommentsForRepoEnum {
-    #[default]
-    Asc,
-    Desc,
-    Unknown(String),
-}
-
-impl IssuesListCommentsForRepoEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesListCommentsForRepoEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesListCommentsForRepoEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesListCommentsForRepoEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateStateEnum {
-    #[default]
-    Closed,
-    Open,
-    Unknown(String),
-}
-
-impl IssuesUpdateStateEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Closed => "closed",
-            Self::Open => "open",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateStateEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesUpdateStateEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "closed" => Self::Closed,
-            "open" => Self::Open,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateStateEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateStateReasonEnum {
-    #[default]
-    Completed,
-    Duplicate,
-    NotPlanned,
-    Reopened,
-    Unknown(String),
-}
-
-impl IssuesUpdateStateReasonEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Completed => "completed",
-            Self::Duplicate => "duplicate",
-            Self::NotPlanned => "not_planned",
-            Self::Reopened => "reopened",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateStateReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesUpdateStateReasonEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "completed" => Self::Completed,
-            "duplicate" => Self::Duplicate,
-            "not_planned" => Self::NotPlanned,
-            "reopened" => Self::Reopened,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateStateReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesLockLockReasonEnum {
-    #[default]
-    OffTopic,
-    Resolved,
-    Spam,
-    TooHeated,
-    Unknown(String),
-}
-
-impl IssuesLockLockReasonEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::OffTopic => "off-topic",
-            Self::Resolved => "resolved",
-            Self::Spam => "spam",
-            Self::TooHeated => "too heated",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesLockLockReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesLockLockReasonEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "off-topic" => Self::OffTopic,
-            "resolved" => Self::Resolved,
-            "spam" => Self::Spam,
-            "too heated" => Self::TooHeated,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesLockLockReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
 pub enum IssuesListSuggestionsEnum {
     #[default]
     All,
@@ -272,4 +72,211 @@ pub enum IssuesListSuggestionsEnumd58506f8 {
     CloseIssue,
     SetType,
     Unknown(String),
+}
+
+impl IssuesListSuggestionsEnumd58506f8 {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::AddAssignee => "add_assignee",
+            Self::AddField => "add_field",
+            Self::AddLabel => "add_label",
+            Self::CloseIssue => "close_issue",
+            Self::SetType => "set_type",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListSuggestionsEnumd58506f8 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListSuggestionsEnumd58506f8 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "add_assignee" => Self::AddAssignee,
+            "add_field" => Self::AddField,
+            "add_label" => Self::AddLabel,
+            "close_issue" => Self::CloseIssue,
+            "set_type" => Self::SetType,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesListSuggestionsEnumd58506f8 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesListMilestonesEnum {
+    #[default]
+    All,
+    Closed,
+    Open,
+    Unknown(String),
+}
+
+impl IssuesListMilestonesEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::Closed => "closed",
+            Self::Open => "open",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListMilestonesEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListMilestonesEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "closed" => Self::Closed,
+            "open" => Self::Open,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesListMilestonesEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesListMilestonesEnum5ec18b58 {
+    #[default]
+    Completeness,
+    DueOn,
+    Unknown(String),
+}
+
+impl IssuesListMilestonesEnum5ec18b58 {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Completeness => "completeness",
+            Self::DueOn => "due_on",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListMilestonesEnum5ec18b58 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListMilestonesEnum5ec18b58 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "completeness" => Self::Completeness,
+            "due_on" => Self::DueOn,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesListMilestonesEnum5ec18b58 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesListMilestonesEnum0a6da649 {
+    #[default]
+    Asc,
+    Desc,
+    Unknown(String),
+}
+
+impl IssuesListMilestonesEnum0a6da649 {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Asc => "asc",
+            Self::Desc => "desc",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListMilestonesEnum0a6da649 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListMilestonesEnum0a6da649 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "asc" => Self::Asc,
+            "desc" => Self::Desc,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesListMilestonesEnum0a6da649 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesCreateMilestoneStateEnum {
+    #[default]
+    Closed,
+    Open,
+    Unknown(String),
+}
+
+impl IssuesCreateMilestoneStateEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Closed => "closed",
+            Self::Open => "open",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
 }

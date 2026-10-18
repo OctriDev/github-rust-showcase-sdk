@@ -3,6 +3,44 @@
 
 // shared_nullable domain models (part 2)
 
+/// Optional object value serialized in the `permissions` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct NullableRepositoryPermissions {
+    /// Required `boolean` value serialized in the `admin` wire field.
+    pub admin: bool,
+    /// Required `boolean` value serialized in the `pull` wire field.
+    pub pull: bool,
+    /// Optional `boolean` value serialized in the `triage` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub triage: Option<bool>,
+    /// Required `boolean` value serialized in the `push` wire field.
+    pub push: bool,
+    /// Optional `boolean` value serialized in the `maintain` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintain: Option<bool>,
+}
+
+impl NullableRepositoryPermissions {
+    pub fn new(admin: bool, pull: bool, push: bool) -> Self {
+        Self {
+            admin,
+            pull,
+            triage: None,
+            push,
+            maintain: None,
+        }
+    }
+}
+
+/// The policy controlling who can create pull requests: all or collaborators_only.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum NullableRepositoryPullRequestCreationPolicyEnum {
+    #[default]
+    All,
+    CollaboratorsOnly,
+    Unknown(String),
+}
+
 impl NullableRepositoryPullRequestCreationPolicyEnum {
     pub fn as_str(&self) -> &str {
         match self {

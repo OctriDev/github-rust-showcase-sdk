@@ -3,93 +3,49 @@
 
 // shared_issue domain models (part 2)
 
-/// Typed representation of the `IssueDependenciesSummary` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IssueDependenciesSummary {
-    /// Required `integer` value serialized in the `blocked_by` wire field.
-    pub blocked_by: i64,
-    /// Required `integer` value serialized in the `blocking` wire field.
-    pub blocking: i64,
-    /// Required `integer` value serialized in the `total_blocked_by` wire field.
-    pub total_blocked_by: i64,
-    /// Required `integer` value serialized in the `total_blocking` wire field.
-    pub total_blocking: i64,
-}
-
-impl IssueDependenciesSummary {
-    pub fn new(blocked_by: i64, blocking: i64, total_blocked_by: i64, total_blocking: i64) -> Self {
-        Self {
-            blocked_by,
-            blocking,
-            total_blocked_by,
-            total_blocking,
-        }
-    }
-}
-
-/// The data type of the issue field
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssueFieldValueDataTypeEnum {
-    #[default]
-    Text,
-    SingleSelect,
-    MultiSelect,
-    Number,
-    Date,
-    Unknown(String),
-}
-
-impl IssueFieldValueDataTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Text => "text",
-            Self::SingleSelect => "single_select",
-            Self::MultiSelect => "multi_select",
-            Self::Number => "number",
-            Self::Date => "date",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssueFieldValueDataTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssueFieldValueDataTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "text" => Self::Text,
-            "single_select" => Self::SingleSelect,
-            "multi_select" => Self::MultiSelect,
-            "number" => Self::Number,
-            "date" => Self::Date,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
 impl std::fmt::Display for IssueFieldValueDataTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum IssueFieldValueValue {
     String(String),
     Number(f64),
     Integer(i64),
+}
+
+impl<'de> serde::Deserialize<'de> for IssueFieldValueValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
+            let candidate = Self::Number(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no IssueFieldValueValue branch accepts this payload")
+        })
+    }
 }
 
 /// Details about the selected option (only present for single_select fields)
@@ -172,6 +128,88 @@ impl IssueFieldValue {
             value,
             single_select_option: None,
             multi_select_options: None,
+        }
+    }
+}
+
+/// Required object value serialized in the `labels[]` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct IssueLabelsItemVariant1 {
+    /// Optional `int64`-formatted value serialized in the `id` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<i64>,
+    /// Optional `string` value serialized in the `node_id` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node_id: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    /// Optional `string` value serialized in the `name` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Optional `string` value serialized in the `description` wire field.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub description: Option<Option<String>>,
+    /// Optional `string` value serialized in the `color` wire field.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub color: Option<Option<String>>,
+    /// Optional `boolean` value serialized in the `default` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default: Option<bool>,
+    /// The user who archived the label, or `null` if it has not been archived.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub archived_by: Option<Option<SimpleUser>>,
+}
+
+impl IssueLabelsItemVariant1 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.url.as_ref() {
+            crate::validation::validate_uri("url", value)?;
+        }
+        Ok(())
+    }
+
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id: None,
+            node_id: None,
+            url: None,
+            name: None,
+            description: None,
+            color: None,
+            default: None,
+            archived_by: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum IssueLabelsItem {
+    String(String),
+    Object(Box<IssueLabelsItemVariant1>),
+}
+
+impl IssueLabelsItem {
+    pub fn as_string_wire_value(&self) -> Option<&str> {
+        match self {
+            Self::String(value) => Some(value.as_str()),
+            _ => None,
         }
     }
 }

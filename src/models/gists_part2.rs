@@ -3,6 +3,88 @@
 
 // gists domain models (part 2)
 
+impl GistSimpleForkOf {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("url", &self.url)?;
+        crate::validation::validate_uri("forks_url", &self.forks_url)?;
+        crate::validation::validate_uri("commits_url", &self.commits_url)?;
+        crate::validation::validate_uri("git_pull_url", &self.git_pull_url)?;
+        crate::validation::validate_uri("git_push_url", &self.git_push_url)?;
+        crate::validation::validate_uri("html_url", &self.html_url)?;
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
+        crate::validation::validate_uri("comments_url", &self.comments_url)?;
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        url: String,
+        forks_url: String,
+        commits_url: String,
+        id: String,
+        node_id: String,
+        git_pull_url: String,
+        git_push_url: String,
+        html_url: String,
+        files: std::collections::HashMap<String, GistSimpleForkOfFilesValue>,
+        public: bool,
+        created_at: String,
+        updated_at: String,
+        description: Option<String>,
+        comments: i64,
+        user: Option<NullableSimpleUser>,
+        comments_url: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            url,
+            forks_url,
+            commits_url,
+            id,
+            node_id,
+            git_pull_url,
+            git_push_url,
+            html_url,
+            files,
+            public,
+            created_at,
+            updated_at,
+            description,
+            comments,
+            comments_enabled: None,
+            user,
+            comments_url,
+            owner: None,
+            truncated: None,
+            forks: None,
+            history: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct GistSimpleFilesValue {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filename: Option<String>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub raw_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub truncated: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<String>,
+    /// The encoding used for `content`. Currently, `"utf-8"` and `"base64"` are supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub encoding: Option<String>,
+}
+
 impl GistSimpleFilesValue {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
@@ -69,7 +151,7 @@ pub struct GistSimple {
     pub html_url: Option<String>,
     /// Optional object value serialized in the `files` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<std::collections::HashMap<String, GistSimpleFilesValue>>,
+    pub files: Option<std::collections::HashMap<String, Option<GistSimpleFilesValue>>>,
     /// Optional `boolean` value serialized in the `public` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub public: Option<bool>,

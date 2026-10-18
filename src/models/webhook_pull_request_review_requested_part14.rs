@@ -3,329 +3,7 @@
 
 // webhook_pull_request_review_requested domain models (part 14)
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoCreatedAt {
-    Integer(i64),
-    String(String),
-}
-
-/// The policy controlling who can create pull requests: all or collaborators_only.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPullRequestCreationPolicyEnum {
-    #[default]
-    All,
-    CollaboratorsOnly,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPullRequestCreationPolicyEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::All => "all",
-            Self::CollaboratorsOnly => "collaborators_only",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPullRequestCreationPolicyEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPullRequestCreationPolicyEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "all" => Self::All,
-            "collaborators_only" => Self::CollaboratorsOnly,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPullRequestCreationPolicyEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoLicense {
-    pub key: String,
-    pub name: String,
-    pub node_id: String,
-    pub spdx_id: String,
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub url: Option<String>,
-}
-
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoLicense {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.url.as_ref() {
-            crate::validation::validate_uri("url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(
-        key: String,
-        name: String,
-        node_id: String,
-        spdx_id: String,
-        url: Option<String>,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            key,
-            name,
-            node_id,
-            spdx_id,
-            url,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// The default value for a merge commit message.
-///
-/// \- `PR_TITLE` \- default to the pull request's title.
-/// \- `PR_BODY` \- default to the pull request's body.
-/// \- `BLANK` \- default to a blank commit message.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitMessageEnum {
-    #[default]
-    PrBody,
-    PrTitle,
-    Blank,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitMessageEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrBody => "PR_BODY",
-            Self::PrTitle => "PR_TITLE",
-            Self::Blank => "BLANK",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_BODY" => Self::PrBody,
-            "PR_TITLE" => Self::PrTitle,
-            "BLANK" => Self::Blank,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The default value for a merge commit title.
-///
-/// \- `PR_TITLE` \- default to the pull request's title.
-/// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitTitleEnum {
-    #[default]
-    PrTitle,
-    MergeMessage,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitTitleEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrTitle => "PR_TITLE",
-            Self::MergeMessage => "MERGE_MESSAGE",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitTitleEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitTitleEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_TITLE" => Self::PrTitle,
-            "MERGE_MESSAGE" => Self::MergeMessage,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoMergeCommitTitleEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwnerTypeEnum {
-    #[default]
-    Bot,
-    User,
-    Organization,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwnerTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Bot => "Bot",
-            Self::User => "User",
-            Self::Organization => "Organization",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwnerTypeEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwnerTypeEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "Bot" => Self::Bot,
-            "User" => Self::User,
-            "Organization" => Self::Organization,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwnerTypeEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwner {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub avatar_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub email: Option<Option<String>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub events_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub followers_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub following_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gists_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gravatar_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-    pub id: i64,
-    pub login: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub node_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub organizations_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_events_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub repos_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub site_admin: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starred_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscriptions_url: Option<String>,
-    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwnerTypeEnum>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_view_type: Option<String>,
-}
-
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwner {
+impl WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoOwner {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.avatar_url.as_ref() {
             crate::validation::validate_uri("avatar_url", value)?;
@@ -385,7 +63,7 @@ impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoOwner {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPermissions {
+pub struct WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPermissions {
     pub admin: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maintain: Option<bool>,
@@ -395,7 +73,7 @@ pub struct WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPermissio
     pub triage: Option<bool>,
 }
 
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPermissions {
+impl WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPermissions {
     pub fn new(admin: bool, pull: bool, push: bool) -> Self {
         Self {
             admin,
@@ -407,11 +85,35 @@ impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPushedAt {
+pub enum WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPushedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPushedAt branch accepts this payload"))
+    }
 }
 
 /// The default value for a squash merge commit message:
@@ -420,7 +122,7 @@ pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoPushedAt {
 /// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
 /// \- `BLANK` \- default to a blank commit message.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitMessageEnum {
+pub enum WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitMessageEnum {
     #[default]
     PrBody,
     CommitMessages,
@@ -428,7 +130,7 @@ pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMerge
     Unknown(String),
 }
 
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitMessageEnum {
+impl WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitMessageEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::PrBody => "PR_BODY",
@@ -440,7 +142,7 @@ impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeComm
 }
 
 impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitMessageEnum
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitMessageEnum
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -451,7 +153,7 @@ impl serde::Serialize
 }
 
 impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitMessageEnum
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitMessageEnum
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -468,7 +170,7 @@ impl<'de> serde::Deserialize<'de>
 }
 
 impl std::fmt::Display
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitMessageEnum
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitMessageEnum
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
@@ -480,14 +182,14 @@ impl std::fmt::Display
 /// \- `PR_TITLE` \- default to the pull request's title.
 /// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitTitleEnum {
+pub enum WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitTitleEnum {
     #[default]
     PrTitle,
     CommitOrPrTitle,
     Unknown(String),
 }
 
-impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitTitleEnum {
+impl WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitTitleEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::PrTitle => "PR_TITLE",
@@ -498,7 +200,7 @@ impl WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeComm
 }
 
 impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant1PullRequestHeadRepoSquashMergeCommitTitleEnum
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitTitleEnum
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -506,4 +208,269 @@ impl serde::Serialize
     {
         serializer.serialize_str(self.as_str())
     }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitTitleEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_TITLE" => Self::PrTitle,
+            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitTitleEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoVisibilityEnum {
+    #[default]
+    Public,
+    Private,
+    Internal,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoVisibilityEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Public => "public",
+            Self::Private => "private",
+            Self::Internal => "internal",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoVisibilityEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoVisibilityEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "public" => Self::Public,
+            "private" => Self::Private,
+            "internal" => Self::Internal,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoVisibilityEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// A git repository
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepo {
+    /// Whether to allow auto-merge for pull requests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_auto_merge: Option<bool>,
+    /// Whether to allow private forks
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_forking: Option<bool>,
+    /// Whether to allow merge commits for pull requests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_merge_commit: Option<bool>,
+    /// Whether to allow rebase merges for pull requests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_rebase_merge: Option<bool>,
+    /// Whether to allow squash merges for pull requests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_squash_merge: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_update_branch: Option<bool>,
+    pub archive_url: String,
+    /// Whether the repository is archived.
+    pub archived: bool,
+    pub assignees_url: String,
+    pub blobs_url: String,
+    pub branches_url: String,
+    pub clone_url: String,
+    pub collaborators_url: String,
+    pub comments_url: String,
+    pub commits_url: String,
+    pub compare_url: String,
+    pub contents_url: String,
+    pub contributors_url: String,
+    pub created_at: WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoCreatedAt,
+    /// The default branch of the repository.
+    pub default_branch: String,
+    /// Whether to delete head branches when pull requests are merged
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delete_branch_on_merge: Option<bool>,
+    pub deployments_url: String,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub description: Option<String>,
+    /// Returns whether or not this repository is disabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    pub downloads_url: String,
+    pub events_url: String,
+    pub fork: bool,
+    pub forks: i64,
+    pub forks_count: i64,
+    pub forks_url: String,
+    pub full_name: String,
+    pub git_commits_url: String,
+    pub git_refs_url: String,
+    pub git_tags_url: String,
+    pub git_url: String,
+    /// Whether downloads are enabled.
+    pub has_downloads: bool,
+    /// Whether issues are enabled.
+    pub has_issues: bool,
+    pub has_pages: bool,
+    /// Whether projects are enabled.
+    pub has_projects: bool,
+    /// Whether the wiki is enabled.
+    pub has_wiki: bool,
+    /// Whether discussions are enabled.
+    pub has_discussions: bool,
+    /// Whether pull requests are enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_pull_requests: Option<bool>,
+    /// The policy controlling who can create pull requests: all or collaborators_only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pull_request_creation_policy: Option<
+        WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPullRequestCreationPolicyEnum,
+    >,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub homepage: Option<String>,
+    pub hooks_url: String,
+    pub html_url: String,
+    /// Unique identifier of the repository
+    pub id: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_template: Option<bool>,
+    pub issue_comment_url: String,
+    pub issue_events_url: String,
+    pub issues_url: String,
+    pub keys_url: String,
+    pub labels_url: String,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub language: Option<String>,
+    pub languages_url: String,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub license: Option<WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoLicense>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub master_branch: Option<String>,
+    /// The default value for a merge commit message.
+    ///
+    /// \- `PR_TITLE` \- default to the pull request's title.
+    /// \- `PR_BODY` \- default to the pull request's body.
+    /// \- `BLANK` \- default to a blank commit message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merge_commit_message:
+        Option<WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoMergeCommitMessageEnum>,
+    /// The default value for a merge commit title.
+    ///
+    /// \- `PR_TITLE` \- default to the pull request's title.
+    /// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merge_commit_title:
+        Option<WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoMergeCommitTitleEnum>,
+    pub merges_url: String,
+    pub milestones_url: String,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub mirror_url: Option<String>,
+    /// The name of the repository.
+    pub name: String,
+    pub node_id: String,
+    pub notifications_url: String,
+    pub open_issues: i64,
+    pub open_issues_count: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub organization: Option<String>,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub owner: Option<WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoOwner>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions:
+        Option<WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPermissions>,
+    /// Whether the repository is private or public.
+    pub private: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub public: Option<bool>,
+    pub pulls_url: String,
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub pushed_at: Option<WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoPushedAt>,
+    pub releases_url: String,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub role_name: Option<Option<String>>,
+    pub size: i64,
+    /// The default value for a squash merge commit message:
+    ///
+    /// \- `PR_BODY` \- default to the pull request's body.
+    /// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
+    /// \- `BLANK` \- default to a blank commit message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub squash_merge_commit_message: Option<
+        WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitMessageEnum,
+    >,
+    /// The default value for a squash merge commit title:
+    ///
+    /// \- `PR_TITLE` \- default to the pull request's title.
+    /// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub squash_merge_commit_title: Option<
+        WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoSquashMergeCommitTitleEnum,
+    >,
+    pub ssh_url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stargazers: Option<i64>,
+    pub stargazers_count: i64,
+    pub stargazers_url: String,
+    pub statuses_url: String,
+    pub subscribers_url: String,
+    pub subscription_url: String,
+    pub svn_url: String,
+    pub tags_url: String,
+    pub teams_url: String,
+    pub topics: Vec<String>,
+    pub trees_url: String,
+    pub updated_at: String,
+    pub url: String,
+    /// Whether a squash merge commit can use the pull request title as default. \*\*This property is closing down. Please use `squash_merge_commit_title` instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_squash_pr_title_as_default: Option<bool>,
+    pub visibility: WebhookPullRequestReviewRequestedVariant1PullRequestBaseRepoVisibilityEnum,
+    pub watchers: i64,
+    pub watchers_count: i64,
+    /// Whether to require contributors to sign off on web-based commits
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_commit_signoff_required: Option<bool>,
 }

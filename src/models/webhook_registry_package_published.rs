@@ -318,14 +318,17 @@ pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetada
         default,
         with = "crate::client::double_option"
     )]
-    pub author: Option<Option<String>>,
+    pub author: Option<
+        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetadataAuthor>,
+    >,
     /// Optional API value serialized in the `bugs` wire field.
     #[serde(
         skip_serializing_if = "Option::is_none",
         default,
         with = "crate::client::double_option"
     )]
-    pub bugs: Option<Option<String>>,
+    pub bugs:
+        Option<Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetadataBugs>>,
     /// Optional object value serialized in the `dependencies` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<serde_json::Value>,
@@ -347,7 +350,8 @@ pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetada
         default,
         with = "crate::client::double_option"
     )]
-    pub dist: Option<Option<String>>,
+    pub dist:
+        Option<Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetadataDist>>,
     /// Optional `string` value serialized in the `git_head` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub git_head: Option<String>,
@@ -366,7 +370,9 @@ pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetada
         default,
         with = "crate::client::double_option"
     )]
-    pub repository: Option<Option<String>>,
+    pub repository: Option<
+        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetadataRepository>,
+    >,
     /// Optional object value serialized in the `scripts` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub scripts: Option<serde_json::Value>,
@@ -409,7 +415,9 @@ pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetada
         default,
         with = "crate::client::double_option"
     )]
-    pub directories: Option<Option<String>>,
+    pub directories: Option<
+        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetadataDirectories>,
+    >,
     /// Optional array value serialized in the `os` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub os: Option<Vec<String>>,
@@ -481,48 +489,34 @@ impl WebhookRegistryPackagePublishedRegistryPackagePackageVersionNpmMetadata {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemId {
-    String(String),
-    Integer(i64),
-}
-
-/// Optional object value serialized in the `value` wire field.
+/// Required object value serialized in the `nuget_metadata[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemValueVariant3
-{
-    /// Optional `string` value serialized in the `url` wire field.
+pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItem {
+    /// Optional API value serialized in the `id` wire field.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub id: Option<
+        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemId>,
+    >,
+    /// Optional `string` value serialized in the `name` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
-    /// Optional `string` value serialized in the `branch` wire field.
+    pub name: Option<String>,
+    /// Optional API value serialized in the `value` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub branch: Option<String>,
-    /// Optional `string` value serialized in the `commit` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub commit: Option<String>,
-    /// Optional `string` value serialized in the `type` wire field.
-    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+    pub value:
+        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemValue>,
 }
 
-impl WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemValueVariant3 {
+impl WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItem {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
-            url: None,
-            branch: None,
-            commit: None,
-            type_: None,
+            id: None,
+            name: None,
+            value: None,
         }
     }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemValue {
-    Bool(bool),
-    String(String),
-    Integer(i64),
-    Object(Box<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemValueVariant3>),
 }

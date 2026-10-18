@@ -3,227 +3,6 @@
 
 use super::*;
 
-impl serde::Serialize
-    for IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItemIgnoredReasonEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItemIgnoredReasonEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "already_applied" => Self::AlreadyApplied,
-            "issue_already_closed" => Self::IssueAlreadyClosed,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItemIgnoredReasonEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub field_id: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItemValue>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rationale: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub suggest: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confidence:
-        Option<IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItemConfidenceEnum>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored_reason:
-        Option<IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItemIgnoredReasonEnum>,
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            field_id: None,
-            value: None,
-            rationale: None,
-            suggest: None,
-            confidence: None,
-            ignored: None,
-            ignored_reason: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateResponseVariant1SuggestionsLabelsItemConfidenceEnum {
-    #[default]
-    Low,
-    Medium,
-    High,
-    Unknown(String),
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsLabelsItemConfidenceEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Low => "low",
-            Self::Medium => "medium",
-            Self::High => "high",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsLabelsItemConfidenceEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for IssuesUpdateResponseVariant1SuggestionsLabelsItemConfidenceEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "low" => Self::Low,
-            "medium" => Self::Medium,
-            "high" => Self::High,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsLabelsItemConfidenceEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateResponseVariant1SuggestionsLabelsItemIgnoredReasonEnum {
-    #[default]
-    AlreadyApplied,
-    IssueAlreadyClosed,
-    Unknown(String),
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsLabelsItemIgnoredReasonEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::AlreadyApplied => "already_applied",
-            Self::IssueAlreadyClosed => "issue_already_closed",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsLabelsItemIgnoredReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for IssuesUpdateResponseVariant1SuggestionsLabelsItemIgnoredReasonEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "already_applied" => Self::AlreadyApplied,
-            "issue_already_closed" => Self::IssueAlreadyClosed,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsLabelsItemIgnoredReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesUpdateResponseVariant1SuggestionsLabelsItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rationale: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub suggest: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confidence: Option<IssuesUpdateResponseVariant1SuggestionsLabelsItemConfidenceEnum>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored_reason: Option<IssuesUpdateResponseVariant1SuggestionsLabelsItemIgnoredReasonEnum>,
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsLabelsItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            name: None,
-            rationale: None,
-            suggest: None,
-            confidence: None,
-            ignored: None,
-            ignored_reason: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateResponseVariant1SuggestionsAssigneesItemConfidenceEnum {
-    #[default]
-    Low,
-    Medium,
-    High,
-    Unknown(String),
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsAssigneesItemConfidenceEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Low => "low",
-            Self::Medium => "medium",
-            Self::High => "high",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
 impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsAssigneesItemConfidenceEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -296,5 +75,213 @@ impl<'de> serde::Deserialize<'de>
             "issue_already_closed" => Self::IssueAlreadyClosed,
             _ => Self::Unknown(value),
         })
+    }
+}
+
+impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsAssigneesItemIgnoredReasonEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct IssuesUpdateResponseVariant1SuggestionsAssigneesItem {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub login: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rationale: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggest: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence: Option<IssuesUpdateResponseVariant1SuggestionsAssigneesItemConfidenceEnum>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignored: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignored_reason:
+        Option<IssuesUpdateResponseVariant1SuggestionsAssigneesItemIgnoredReasonEnum>,
+}
+
+impl IssuesUpdateResponseVariant1SuggestionsAssigneesItem {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            login: None,
+            rationale: None,
+            suggest: None,
+            confidence: None,
+            ignored: None,
+            ignored_reason: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
+    #[default]
+    Low,
+    Medium,
+    High,
+    Unknown(String),
+}
+
+impl IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Low => "low",
+            Self::Medium => "medium",
+            Self::High => "high",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "low" => Self::Low,
+            "medium" => Self::Medium,
+            "high" => Self::High,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    #[default]
+    AlreadyApplied,
+    IssueAlreadyClosed,
+    Unknown(String),
+}
+
+impl IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::AlreadyApplied => "already_applied",
+            Self::IssueAlreadyClosed => "issue_already_closed",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "already_applied" => Self::AlreadyApplied,
+            "issue_already_closed" => Self::IssueAlreadyClosed,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct IssuesUpdateResponseVariant1SuggestionsStateItem {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state_reason: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duplicate_issue_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rationale: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggest: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence: Option<IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignored: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignored_reason: Option<IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum>,
+}
+
+impl IssuesUpdateResponseVariant1SuggestionsStateItem {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            value: None,
+            state_reason: None,
+            duplicate_issue_id: None,
+            rationale: None,
+            suggest: None,
+            confidence: None,
+            ignored: None,
+            ignored_reason: None,
+        }
+    }
+}
+
+/// Pending suggestions for each suggestible field (`type`,
+/// `issue_field_values`, `labels`, `assignees`, `state`) the
+/// request touched. Omitted for fields not in the request or
+/// with no pending or ignored suggestions. Items tagged
+/// `ignored` are echoes of the current request's inputs that
+/// were not persisted as pending suggestions.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct IssuesUpdateResponseVariant1Suggestions {
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<Vec<IssuesUpdateResponseVariant1SuggestionsTypeItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issue_field_values:
+        Option<Vec<IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<IssuesUpdateResponseVariant1SuggestionsLabelsItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub assignees: Option<Vec<IssuesUpdateResponseVariant1SuggestionsAssigneesItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<Vec<IssuesUpdateResponseVariant1SuggestionsStateItem>>,
+}
+
+impl IssuesUpdateResponseVariant1Suggestions {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            type_: None,
+            issue_field_values: None,
+            labels: None,
+            assignees: None,
+            state: None,
+        }
     }
 }

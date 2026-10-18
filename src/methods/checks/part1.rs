@@ -239,28 +239,23 @@ impl ChecksCreateActionsItem {
     }
 }
 
-/// The level of the annotation.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum {
+pub enum ChecksUpdateVariant0StatusEnum {
     #[default]
-    Notice,
-    Warning,
-    Failure,
+    Completed,
     Unknown(String),
 }
 
-impl ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum {
+impl ChecksUpdateVariant0StatusEnum {
     pub fn as_str(&self) -> &str {
         match self {
-            Self::Notice => "notice",
-            Self::Warning => "warning",
-            Self::Failure => "failure",
+            Self::Completed => "completed",
             Self::Unknown(value) => value.as_str(),
         }
     }
 }
 
-impl serde::Serialize for ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum {
+impl serde::Serialize for ChecksUpdateVariant0StatusEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -269,92 +264,82 @@ impl serde::Serialize for ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum {
+impl<'de> serde::Deserialize<'de> for ChecksUpdateVariant0StatusEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         let value = <String as serde::Deserialize>::deserialize(deserializer)?;
         Ok(match value.as_str() {
-            "notice" => Self::Notice,
-            "warning" => Self::Warning,
-            "failure" => Self::Failure,
+            "completed" => Self::Completed,
             _ => Self::Unknown(value),
         })
     }
 }
 
-impl std::fmt::Display for ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum {
+impl std::fmt::Display for ChecksUpdateVariant0StatusEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksUpdateOutputAnnotationsItem {
-    /// The path of the file to add an annotation to. For example, `assets/css/main.css`.
-    pub path: String,
-    /// The start line of the annotation. Line numbers start at 1.
-    pub start_line: i64,
-    /// The end line of the annotation.
-    pub end_line: i64,
-    /// The start column of the annotation. Annotations only support `start_column` and `end_column` on the same line. Omit this parameter if `start_line` and `end_line` have different values. Column numbers start at 1.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub start_column: Option<i64>,
-    /// The end column of the annotation. Annotations only support `start_column` and `end_column` on the same line. Omit this parameter if `start_line` and `end_line` have different values.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_column: Option<i64>,
-    /// The level of the annotation.
-    pub annotation_level: ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum,
-    /// A short description of the feedback for these lines of code. The maximum size is 64 KB.
-    pub message: String,
-    /// The title that represents the annotation. The maximum size is 255 characters.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub title: Option<String>,
-    /// Details about this annotation. The maximum size is 64 KB.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub raw_details: Option<String>,
+/// \*\*Required if you provide `completed_at` or a `status` of `completed`\*\*. The final conclusion of the check.
+/// \*\*Note:\*\* Providing `conclusion` will automatically set the `status` parameter to `completed`. You cannot change a check run conclusion to `stale`, only GitHub can set this.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksUpdateVariant0ConclusionEnum {
+    #[default]
+    ActionRequired,
+    Cancelled,
+    Failure,
+    Neutral,
+    Success,
+    Skipped,
+    Stale,
+    TimedOut,
+    Unknown(String),
 }
 
-impl ChecksUpdateOutputAnnotationsItem {
-    pub fn new(
-        path: String,
-        start_line: i64,
-        end_line: i64,
-        annotation_level: ChecksUpdateOutputAnnotationsItemAnnotationLevelEnum,
-        message: String,
-    ) -> Self {
-        Self {
-            path,
-            start_line,
-            end_line,
-            start_column: None,
-            end_column: None,
-            annotation_level,
-            message,
-            title: None,
-            raw_details: None,
+impl ChecksUpdateVariant0ConclusionEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::ActionRequired => "action_required",
+            Self::Cancelled => "cancelled",
+            Self::Failure => "failure",
+            Self::Neutral => "neutral",
+            Self::Success => "success",
+            Self::Skipped => "skipped",
+            Self::Stale => "stale",
+            Self::TimedOut => "timed_out",
+            Self::Unknown(value) => value.as_str(),
         }
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ChecksUpdateOutputImagesItem {
-    /// The alternative text for the image.
-    pub alt: String,
-    /// The full URL of the image.
-    pub image_url: String,
-    /// A short image description.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<String>,
+impl serde::Serialize for ChecksUpdateVariant0ConclusionEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
 }
 
-impl ChecksUpdateOutputImagesItem {
-    pub fn new(alt: String, image_url: String) -> Self {
-        Self {
-            alt,
-            image_url,
-            caption: None,
-        }
+impl<'de> serde::Deserialize<'de> for ChecksUpdateVariant0ConclusionEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "action_required" => Self::ActionRequired,
+            "cancelled" => Self::Cancelled,
+            "failure" => Self::Failure,
+            "neutral" => Self::Neutral,
+            "success" => Self::Success,
+            "skipped" => Self::Skipped,
+            "stale" => Self::Stale,
+            "timed_out" => Self::TimedOut,
+            _ => Self::Unknown(value),
+        })
     }
 }

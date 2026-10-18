@@ -3,14 +3,86 @@
 
 // agent_automations domain models
 
+/// A GitHub resource (pull request, issue, etc.)
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant0 {
+    /// GitHub resource ID
+    pub id: i64,
+    /// GraphQL global ID
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub global_id: Option<String>,
+}
+
+impl AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant0 {
+    pub fn new(id: i64) -> Self {
+        Self {
+            id,
+            global_id: None,
+        }
+    }
+}
+
+/// A Git branch reference
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant1 {
+    /// Head branch name
+    pub head_ref: String,
+    /// Base branch name
+    pub base_ref: String,
+}
+
+impl AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant1 {
+    pub fn new(head_ref: String, base_ref: String) -> Self {
+        Self { head_ref, base_ref }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemData {
+    Object(Box<AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant0>),
+    Object2(Box<AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant1>),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemData
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant0>,
+        >(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemDataVariant1>,
+        >(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemData branch accepts this payload"))
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum FieldsItemSchemaVariant0TypeEnum {
+pub enum AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0TypeEnum
+{
     #[serde(rename = "string")]
     #[default]
     String,
 }
 
-impl FieldsItemSchemaVariant0TypeEnum {
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0TypeEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::String => "string",
@@ -18,125 +90,27 @@ impl FieldsItemSchemaVariant0TypeEnum {
     }
 }
 
-impl std::fmt::Display for FieldsItemSchemaVariant0TypeEnum {
+impl std::fmt::Display
+    for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0TypeEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            FieldsItemSchemaVariant0TypeEnum::String => f.write_str("string"),
+            AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0TypeEnum::String => f.write_str("string"),
         }
     }
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct FieldsItemSchemaVariant0 {
+pub struct AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0 {
     #[serde(rename = "type")]
-    pub type_: FieldsItemSchemaVariant0TypeEnum,
+    pub type_:
+        AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0TypeEnum,
     /// The minimum accepted string length.
     #[serde(rename = "minLength", skip_serializing_if = "Option::is_none")]
     pub min_length: Option<i64>,
 }
 
-impl FieldsItemSchemaVariant0 {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.min_length.as_ref() {
-            crate::validation::validate_range(
-                "minLength",
-                *value as f64,
-                crate::validation::RangeOpts {
-                    min: Some(0_f64),
-                    ..Default::default()
-                },
-            )?;
-        }
-        Ok(())
-    }
-
-    pub fn new(type_: FieldsItemSchemaVariant0TypeEnum) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            type_,
-            min_length: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum FieldsItemSchemaVariant1TypeEnum {
-    #[serde(rename = "array")]
-    #[default]
-    Array,
-}
-
-impl FieldsItemSchemaVariant1TypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Array => "array",
-        }
-    }
-}
-
-impl std::fmt::Display for FieldsItemSchemaVariant1TypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            FieldsItemSchemaVariant1TypeEnum::Array => f.write_str("array"),
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum FieldsItemSchemaVariant1ItemsTypeEnum {
-    #[default]
-    String,
-    Unknown(String),
-}
-
-impl FieldsItemSchemaVariant1ItemsTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::String => "string",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for FieldsItemSchemaVariant1ItemsTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for FieldsItemSchemaVariant1ItemsTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "string" => Self::String,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for FieldsItemSchemaVariant1ItemsTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct FieldsItemSchemaVariant1Items {
-    #[serde(rename = "type")]
-    pub type_: FieldsItemSchemaVariant1ItemsTypeEnum,
-    /// The minimum accepted string item length.
-    #[serde(rename = "minLength", skip_serializing_if = "Option::is_none")]
-    pub min_length: Option<i64>,
-}
-
-impl FieldsItemSchemaVariant1Items {
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0 {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.min_length.as_ref() {
             crate::validation::validate_range(
@@ -152,7 +126,116 @@ impl FieldsItemSchemaVariant1Items {
     }
 
     pub fn new(
-        type_: FieldsItemSchemaVariant1ItemsTypeEnum,
+        type_: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0TypeEnum,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            type_,
+            min_length: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1TypeEnum
+{
+    #[serde(rename = "array")]
+    #[default]
+    Array,
+}
+
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1TypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Array => "array",
+        }
+    }
+}
+
+impl std::fmt::Display
+    for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1TypeEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1TypeEnum::Array => f.write_str("array"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum
+{
+    #[default]
+    String,
+    Unknown(String),
+}
+
+impl
+    AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum
+{
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::String => "string",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "string" => Self::String,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1Items {
+    #[serde(rename = "type")]
+    pub type_: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum,
+    /// The minimum accepted string item length.
+    #[serde(rename = "minLength", skip_serializing_if = "Option::is_none")]
+    pub min_length: Option<i64>,
+}
+
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1Items {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.min_length.as_ref() {
+            crate::validation::validate_range(
+                "minLength",
+                *value as f64,
+                crate::validation::RangeOpts {
+                    min: Some(0_f64),
+                    ..Default::default()
+                },
+            )?;
+        }
+        Ok(())
+    }
+
+    pub fn new(
+        type_: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1ItemsTypeEnum,
     ) -> Result<Self, crate::errors::SdkError> {
         let value = Self {
             type_,
@@ -164,10 +247,12 @@ impl FieldsItemSchemaVariant1Items {
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct FieldsItemSchemaVariant1 {
+pub struct AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1 {
     #[serde(rename = "type")]
-    pub type_: FieldsItemSchemaVariant1TypeEnum,
-    pub items: FieldsItemSchemaVariant1Items,
+    pub type_:
+        AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1TypeEnum,
+    pub items:
+        AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1Items,
     /// The minimum accepted number of array items.
     #[serde(rename = "minItems", skip_serializing_if = "Option::is_none")]
     pub min_items: Option<i64>,
@@ -179,7 +264,7 @@ pub struct FieldsItemSchemaVariant1 {
     pub unique_items: Option<bool>,
 }
 
-impl FieldsItemSchemaVariant1 {
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1 {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.min_items.as_ref() {
             crate::validation::validate_range(
@@ -205,8 +290,8 @@ impl FieldsItemSchemaVariant1 {
     }
 
     pub fn new(
-        type_: FieldsItemSchemaVariant1TypeEnum,
-        items: FieldsItemSchemaVariant1Items,
+        type_: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1TypeEnum,
+        items: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1Items,
     ) -> Result<Self, crate::errors::SdkError> {
         let value = Self {
             type_,
@@ -221,13 +306,14 @@ impl FieldsItemSchemaVariant1 {
 }
 
 #[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum FieldsItemSchemaVariant2TypeEnum {
+pub enum AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2TypeEnum
+{
     #[serde(rename = "integer")]
     #[default]
     Integer,
 }
 
-impl FieldsItemSchemaVariant2TypeEnum {
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2TypeEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::Integer => "integer",
@@ -235,71 +321,85 @@ impl FieldsItemSchemaVariant2TypeEnum {
     }
 }
 
-impl std::fmt::Display for FieldsItemSchemaVariant2TypeEnum {
+impl std::fmt::Display
+    for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2TypeEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            FieldsItemSchemaVariant2TypeEnum::Integer => f.write_str("integer"),
+            AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2TypeEnum::Integer => f.write_str("integer"),
         }
     }
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct FieldsItemSchemaVariant2 {
+pub struct AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2 {
     #[serde(rename = "type")]
-    pub type_: FieldsItemSchemaVariant2TypeEnum,
+    pub type_:
+        AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2TypeEnum,
 }
 
-impl FieldsItemSchemaVariant2 {
-    pub fn new(type_: FieldsItemSchemaVariant2TypeEnum) -> Self {
+impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2 {
+    pub fn new(
+        type_: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2TypeEnum,
+    ) -> Self {
         Self { type_ }
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
-pub enum FieldsItemSchema {
-    String(Box<FieldsItemSchemaVariant0>),
-    Array(Box<FieldsItemSchemaVariant1>),
-    Integer(Box<FieldsItemSchemaVariant2>),
+pub enum AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchema {
+    String(
+        Box<AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0>,
+    ),
+    Array(Box<AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1>),
+    Integer(
+        Box<AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2>,
+    ),
 }
 
-/// A GitHub resource (pull request, issue, etc.)
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct TasksItemArtifactsItemDataVariant0 {
-    /// GitHub resource ID
-    pub id: i64,
-    /// GraphQL global ID
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub global_id: Option<String>,
-}
-
-impl TasksItemArtifactsItemDataVariant0 {
-    pub fn new(id: i64) -> Self {
-        Self {
-            id,
-            global_id: None,
+impl<'de> serde::Deserialize<'de>
+    for AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchema
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<
+            Box<
+                AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant0,
+            >,
+        >(value.clone())
+        {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
         }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<
+                AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant1,
+            >,
+        >(value.clone())
+        {
+            let candidate = Self::Array(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<
+                AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchemaVariant2,
+            >,
+        >(value.clone())
+        {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchema branch accepts this payload"))
     }
-}
-
-/// A Git branch reference
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct TasksItemArtifactsItemDataVariant1 {
-    /// Head branch name
-    pub head_ref: String,
-    /// Base branch name
-    pub base_ref: String,
-}
-
-impl TasksItemArtifactsItemDataVariant1 {
-    pub fn new(head_ref: String, base_ref: String) -> Self {
-        Self { head_ref, base_ref }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum TasksItemArtifactsItemData {
-    Object(Box<TasksItemArtifactsItemDataVariant0>),
-    Object2(Box<TasksItemArtifactsItemDataVariant1>),
 }

@@ -3,6 +3,43 @@
 
 // orgs domain models (part 3)
 
+impl std::fmt::Display for IssueFieldVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The color of the option.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssueFieldOptionsItemColorEnum {
+    #[default]
+    Gray,
+    Blue,
+    Green,
+    Yellow,
+    Orange,
+    Red,
+    Pink,
+    Purple,
+    Unknown(String),
+}
+
+impl IssueFieldOptionsItemColorEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Gray => "gray",
+            Self::Blue => "blue",
+            Self::Green => "green",
+            Self::Yellow => "yellow",
+            Self::Orange => "orange",
+            Self::Red => "red",
+            Self::Pink => "pink",
+            Self::Purple => "purple",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for IssueFieldOptionsItemColorEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -448,31 +485,5 @@ impl serde::Serialize for OrganizationCreateIssueTypeColorEnum {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for OrganizationCreateIssueTypeColorEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "gray" => Self::Gray,
-            "blue" => Self::Blue,
-            "green" => Self::Green,
-            "yellow" => Self::Yellow,
-            "orange" => Self::Orange,
-            "red" => Self::Red,
-            "pink" => Self::Pink,
-            "purple" => Self::Purple,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for OrganizationCreateIssueTypeColorEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

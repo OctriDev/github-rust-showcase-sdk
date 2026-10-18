@@ -3,6 +3,285 @@
 
 // webhook_pull_request_review_request_removed domain models (part 8)
 
+impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestMergedBy {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.avatar_url.as_ref() {
+            crate::validation::validate_uri("avatar_url", value)?;
+        }
+        if let Some(value) = self.followers_url.as_ref() {
+            crate::validation::validate_uri("followers_url", value)?;
+        }
+        if let Some(value) = self.html_url.as_ref() {
+            crate::validation::validate_uri("html_url", value)?;
+        }
+        if let Some(value) = self.organizations_url.as_ref() {
+            crate::validation::validate_uri("organizations_url", value)?;
+        }
+        if let Some(value) = self.received_events_url.as_ref() {
+            crate::validation::validate_uri("received_events_url", value)?;
+        }
+        if let Some(value) = self.repos_url.as_ref() {
+            crate::validation::validate_uri("repos_url", value)?;
+        }
+        if let Some(value) = self.subscriptions_url.as_ref() {
+            crate::validation::validate_uri("subscriptions_url", value)?;
+        }
+        if let Some(value) = self.url.as_ref() {
+            crate::validation::validate_uri("url", value)?;
+        }
+        Ok(())
+    }
+
+    pub fn new(id: i64, login: String) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            avatar_url: None,
+            deleted: None,
+            email: None,
+            events_url: None,
+            followers_url: None,
+            following_url: None,
+            gists_url: None,
+            gravatar_id: None,
+            html_url: None,
+            id,
+            login,
+            name: None,
+            node_id: None,
+            organizations_url: None,
+            received_events_url: None,
+            repos_url: None,
+            site_admin: None,
+            starred_url: None,
+            subscriptions_url: None,
+            type_: None,
+            url: None,
+            user_view_type: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreatorTypeEnum {
+    #[default]
+    Bot,
+    User,
+    Organization,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreatorTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Bot => "Bot",
+            Self::User => "User",
+            Self::Organization => "Organization",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreatorTypeEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreatorTypeEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "Bot" => Self::Bot,
+            "User" => Self::User,
+            "Organization" => Self::Organization,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreatorTypeEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreator {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avatar_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted: Option<bool>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub email: Option<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub events_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub followers_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub following_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gists_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gravatar_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub html_url: Option<String>,
+    pub id: i64,
+    pub login: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub organizations_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_events_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repos_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub site_admin: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starred_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscriptions_url: Option<String>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_:
+        Option<WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreatorTypeEnum>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_view_type: Option<String>,
+}
+
+impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneCreator {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.avatar_url.as_ref() {
+            crate::validation::validate_uri("avatar_url", value)?;
+        }
+        if let Some(value) = self.followers_url.as_ref() {
+            crate::validation::validate_uri("followers_url", value)?;
+        }
+        if let Some(value) = self.html_url.as_ref() {
+            crate::validation::validate_uri("html_url", value)?;
+        }
+        if let Some(value) = self.organizations_url.as_ref() {
+            crate::validation::validate_uri("organizations_url", value)?;
+        }
+        if let Some(value) = self.received_events_url.as_ref() {
+            crate::validation::validate_uri("received_events_url", value)?;
+        }
+        if let Some(value) = self.repos_url.as_ref() {
+            crate::validation::validate_uri("repos_url", value)?;
+        }
+        if let Some(value) = self.subscriptions_url.as_ref() {
+            crate::validation::validate_uri("subscriptions_url", value)?;
+        }
+        if let Some(value) = self.url.as_ref() {
+            crate::validation::validate_uri("url", value)?;
+        }
+        Ok(())
+    }
+
+    pub fn new(id: i64, login: String) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            avatar_url: None,
+            deleted: None,
+            email: None,
+            events_url: None,
+            followers_url: None,
+            following_url: None,
+            gists_url: None,
+            gravatar_id: None,
+            html_url: None,
+            id,
+            login,
+            name: None,
+            node_id: None,
+            organizations_url: None,
+            received_events_url: None,
+            repos_url: None,
+            site_admin: None,
+            starred_url: None,
+            subscriptions_url: None,
+            type_: None,
+            url: None,
+            user_view_type: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+/// The state of the milestone.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneStateEnum {
+    #[default]
+    Open,
+    Closed,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneStateEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Open => "open",
+            Self::Closed => "closed",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneStateEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneStateEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "open" => Self::Open,
+            "closed" => Self::Closed,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestoneStateEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// A collection of related issues and pull requests.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestone {
@@ -90,306 +369,8 @@ impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestMilestone {
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum
+pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0TypeEnum
 {
-    #[default]
-    Open,
-    Closed,
-    Secret,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Open => "open",
-            Self::Closed => "closed",
-            Self::Secret => "secret",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "open" => Self::Open,
-            "closed" => Self::Closed,
-            "secret" => Self::Secret,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParent {
-    /// Description of the team
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub description: Option<String>,
-    pub html_url: String,
-    /// Unique identifier of the team
-    pub id: i64,
-    pub members_url: String,
-    /// Name of the team
-    pub name: String,
-    pub node_id: String,
-    /// Permission that the team will have for its repositories
-    pub permission: String,
-    pub privacy: WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum,
-    pub repositories_url: String,
-    pub slug: String,
-    /// URL for the team
-    pub url: String,
-}
-
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParent {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("html_url", &self.html_url)?;
-        crate::validation::validate_uri("repositories_url", &self.repositories_url)?;
-        crate::validation::validate_uri("url", &self.url)?;
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        description: Option<String>,
-        html_url: String,
-        id: i64,
-        members_url: String,
-        name: String,
-        node_id: String,
-        permission: String,
-        privacy: WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum,
-        repositories_url: String,
-        slug: String,
-        url: String,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            description,
-            html_url,
-            id,
-            members_url,
-            name,
-            node_id,
-            permission,
-            privacy,
-            repositories_url,
-            slug,
-            url,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum {
-    #[default]
-    Open,
-    Closed,
-    Secret,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Open => "open",
-            Self::Closed => "closed",
-            Self::Secret => "secret",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "open" => Self::Open,
-            "closed" => Self::Closed,
-            "secret" => Self::Secret,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Groups of organization members that gives permissions on specified repositories.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-    /// Description of the team
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub description: Option<String>,
-    pub html_url: String,
-    /// Unique identifier of the team
-    pub id: i64,
-    pub members_url: String,
-    /// Name of the team
-    pub name: String,
-    pub node_id: String,
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub parent: Option<
-        Option<WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParent>,
-    >,
-    /// Permission that the team will have for its repositories
-    pub permission: String,
-    pub privacy:
-        WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum,
-    pub repositories_url: String,
-    pub slug: String,
-    /// URL for the team
-    pub url: String,
-}
-
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItem {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("html_url", &self.html_url)?;
-        crate::validation::validate_uri("repositories_url", &self.repositories_url)?;
-        crate::validation::validate_uri("url", &self.url)?;
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        description: Option<String>,
-        html_url: String,
-        id: i64,
-        members_url: String,
-        name: String,
-        node_id: String,
-        permission: String,
-        privacy: WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemPrivacyEnum,
-        repositories_url: String,
-        slug: String,
-        url: String,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            deleted: None,
-            description,
-            html_url,
-            id,
-            members_url,
-            name,
-            node_id,
-            parent: None,
-            permission,
-            privacy,
-            repositories_url,
-            slug,
-            url,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// State of this Pull Request. Either `open` or `closed`.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestStateEnum {
-    #[default]
-    Open,
-    Closed,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestStateEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Open => "open",
-            Self::Closed => "closed",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhookPullRequestReviewRequestRemovedVariant0PullRequestStateEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestStateEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "open" => Self::Open,
-            "closed" => Self::Closed,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhookPullRequestReviewRequestRemovedVariant0PullRequestStateEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum {
     #[default]
     Bot,
     User,
@@ -397,7 +378,9 @@ pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum {
     Unknown(String),
 }
 
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum {
+impl
+    WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0TypeEnum
+{
     pub fn as_str(&self) -> &str {
         match self {
             Self::Bot => "Bot",
@@ -408,7 +391,7 @@ impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum {
     }
 }
 
-impl serde::Serialize for WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum {
+impl serde::Serialize for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0TypeEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -417,9 +400,7 @@ impl serde::Serialize for WebhookPullRequestReviewRequestRemovedVariant0PullRequ
     }
 }
 
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum
-{
+impl<'de> serde::Deserialize<'de> for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0TypeEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -434,14 +415,14 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
-impl std::fmt::Display for WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum {
+impl std::fmt::Display for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0TypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestUser {
+pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -483,7 +464,7 @@ pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestUser {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions_url: Option<String>,
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<WebhookPullRequestReviewRequestRemovedVariant0PullRequestUserTypeEnum>,
+    pub type_: Option<WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0TypeEnum>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

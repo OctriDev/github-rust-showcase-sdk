@@ -2050,10 +2050,7 @@ impl ActionsNamespace {
         &self,
         params: crate::methods::actions::ActionsGenerateRunnerJitconfigForOrgParams,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsGenerateRunnerJitconfigForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerJitconfig, crate::errors::SdkError> {
         crate::methods::actions::actions_generate_runner_jitconfig_for_org(
             &self.config,
             params,
@@ -2114,10 +2111,7 @@ impl ActionsNamespace {
         org: String,
         runner_id: i64,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_list_labels_for_self_hosted_runner_for_org(
             &self.config,
             org,
@@ -2132,10 +2126,7 @@ impl ActionsNamespace {
         runner_id: i64,
         labels: Vec<String>,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_add_custom_labels_to_self_hosted_runner_for_org(
             &self.config,
             org,
@@ -2151,10 +2142,7 @@ impl ActionsNamespace {
         runner_id: i64,
         labels: Vec<String>,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_set_custom_labels_for_self_hosted_runner_for_org(
             &self.config,
             org,
@@ -2169,10 +2157,7 @@ impl ActionsNamespace {
         org: String,
         runner_id: i64,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsRemoveAllCustomLabelsFromSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabelsReadonly, crate::errors::SdkError> {
         crate::methods::actions::actions_remove_all_custom_labels_from_self_hosted_runner_for_org(
             &self.config,
             org,
@@ -2187,10 +2172,7 @@ impl ActionsNamespace {
         runner_id: i64,
         name: String,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_remove_custom_label_from_self_hosted_runner_for_org(
             &self.config,
             org,
@@ -3093,10 +3075,7 @@ impl ActionsNamespace {
         &self,
         params: crate::methods::actions::ActionsGenerateRunnerJitconfigForRepoParams,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsGenerateRunnerJitconfigForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerJitconfig, crate::errors::SdkError> {
         crate::methods::actions::actions_generate_runner_jitconfig_for_repo(
             &self.config,
             params,
@@ -3170,10 +3149,7 @@ impl ActionsNamespace {
         repo: String,
         runner_id: i64,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_list_labels_for_self_hosted_runner_for_repo(
             &self.config,
             owner,
@@ -3190,10 +3166,7 @@ impl ActionsNamespace {
         runner_id: i64,
         labels: Vec<String>,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_add_custom_labels_to_self_hosted_runner_for_repo(
             &self.config,
             owner,
@@ -3211,10 +3184,7 @@ impl ActionsNamespace {
         runner_id: i64,
         labels: Vec<String>,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_set_custom_labels_for_self_hosted_runner_for_repo(
             &self.config,
             owner,
@@ -3231,10 +3201,7 @@ impl ActionsNamespace {
         repo: String,
         runner_id: i64,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsRemoveAllCustomLabelsFromSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabelsReadonly, crate::errors::SdkError> {
         crate::methods::actions::actions_remove_all_custom_labels_from_self_hosted_runner_for_repo(
             &self.config,
             owner,
@@ -3251,10 +3218,7 @@ impl ActionsNamespace {
         runner_id: i64,
         name: String,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<
-        crate::methods::actions::ActionsListLabelsForSelfHostedRunnerForOrgResponse,
-        crate::errors::SdkError,
-    > {
+    ) -> Result<ActionsRunnerLabels, crate::errors::SdkError> {
         crate::methods::actions::actions_remove_custom_label_from_self_hosted_runner_for_repo(
             &self.config,
             owner,
@@ -5792,7 +5756,7 @@ impl GistsNamespace {
         gist_id: String,
         description: Option<String>,
         files: Option<
-            std::collections::HashMap<String, crate::methods::gists::GistsUpdateFilesValue>,
+            std::collections::HashMap<String, Option<crate::methods::gists::GistsUpdateFilesValue>>,
         >,
         options: Option<&crate::client::RequestOptions>,
     ) -> Result<GistSimple, crate::errors::SdkError> {
@@ -6195,7 +6159,7 @@ impl IssuesNamespace {
         owner: String,
         repo: String,
         issue_number: i64,
-        assignees: Option<Vec<crate::methods::issues::IssuesAddAssigneesAssigneesItem>>,
+        assignees: Option<Vec<IssuesAddAssigneesRequestAssigneesItem>>,
         options: Option<&crate::client::RequestOptions>,
     ) -> Result<Issue, crate::errors::SdkError> {
         crate::methods::issues::issues_add_assignees(
@@ -7087,7 +7051,7 @@ impl OrgsNamespace {
     pub fn delete_attestations_bulk(
         &self,
         org: String,
-        body: serde_json::Value,
+        body: crate::methods::orgs::OrgsDeleteAttestationsBulk,
         options: Option<&crate::client::RequestOptions>,
     ) -> Result<serde_json::Value, crate::errors::SdkError> {
         crate::methods::orgs::orgs_delete_attestations_bulk(&self.config, org, body, options)
@@ -10995,7 +10959,10 @@ impl InteractionsNamespace {
         &self,
         org: String,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<InteractionLimitResponse, crate::errors::SdkError> {
+    ) -> Result<
+        crate::methods::interactions::InteractionsGetRestrictionsForOrgResponse,
+        crate::errors::SdkError,
+    > {
         crate::methods::interactions::interactions_get_restrictions_for_org(
             &self.config,
             org,
@@ -11072,7 +11039,10 @@ impl InteractionsNamespace {
         owner: String,
         repo: String,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<InteractionLimitResponse, crate::errors::SdkError> {
+    ) -> Result<
+        crate::methods::interactions::InteractionsGetRestrictionsForRepoResponse,
+        crate::errors::SdkError,
+    > {
         crate::methods::interactions::interactions_get_restrictions_for_repo(
             &self.config,
             owner,
@@ -11194,7 +11164,10 @@ impl InteractionsNamespace {
     pub fn get_restrictions_for_authenticated_user(
         &self,
         options: Option<&crate::client::RequestOptions>,
-    ) -> Result<InteractionLimitResponse, crate::errors::SdkError> {
+    ) -> Result<
+        crate::methods::interactions::InteractionsGetRestrictionsForAuthenticatedUserResponse,
+        crate::errors::SdkError,
+    > {
         crate::methods::interactions::interactions_get_restrictions_for_authenticated_user(
             &self.config,
             options,
@@ -15520,10 +15493,20 @@ impl ChecksNamespace {
     /// Updates a check run for a specific commit in a repository. \> [!NOTE] \> The endpoints to manage checks only look for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. OAuth apps and personal access tokens (classic) cannot use this endpoint.
     pub fn update(
         &self,
-        params: crate::methods::checks::ChecksUpdateParams,
+        owner: String,
+        repo: String,
+        check_run_id: i64,
+        body: crate::methods::checks::ChecksUpdate,
         options: Option<&crate::client::RequestOptions>,
     ) -> Result<CheckRun, crate::errors::SdkError> {
-        crate::methods::checks::checks_update(&self.config, params, options)
+        crate::methods::checks::checks_update(
+            &self.config,
+            owner,
+            repo,
+            check_run_id,
+            body,
+            options,
+        )
     }
     /// Lists annotations for a check run using the annotation `id`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
     pub fn list_annotations(
@@ -17097,7 +17080,7 @@ impl UsersNamespace {
     pub fn delete_attestations_bulk(
         &self,
         username: String,
-        body: serde_json::Value,
+        body: crate::methods::users::UsersDeleteAttestationsBulk,
         options: Option<&crate::client::RequestOptions>,
     ) -> Result<serde_json::Value, crate::errors::SdkError> {
         crate::methods::users::users_delete_attestations_bulk(&self.config, username, body, options)

@@ -8,6 +8,46 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{CodespacesOrgSecret, CodespacesPublicKey};
 use crate::validation::{validate_items, LengthOpts};
 
+impl serde::Serialize for CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "private" => Self::Private,
+            "selected" => Self::Selected,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodespacesCreateWithRepoForAuthenticatedUserGeoEnum {
+    #[default]
+    Europewest,
+    Southeastasia,
+    Useast,
+    Uswest,
+    Unknown(String),
+}
+
 impl CodespacesCreateWithRepoForAuthenticatedUserGeoEnum {
     pub fn as_str(&self) -> &str {
         match self {

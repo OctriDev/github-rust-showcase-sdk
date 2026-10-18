@@ -3,7 +3,7 @@
 
 // webhook_projects_v2_item_edited_changes domain models
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom {
     String(String),
@@ -12,13 +12,91 @@ pub enum WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom {
     ProjectsV2IterationSetting(Box<ProjectsV2IterationSetting>),
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+impl<'de> serde::Deserialize<'de> for WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsV2SingleSelectOption>>(value.clone())
+        {
+            let candidate = Self::ProjectsV2SingleSelectOption(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ProjectsV2IterationSetting>>(value.clone())
+        {
+            let candidate = Self::ProjectsV2IterationSetting(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom branch accepts this payload"))
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo {
     String(String),
     Integer(i64),
     ProjectsV2SingleSelectOption(Box<ProjectsV2SingleSelectOption>),
     ProjectsV2IterationSetting(Box<ProjectsV2IterationSetting>),
+}
+
+impl<'de> serde::Deserialize<'de> for WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsV2SingleSelectOption>>(value.clone())
+        {
+            let candidate = Self::ProjectsV2SingleSelectOption(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ProjectsV2IterationSetting>>(value.clone())
+        {
+            let candidate = Self::ProjectsV2IterationSetting(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo branch accepts this payload"))
+    }
 }
 
 /// Required object value serialized in the `field_value` wire field.
@@ -121,9 +199,39 @@ impl WebhookProjectsV2ItemEditedChangesVariant1 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookProjectsV2ItemEditedChanges {
     Object(Box<WebhookProjectsV2ItemEditedChangesVariant0>),
     Object2(Box<WebhookProjectsV2ItemEditedChangesVariant1>),
+}
+
+impl<'de> serde::Deserialize<'de> for WebhookProjectsV2ItemEditedChanges {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<WebhookProjectsV2ItemEditedChangesVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<WebhookProjectsV2ItemEditedChangesVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no WebhookProjectsV2ItemEditedChanges branch accepts this payload",
+            )
+        })
+    }
 }

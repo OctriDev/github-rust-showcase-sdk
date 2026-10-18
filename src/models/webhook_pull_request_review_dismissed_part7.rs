@@ -3,6 +3,12 @@
 
 // webhook_pull_request_review_dismissed domain models (part 7)
 
+impl std::fmt::Display for WebhookPullRequestReviewDismissedPullRequestHeadRepoVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// A git repository
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct WebhookPullRequestReviewDismissedPullRequestHeadRepo {

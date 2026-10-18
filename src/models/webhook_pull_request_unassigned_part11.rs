@@ -53,7 +53,9 @@ impl WebhookPullRequestUnassignedPullRequest {
         node_id: String,
         number: i64,
         patch_url: String,
-        requested_reviewers: Vec<WebhookPullRequestUnassignedPullRequestRequestedReviewersItem>,
+        requested_reviewers: Vec<
+            Option<WebhookPullRequestUnassignedPullRequestRequestedReviewersItem>,
+        >,
         requested_teams: Vec<WebhookPullRequestUnassignedPullRequestRequestedTeamsItem>,
         review_comment_url: String,
         review_comments_url: String,

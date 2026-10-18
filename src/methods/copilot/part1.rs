@@ -221,12 +221,47 @@ impl CopilotSetCopilotContentExclusionForOrganizationValueItemVariant2 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CopilotSetCopilotContentExclusionForOrganizationValueItem {
     String(String),
     Object(Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant1>),
     Object2(Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant2>),
+}
+
+impl<'de> serde::Deserialize<'de> for CopilotSetCopilotContentExclusionForOrganizationValueItem {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant1>,
+        >(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant2>,
+        >(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no CopilotSetCopilotContentExclusionForOrganizationValueItem branch accepts this payload"))
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -269,27 +304,4 @@ impl CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools {
             dependency_vulnerability_checks,
         }
     }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct CopilotGetCopilotCloudAgentConfigurationResponse {
-    /// The user-supplied MCP server configuration for the repository, as a free-form JSON object. This will be set to `null` if no configuration has been set.
-    ///
-    /// The shape of a valid MCP configuration may evolve over time, so this property is intentionally not strictly typed. Clients should not assume a fixed schema.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub mcp_configuration: Option<std::collections::HashMap<String, serde_json::Value>>,
-    /// The enabled review tools for Copilot cloud agent.
-    pub enabled_tools: CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools,
-    /// Whether Actions workflow approval is required for Copilot cloud agent pull requests.
-    pub require_actions_workflow_approval: bool,
-    /// Whether the firewall is enabled.
-    pub is_firewall_enabled: bool,
-    /// Whether the firewall recommended allowlist is enabled.
-    pub is_firewall_recommended_allowlist_enabled: bool,
-    /// A list of custom allowlist entries, as hosts or URLs, that the firewall will allow the Copilot cloud agent to access.
-    pub custom_allowlist: Vec<String>,
-    /// Whether automations are enabled in this repository. When true, users can create automations that automatically run agents on a schedule or in response to events like new issues or updated pull requests.
-    pub is_automations_enabled: bool,
-    /// Whether write access is required for automation triggers. When true, automations will only run if the user triggering the event has write access to the repository. When false, users can create automations that listen for events triggered by users without write access.
-    pub require_write_access_for_automation_triggers: bool,
 }

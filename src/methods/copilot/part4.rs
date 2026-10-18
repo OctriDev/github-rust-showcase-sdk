@@ -5,7 +5,90 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::SdkError;
-use crate::types::{CopilotSeatDetails, CopilotUsageMetrics28DayReport};
+use crate::types::{
+    CopilotSeatDetails, CopilotUsageMetrics1DayReport, CopilotUsageMetrics28DayReport,
+};
+use crate::validation::validate_date;
+
+/// Use this endpoint to retrieve download links for the Copilot organization user-teams report for a specific day. The report provides user-team join data for Copilot across the organization, with one entry per user-team pair. The report contains user-team membership data for the specified day, enabling consumers to join with the existing organization user reports to compute team-level usage metrics. Reports are generated daily and made available for download through signed URLs with a limited expiration time. The response includes download links to the report files, along with the specific date of the report. The report covers a complete day for which data has been processed. Organization owners and authorized users with fine-grained "View Organization Copilot Metrics" permission can retrieve Copilot metrics reports for the organization. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint. For more information about organization metrics attribution, see [How are metrics attributed across organizations](https://docs.github.com/copilot/concepts/copilot-metrics#how-are-metrics-attributed-across-organizations).
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `day` - The day to request data for, in `YYYY-MM-DD` format.
+pub fn copilot_copilot_organization_user_teams_one_day_report(
+    config: &ClientConfig,
+    org: String,
+    day: String,
+    options: Option<&RequestOptions>,
+) -> Result<CopilotUsageMetrics1DayReport, SdkError> {
+    validate_date("day", &day)?;
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
+    __query.extend([("day", crate::client::query_value(&day))]);
+
+    Ok(sdk_request::<CopilotUsageMetrics1DayReport>(
+        "GET",
+        &format!(
+            "/orgs/{}/copilot/metrics/reports/user-teams-1-day",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "copilot_copilot_organization_user_teams_one_day_report",
+            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("500", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Use this endpoint to retrieve download links for the Copilot organization user usage metrics report for a specific day. The report provides detailed user-level usage data and engagement metrics for Copilot features across the organization. The report contains user-specific metrics for the specified day, including individual user engagement statistics, feature usage patterns, and adoption metrics broken down by user. This report allows authorized users to analyze Copilot usage at the user level to understand adoption patterns and identify opportunities for increased engagement. Reports are generated daily and made available for download through signed URLs with a limited expiration time. The response includes download links to the report files, along with the specific date of the report. The report covers a complete day for which data has been processed. Organization owners and authorized users with fine-grained "View Organization Copilot Metrics" permission can retrieve Copilot metrics reports for the organization. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint. For more information about organization metrics attribution, see [How are metrics attributed across organizations](https://docs.github.com/copilot/concepts/copilot-metrics#how-are-metrics-attributed-across-organizations).
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `day` - The day to request data for, in `YYYY-MM-DD` format.
+pub fn copilot_copilot_organization_users_one_day_usage_metrics(
+    config: &ClientConfig,
+    org: String,
+    day: String,
+    options: Option<&RequestOptions>,
+) -> Result<CopilotUsageMetrics1DayReport, SdkError> {
+    validate_date("day", &day)?;
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
+    __query.extend([("day", crate::client::query_value(&day))]);
+
+    Ok(sdk_request::<CopilotUsageMetrics1DayReport>(
+        "GET",
+        &format!(
+            "/orgs/{}/copilot/metrics/reports/users-1-day",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "copilot_copilot_organization_users_one_day_usage_metrics",
+            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("500", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Use this endpoint to retrieve download links for the latest 28-day organization users Copilot usage metrics report. The report provides detailed user-level usage data and engagement metrics for Copilot features across the organization. The report contains user-specific metrics for the previous 28 days, including individual user engagement statistics, feature usage patterns, and adoption metrics broken down by user. This report allows authorized users to analyze Copilot usage at the user level to understand adoption patterns and identify opportunities for increased engagement. Reports are generated daily and made available for download through signed URLs with a limited expiration time. The response includes download links to the report files, along with the specific date range covered by the report. The report covers a complete 28-day period ending on the most recent day for which data has been processed. Organization owners and authorized users with fine-grained "View Organization Copilot Metrics" permission can retrieve Copilot metrics reports for the organization. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint. For more information about organization metrics attribution, see [How are metrics attributed across organizations](https://docs.github.com/copilot/concepts/copilot-metrics#how-are-metrics-attributed-across-organizations).
 ///

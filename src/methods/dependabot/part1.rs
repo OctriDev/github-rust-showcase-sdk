@@ -47,11 +47,40 @@ impl std::fmt::Display for DependabotListAlertsForEnterpriseVariant1ItemEnum {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum DependabotListAlertsForEnterprise {
     String(String),
     Variant1ItemEnumArray(Vec<DependabotListAlertsForEnterpriseVariant1ItemEnum>),
+}
+
+impl<'de> serde::Deserialize<'de> for DependabotListAlertsForEnterprise {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Vec<DependabotListAlertsForEnterpriseVariant1ItemEnum>,
+        >(value.clone())
+        {
+            let candidate = Self::Variant1ItemEnumArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no DependabotListAlertsForEnterprise branch accepts this payload",
+            )
+        })
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
@@ -101,11 +130,37 @@ impl std::fmt::Display for DependabotListAlertsForOrgVariant1ItemEnum {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum DependabotListAlertsForOrg {
     String(String),
     Variant1ItemEnumArray(Vec<DependabotListAlertsForOrgVariant1ItemEnum>),
+}
+
+impl<'de> serde::Deserialize<'de> for DependabotListAlertsForOrg {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Vec<DependabotListAlertsForOrgVariant1ItemEnum>>(value.clone())
+        {
+            let candidate = Self::Variant1ItemEnumArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no DependabotListAlertsForOrg branch accepts this payload")
+        })
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -123,11 +178,33 @@ impl DependabotListOrgSecretsResponse {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum DependabotCreateOrUpdateOrgSecretSelectedRepositoryIdsItem {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de> for DependabotCreateOrUpdateOrgSecretSelectedRepositoryIdsItem {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no DependabotCreateOrUpdateOrgSecretSelectedRepositoryIdsItem branch accepts this payload"))
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -224,61 +301,5 @@ impl<'de> serde::Deserialize<'de> for DependabotListAlertsForEnterpriseEnum {
             "runtime" => Self::Runtime,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for DependabotListAlertsForEnterpriseEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum DependabotListAlertsForEnterpriseEnumfc4ff8f9 {
-    #[default]
-    Created,
-    EpssPercentage,
-    Updated,
-    Unknown(String),
-}
-
-impl DependabotListAlertsForEnterpriseEnumfc4ff8f9 {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Created => "created",
-            Self::EpssPercentage => "epss_percentage",
-            Self::Updated => "updated",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for DependabotListAlertsForEnterpriseEnumfc4ff8f9 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for DependabotListAlertsForEnterpriseEnumfc4ff8f9 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "created" => Self::Created,
-            "epss_percentage" => Self::EpssPercentage,
-            "updated" => Self::Updated,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for DependabotListAlertsForEnterpriseEnumfc4ff8f9 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

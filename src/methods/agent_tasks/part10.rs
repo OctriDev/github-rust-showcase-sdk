@@ -3,6 +3,161 @@
 
 use super::*;
 
+impl serde::Serialize for AgentTasksGetTaskByIdResponseVariant1SessionsItemUsageTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for AgentTasksGetTaskByIdResponseVariant1SessionsItemUsageTypeEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "ai_credits" => Self::AiCredits,
+            "premium_requests" => Self::PremiumRequests,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for AgentTasksGetTaskByIdResponseVariant1SessionsItemUsageTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Structured information about billing units consumed by the session.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AgentTasksGetTaskByIdResponseVariant1SessionsItemUsage {
+    /// Billing unit used for this session. New sessions since June 1, 2026 use `ai_credits`, but older sessions use `premium_requests`.
+    #[serde(rename = "type")]
+    pub type_: AgentTasksGetTaskByIdResponseVariant1SessionsItemUsageTypeEnum,
+    /// Number of billing units used by this session. When the `type` is `ai_credits`, the value is a whole number, expressed in nano units. When presenting this to a human, divide by 1,000,000,000 and round to one decimal place. When aggregating (for example, summing usage across sessions), sum the nano values first, and divide once at the end before presenting to a human to avoid losing precision. When the `type` is `premium_requests`, the value may be fractional (for example `1.5`).
+    pub amount: f64,
+}
+
+impl AgentTasksGetTaskByIdResponseVariant1SessionsItemUsage {
+    pub fn new(
+        type_: AgentTasksGetTaskByIdResponseVariant1SessionsItemUsageTypeEnum,
+        amount: f64,
+    ) -> Self {
+        Self { type_, amount }
+    }
+}
+
+/// Error details for a failed session
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AgentTasksGetTaskByIdResponseVariant1SessionsItemError {
+    /// Error message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+}
+
+impl AgentTasksGetTaskByIdResponseVariant1SessionsItemError {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self { message: None }
+    }
+}
+
+/// Full session details within a task
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AgentTasksGetTaskByIdResponseVariant1SessionsItem {
+    /// Session ID
+    pub id: String,
+    /// Session name
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The user who created this session
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<AgentTasksGetTaskByIdResponseVariant1SessionsItemUser>,
+    /// The owner of the repository
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner: Option<AgentTasksGetTaskByIdResponseVariant1SessionsItemOwner>,
+    /// The repository this session belongs to
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repository: Option<AgentTasksGetTaskByIdResponseVariant1SessionsItemRepository>,
+    /// Task ID this session belongs to
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub task_id: Option<String>,
+    /// Current state of a session
+    pub state: AgentTasksGetTaskByIdResponseVariant1SessionsItemStateEnum,
+    /// Creation timestamp
+    pub created_at: String,
+    /// Last update timestamp
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated_at: Option<String>,
+    /// Completion timestamp
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub completed_at: Option<String>,
+    /// Content of the triggering event
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prompt: Option<String>,
+    /// Head branch name
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub head_ref: Option<String>,
+    /// Base branch name
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub base_ref: Option<String>,
+    /// Model used for this session
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model: Option<String>,
+    /// Structured information about billing units consumed by the session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage: Option<AgentTasksGetTaskByIdResponseVariant1SessionsItemUsage>,
+    /// Error details for a failed session
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<AgentTasksGetTaskByIdResponseVariant1SessionsItemError>,
+}
+
+impl AgentTasksGetTaskByIdResponseVariant1SessionsItem {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        if let Some(value) = self.updated_at.as_ref() {
+            crate::validation::validate_model_date_time("updated_at", value)?;
+        }
+        if let Some(value) = self.completed_at.as_ref() {
+            crate::validation::validate_model_date_time("completed_at", value)?;
+        }
+        Ok(())
+    }
+
+    pub fn new(
+        id: String,
+        state: AgentTasksGetTaskByIdResponseVariant1SessionsItemStateEnum,
+        created_at: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id,
+            name: None,
+            user: None,
+            owner: None,
+            repository: None,
+            task_id: None,
+            state,
+            created_at,
+            updated_at: None,
+            completed_at: None,
+            prompt: None,
+            head_ref: None,
+            base_ref: None,
+            model: None,
+            usage: None,
+            error: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct AgentTasksGetTaskByIdResponse {
     /// Unique task identifier
@@ -18,7 +173,7 @@ pub struct AgentTasksGetTaskByIdResponse {
     pub name: Option<String>,
     /// The entity who created this task
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub creator: Option<AgentTasksGetTaskByIdResponseVariant0CreatorVariant0>,
+    pub creator: Option<AgentTasksGetTaskByIdResponseVariant0Creator>,
     /// Type of the task creator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creator_type: Option<AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum>,
@@ -142,147 +297,6 @@ impl<'de> serde::Deserialize<'de> for AgentTasksListTasksForRepoEnum {
 }
 
 impl std::fmt::Display for AgentTasksListTasksForRepoEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum AgentTasksListTasksForRepoEnumc1a47ffb {
-    #[default]
-    Asc,
-    Desc,
-    Unknown(String),
-}
-
-impl AgentTasksListTasksForRepoEnumc1a47ffb {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for AgentTasksListTasksForRepoEnumc1a47ffb {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AgentTasksListTasksForRepoEnumc1a47ffb {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for AgentTasksListTasksForRepoEnumc1a47ffb {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum AgentTasksListTasksEnum {
-    #[default]
-    CreatedAt,
-    UpdatedAt,
-    Unknown(String),
-}
-
-impl AgentTasksListTasksEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::CreatedAt => "created_at",
-            Self::UpdatedAt => "updated_at",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for AgentTasksListTasksEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AgentTasksListTasksEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "created_at" => Self::CreatedAt,
-            "updated_at" => Self::UpdatedAt,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for AgentTasksListTasksEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum AgentTasksListTasksEnum8d1144b0 {
-    #[default]
-    Asc,
-    Desc,
-    Unknown(String),
-}
-
-impl AgentTasksListTasksEnum8d1144b0 {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for AgentTasksListTasksEnum8d1144b0 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AgentTasksListTasksEnum8d1144b0 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for AgentTasksListTasksEnum8d1144b0 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }

@@ -479,7 +479,7 @@ pub fn orgs_list_attestations_bulk(
 pub fn orgs_delete_attestations_bulk(
     config: &ClientConfig,
     org: String,
-    body: serde_json::Value,
+    body: OrgsDeleteAttestationsBulk,
     options: Option<&RequestOptions>,
 ) -> Result<serde_json::Value, SdkError> {
     let __body = serde_json::to_value(body).map_err(|e| {

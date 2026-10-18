@@ -5,7 +5,7 @@
 
 pub type NullableAlertUpdatedAt = String;
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum NullableSecretScanningFirstDetectedLocation {
     SecretScanningLocationCommit(Box<SecretScanningLocationCommit>),
@@ -23,6 +23,136 @@ pub enum NullableSecretScanningFirstDetectedLocation {
     SecretScanningLocationPullRequestReviewComment(
         Box<SecretScanningLocationPullRequestReviewComment>,
     ),
+}
+
+impl<'de> serde::Deserialize<'de> for NullableSecretScanningFirstDetectedLocation {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationCommit>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationCommit(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationWikiCommit>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationWikiCommit(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationIssueTitle>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationIssueTitle(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationIssueBody>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationIssueBody(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationIssueComment>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationIssueComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationDiscussionTitle>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationDiscussionTitle(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationDiscussionBody>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationDiscussionBody(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationDiscussionComment>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationDiscussionComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestTitle>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestTitle(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestBody>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestBody(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestComment>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<SecretScanningLocationPullRequestReview>>(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestReview(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<SecretScanningLocationPullRequestReviewComment>,
+        >(value.clone())
+        {
+            let candidate = Self::SecretScanningLocationPullRequestReviewComment(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no NullableSecretScanningFirstDetectedLocation branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// The token status as of the latest validity check.
@@ -386,11 +516,5 @@ impl<'de> serde::Deserialize<'de> for SecretScanningAlertValidityEnum {
             "unknown" => Self::Unknown2,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for SecretScanningAlertValidityEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

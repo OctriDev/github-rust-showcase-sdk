@@ -197,6 +197,7 @@ pub fn campaigns_update_campaign(
                 ("400", "BasicError"),
                 ("404", "BasicError"),
                 ("422", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -228,7 +229,7 @@ pub fn campaigns_delete_campaign(
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "campaigns_delete_campaign",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("404", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

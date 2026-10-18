@@ -3,6 +3,233 @@
 
 // issues_issue domain models (part 2)
 
+impl IssueEventProjectCard {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("url", &self.url)?;
+        crate::validation::validate_uri("project_url", &self.project_url)?;
+        Ok(())
+    }
+
+    pub fn new(
+        url: String,
+        id: i64,
+        project_url: String,
+        project_id: i64,
+        column_name: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            url,
+            id,
+            project_url,
+            project_id,
+            column_name,
+            previous_column_name: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+/// Issue Event Rename
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct IssueEventRename {
+    /// Required `string` value serialized in the `from` wire field.
+    pub from: String,
+    /// Required `string` value serialized in the `to` wire field.
+    pub to: String,
+}
+
+impl IssueEventRename {
+    pub fn new(from: String, to: String) -> Self {
+        Self { from, to }
+    }
+}
+
+/// The kind of change proposed.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssueSuggestionActionEnum {
+    #[default]
+    SetType,
+    AddLabel,
+    AddField,
+    AddAssignee,
+    CloseIssue,
+    Unknown(String),
+}
+
+impl IssueSuggestionActionEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::SetType => "set_type",
+            Self::AddLabel => "add_label",
+            Self::AddField => "add_field",
+            Self::AddAssignee => "add_assignee",
+            Self::CloseIssue => "close_issue",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssueSuggestionActionEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssueSuggestionActionEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "set_type" => Self::SetType,
+            "add_label" => Self::AddLabel,
+            "add_field" => Self::AddField,
+            "add_assignee" => Self::AddAssignee,
+            "close_issue" => Self::CloseIssue,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssueSuggestionActionEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The suggestion's lifecycle state.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssueSuggestionStateEnum {
+    #[default]
+    Pending,
+    Applied,
+    Approved,
+    Dismissed,
+    Replaced,
+    Invalidated,
+    Unknown(String),
+}
+
+impl IssueSuggestionStateEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Pending => "pending",
+            Self::Applied => "applied",
+            Self::Approved => "approved",
+            Self::Dismissed => "dismissed",
+            Self::Replaced => "replaced",
+            Self::Invalidated => "invalidated",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssueSuggestionStateEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssueSuggestionStateEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "pending" => Self::Pending,
+            "applied" => Self::Applied,
+            "approved" => Self::Approved,
+            "dismissed" => Self::Dismissed,
+            "replaced" => Self::Replaced,
+            "invalidated" => Self::Invalidated,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssueSuggestionStateEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum IssueSuggestionTargetValue {
+    String(String),
+    Number(f64),
+    Bool(bool),
+    StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for IssueSuggestionTargetValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
+            let candidate = Self::Number(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<bool>(value.clone()) {
+            let candidate = Self::Bool(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no IssueSuggestionTargetValue branch accepts this payload")
+        })
+    }
+}
+
+/// The actor's confidence level in the suggestion.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssueSuggestionConfidenceEnum {
+    #[default]
+    Low,
+    Medium,
+    High,
+    Unknown(String),
+}
+
+impl IssueSuggestionConfidenceEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Low => "LOW",
+            Self::Medium => "MEDIUM",
+            Self::High => "HIGH",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for IssueSuggestionConfidenceEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -285,126 +512,4 @@ pub struct IssueTypeRemovedIssueEvent {
         with = "crate::client::double_option"
     )]
     pub intent: Option<Option<NullableIssueEventIntent>>,
-}
-
-impl IssueTypeRemovedIssueEvent {
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        id: i64,
-        node_id: String,
-        url: String,
-        actor: SimpleUser,
-        event: String,
-        commit_id: Option<String>,
-        commit_url: Option<String>,
-        created_at: String,
-        performed_via_github_app: Option<NullableIntegration>,
-        prev_issue_type: Option<IssueTypeWebhook>,
-    ) -> Self {
-        Self {
-            id,
-            node_id,
-            url,
-            actor,
-            event,
-            commit_id,
-            commit_url,
-            created_at,
-            performed_via_github_app,
-            prev_issue_type,
-            intent: None,
-        }
-    }
-}
-
-/// The color of the issue type.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssueTypeWebhookColorEnum {
-    #[default]
-    Gray,
-    Blue,
-    Green,
-    Yellow,
-    Orange,
-    Red,
-    Pink,
-    Purple,
-    Unknown(String),
-}
-
-impl IssueTypeWebhookColorEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Gray => "gray",
-            Self::Blue => "blue",
-            Self::Green => "green",
-            Self::Yellow => "yellow",
-            Self::Orange => "orange",
-            Self::Red => "red",
-            Self::Pink => "pink",
-            Self::Purple => "purple",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssueTypeWebhookColorEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssueTypeWebhookColorEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "gray" => Self::Gray,
-            "blue" => Self::Blue,
-            "green" => Self::Green,
-            "yellow" => Self::Yellow,
-            "orange" => Self::Orange,
-            "red" => Self::Red,
-            "pink" => Self::Pink,
-            "purple" => Self::Purple,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssueTypeWebhookColorEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The type of issue.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IssueTypeWebhook {
-    /// The unique identifier of the issue type.
-    pub id: i64,
-    /// The name of the issue type.
-    pub name: String,
-    /// The color of the issue type.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub color: Option<Option<IssueTypeWebhookColorEnum>>,
-}
-
-impl IssueTypeWebhook {
-    pub fn new(id: i64, name: String) -> Self {
-        Self {
-            id,
-            name,
-            color: None,
-        }
-    }
 }

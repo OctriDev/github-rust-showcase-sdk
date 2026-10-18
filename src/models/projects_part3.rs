@@ -3,6 +3,46 @@
 
 // projects domain models (part 3)
 
+/// An iteration setting for an iteration field
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct ProjectsV2IterationSettings {
+    /// The unique identifier of the iteration setting.
+    pub id: String,
+    /// The start date of the iteration.
+    pub start_date: String,
+    /// The duration of the iteration in days.
+    pub duration: i64,
+    /// The iteration title, in raw text and HTML formats.
+    pub title: ProjectsV2IterationSettingsTitle,
+    /// Whether the iteration has been completed.
+    pub completed: bool,
+}
+
+impl ProjectsV2IterationSettings {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_date("start_date", &self.start_date)?;
+        Ok(())
+    }
+
+    pub fn new(
+        id: String,
+        start_date: String,
+        duration: i64,
+        title: ProjectsV2IterationSettingsTitle,
+        completed: bool,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id,
+            start_date,
+            duration,
+            title,
+            completed,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 /// An option for a single select field
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ProjectsV2SingleSelectOption {
@@ -279,11 +319,35 @@ impl std::fmt::Display for ProjectsV2ViewLayoutEnum {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ProjectsV2ViewSortByItemItem {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsV2ViewSortByItemItem {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsV2ViewSortByItemItem branch accepts this payload")
+        })
+    }
 }
 
 /// A view inside a projects v2 project
@@ -303,7 +367,7 @@ pub struct ProjectsV2View {
     pub project_url: String,
     /// The web URL of the view.
     pub html_url: String,
-    /// Required API value serialized in the `creator` wire field.
+    /// A GitHub user.
     pub creator: SimpleUser,
     /// The time when the view was created.
     pub created_at: String,

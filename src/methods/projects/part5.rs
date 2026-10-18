@@ -5,8 +5,426 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{ProjectsV2, ProjectsV2ItemSimple, ProjectsV2ItemWithContent, ProjectsV2View};
+use crate::types::{
+    ProjectsV2Field, ProjectsV2ItemSimple, ProjectsV2ItemWithContent, ProjectsV2View,
+};
 use crate::validation::{validate_items, LengthOpts};
+
+/// Creates a field in an organization-owned project. Supply a request body matching a supported field configuration, such as an issue field reference or a named field with its data type. A single-select field configuration includes its available options.
+///
+/// Add a field to an organization-owned project.
+///
+/// # Arguments
+///
+/// * `project_number` - The project's number.
+/// * `org` - The organization name. The name is not case sensitive.
+pub fn projects_add_field_for_org(
+    config: &ClientConfig,
+    project_number: i64,
+    org: String,
+    body: ProjectsAddFieldForOrg,
+    options: Option<&RequestOptions>,
+) -> Result<ProjectsV2Field, SdkError> {
+    let __body = serde_json::to_value(body).map_err(|e| {
+        SdkError::Network(SdkNetworkError {
+            message: format!("encode body: {}", e),
+            request_id: None,
+        })
+    })?;
+
+    Ok(sdk_request::<ProjectsV2Field>(
+        "POST",
+        &format!(
+            "/orgs/{}/projectsV2/{}/fields",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "projects_add_field_for_org",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Get a specific field for an organization-owned project.
+///
+/// # Arguments
+///
+/// * `project_number` - The project's number.
+/// * `field_id` - The unique identifier of the field.
+/// * `org` - The organization name. The name is not case sensitive.
+pub fn projects_get_field_for_org(
+    config: &ClientConfig,
+    project_number: i64,
+    field_id: i64,
+    org: String,
+    options: Option<&RequestOptions>,
+) -> Result<ProjectsV2Field, SdkError> {
+    Ok(sdk_request::<ProjectsV2Field>(
+        "GET",
+        &format!(
+            "/orgs/{}/projectsV2/{}/fields/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number),
+            crate::client::encode_path_segment(&field_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "projects_get_field_for_org",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ProjectsListItemsForOrgParams {
+    pub project_number: i64,
+    pub org: String,
+    pub q: Option<String>,
+    pub fields: Option<ProjectsListItemsForOrg>,
+    pub before: Option<String>,
+    pub after: Option<String>,
+    pub per_page: Option<i64>,
+}
+
+/// List all items for a specific organization-owned project accessible by the authenticated user.
+///
+/// # Arguments
+///
+/// * `project_number` - The project's number.
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `q` - Search query to filter items, see [Filtering
+///   projects](https://docs.github.com/issues/planning-and-tracking-with-projects
+///   /customizing-views-in-your-project/filtering-projects) for more information.
+/// * `fields` - Limit results to specific fields, by their IDs. If not
+///   specified, the title field will be returned. Example:
+///   `fields[]=123&fields[]=456&fields[]=789` or `fields=123,456,789`
+/// * `before` - A cursor, as given in the [Link
+///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
+///   #using-link-headers). If specified, the query only searches for results
+///   before this cursor. For more information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `after` - A cursor, as given in the [Link
+///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
+///   #using-link-headers). If specified, the query only searches for results
+///   after this cursor. For more information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn projects_list_items_for_org(
+    config: &ClientConfig,
+    params: ProjectsListItemsForOrgParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<ProjectsV2ItemWithContent>, SdkError> {
+    let ProjectsListItemsForOrgParams {
+        project_number,
+        org,
+        q,
+        fields,
+        before,
+        after,
+        per_page,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(5);
+    if let Some(ref v) = q {
+        __query.push(("q", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = fields {
+        __query.push(("fields", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = before {
+        __query.push(("before", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = after {
+        __query.push(("after", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<ProjectsV2ItemWithContent>>(
+        "GET",
+        &format!(
+            "/orgs/{}/projectsV2/{}/items",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "projects_list_items_for_org",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone)]
+pub struct ProjectsAddItemForOrgParams {
+    pub org: String,
+    pub project_number: i64,
+    pub type_: ProjectsAddItemForOrgTypeEnum,
+    pub id: Option<i64>,
+    pub owner: Option<String>,
+    pub repo: Option<String>,
+    pub number: Option<i64>,
+}
+
+/// Add an issue or pull request item to the specified organization owned project.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `project_number` - The project's number.
+/// * `type_` - The type of item to add to the project. Must be either Issue or
+///   PullRequest.
+/// * `id` - The unique identifier of the issue or pull request to add to the
+///   project.
+/// * `owner` - The repository owner login.
+/// * `repo` - The repository name.
+/// * `number` - The issue or pull request number.
+pub fn projects_add_item_for_org(
+    config: &ClientConfig,
+    params: ProjectsAddItemForOrgParams,
+    options: Option<&RequestOptions>,
+) -> Result<ProjectsV2ItemSimple, SdkError> {
+    let ProjectsAddItemForOrgParams {
+        org,
+        project_number,
+        type_,
+        id,
+        owner,
+        repo,
+        number,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "type".to_string(),
+        serde_json::to_value(type_).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = id {
+        __body_map.insert(
+            "id".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = owner {
+        __body_map.insert(
+            "owner".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = repo {
+        __body_map.insert(
+            "repo".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = number {
+        __body_map.insert(
+            "number".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<ProjectsV2ItemSimple>(
+        "POST",
+        &format!(
+            "/orgs/{}/projectsV2/{}/items",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "projects_add_item_for_org",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Get a specific item from an organization-owned project.
+///
+/// # Arguments
+///
+/// * `project_number` - The project's number.
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `item_id` - The unique identifier of the project item.
+/// * `fields` - Limit results to specific fields, by their IDs. If not
+///   specified, the title field will be returned. Example:
+///   fields[]=123&fields[]=456&fields[]=789 or fields=123,456,789
+pub fn projects_get_org_item(
+    config: &ClientConfig,
+    project_number: i64,
+    org: String,
+    item_id: i64,
+    fields: Option<ProjectsGetOrgItem>,
+    options: Option<&RequestOptions>,
+) -> Result<ProjectsV2ItemWithContent, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
+    if let Some(ref v) = fields {
+        __query.push(("fields", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<ProjectsV2ItemWithContent>(
+        "GET",
+        &format!(
+            "/orgs/{}/projectsV2/{}/items/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number),
+            crate::client::encode_path_segment(&item_id)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "projects_get_org_item",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Update a specific item in an organization-owned project.
+///
+/// # Arguments
+///
+/// * `project_number` - The project's number.
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `item_id` - The unique identifier of the project item.
+/// * `fields` - A list of field updates to apply.
+pub fn projects_update_item_for_org(
+    config: &ClientConfig,
+    project_number: i64,
+    org: String,
+    item_id: i64,
+    fields: Vec<ProjectsUpdateItemForOrgFieldsItem>,
+    options: Option<&RequestOptions>,
+) -> Result<ProjectsV2ItemWithContent, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "fields".to_string(),
+        serde_json::to_value(fields).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<ProjectsV2ItemWithContent>(
+        "PATCH",
+        &format!(
+            "/orgs/{}/projectsV2/{}/items/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number),
+            crate::client::encode_path_segment(&item_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "projects_update_item_for_org",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Delete a specific item from an organization-owned project.
+///
+/// # Arguments
+///
+/// * `project_number` - The project's number.
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `item_id` - The unique identifier of the project item.
+pub fn projects_delete_item_for_org(
+    config: &ClientConfig,
+    project_number: i64,
+    org: String,
+    item_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/orgs/{}/projectsV2/{}/items/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&project_number),
+            crate::client::encode_path_segment(&item_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "projects_delete_item_for_org",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 #[derive(Debug, Clone)]
 pub struct ProjectsCreateViewForOrgParams {
@@ -180,443 +598,6 @@ pub fn projects_create_view_for_org(
                 ("422", "ValidationError"),
                 ("503", "BasicError"),
             ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ProjectsListViewItemsForOrgParams {
-    pub project_number: i64,
-    pub org: String,
-    pub view_number: i64,
-    pub fields: Option<ProjectsListViewItemsForOrg>,
-    pub before: Option<String>,
-    pub after: Option<String>,
-    pub per_page: Option<i64>,
-}
-
-/// List items in an organization project with the saved view's filter applied.
-///
-/// # Arguments
-///
-/// * `project_number` - The project's number.
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `view_number` - The number that identifies the project view.
-/// * `fields` - Limit results to specific fields, by their IDs. If not
-///   specified, the title field will be returned. Example:
-///   `fields[]=123&fields[]=456&fields[]=789` or `fields=123,456,789`
-/// * `before` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   before this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `after` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   after this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn projects_list_view_items_for_org(
-    config: &ClientConfig,
-    params: ProjectsListViewItemsForOrgParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<ProjectsV2ItemWithContent>, SdkError> {
-    let ProjectsListViewItemsForOrgParams {
-        project_number,
-        org,
-        view_number,
-        fields,
-        before,
-        after,
-        per_page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
-    if let Some(ref v) = fields {
-        __query.push(("fields", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = after {
-        __query.push(("after", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<ProjectsV2ItemWithContent>>(
-        "GET",
-        &format!(
-            "/orgs/{}/projectsV2/{}/views/{}/items",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&project_number),
-            crate::client::encode_path_segment(&view_number)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_list_view_items_for_org",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Create draft issue item for the specified user owned project.
-///
-/// # Arguments
-///
-/// * `user_id` - The unique identifier of the user.
-/// * `project_number` - The project's number.
-/// * `title` - The title of the draft issue item to create in the project.
-/// * `body` - The body content of the draft issue item to create in the
-///   project.
-pub fn projects_create_draft_item_for_authenticated_user(
-    config: &ClientConfig,
-    user_id: String,
-    project_number: i64,
-    title: String,
-    body: Option<String>,
-    options: Option<&RequestOptions>,
-) -> Result<ProjectsV2ItemSimple, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "title".to_string(),
-        serde_json::to_value(title).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = body {
-        __body_map.insert(
-            "body".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<ProjectsV2ItemSimple>(
-        "POST",
-        &format!(
-            "/user/{}/projectsV2/{}/drafts",
-            crate::client::encode_path_segment(&user_id),
-            crate::client::encode_path_segment(&project_number)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_create_draft_item_for_authenticated_user",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone)]
-pub struct ProjectsCreateViewForUserParams {
-    pub user_id: String,
-    pub project_number: i64,
-    pub name: String,
-    pub layout: ProjectsCreateViewForUserLayoutEnum,
-    pub filter: Option<String>,
-    pub visible_fields: Option<Vec<i64>>,
-    pub sort_by: Option<Vec<Vec<ProjectsCreateViewForUserSortByItemItem>>>,
-    pub group_by: Option<Vec<i64>>,
-    pub vertical_group_by: Option<Vec<i64>>,
-}
-
-/// Create a new view in a user-owned project. Views allow you to customize how items in a project are displayed and filtered.
-///
-/// # Arguments
-///
-/// * `user_id` - The unique identifier of the user.
-/// * `project_number` - The project's number.
-/// * `name` - The name of the view.
-/// * `layout` - The layout of the view.
-/// * `filter` - The filter query for the view. See [Filtering
-///   projects](https://docs.github.com/issues/planning-and-tracking-with-projects
-///   /customizing-views-in-your-project/filtering-projects) for more information.
-/// * `visible_fields` - `visible_fields` is not applicable to `roadmap` layout
-///   views. For `table` and `board` layouts, this represents the field IDs that
-///   should be visible in the view. If not provided, the default visible fields
-///   will be used.
-/// * `sort_by` - Sorting configuration for the view. Each element is a
-///   two-element array of `[field_id, direction]` where `direction` is `"asc"` or
-///   `"desc"`. Supports multiple sort criteria applied in order.
-/// * `group_by` - The field IDs to group items by (horizontal grouping).
-///   Supports a single field. The field must support grouping; fields such as
-///   `Title`, `Reviewers`, `Linked pull requests`, `Sub-issues progress`,
-///   `Tracked by`, and `Tracks` cannot be grouped on.
-/// * `vertical_group_by` - The field IDs to use as columns in `board` layout
-///   (vertical grouping). Supports a single field. The field must support
-///   grouping; fields such as `Title`, `Reviewers`, `Linked pull requests`,
-///   `Sub-issues progress`, `Tracked by`, and `Tracks` cannot be grouped on.
-pub fn projects_create_view_for_user(
-    config: &ClientConfig,
-    params: ProjectsCreateViewForUserParams,
-    options: Option<&RequestOptions>,
-) -> Result<ProjectsV2View, SdkError> {
-    let ProjectsCreateViewForUserParams {
-        user_id,
-        project_number,
-        name,
-        layout,
-        filter,
-        visible_fields,
-        sort_by,
-        group_by,
-        vertical_group_by,
-    } = params;
-    if let Some(ref group_by_v) = group_by {
-        validate_items(
-            "group_by",
-            group_by_v,
-            LengthOpts {
-                max: Some(1),
-                ..Default::default()
-            },
-        )?;
-    }
-    if let Some(ref vertical_group_by_v) = vertical_group_by {
-        validate_items(
-            "vertical_group_by",
-            vertical_group_by_v,
-            LengthOpts {
-                max: Some(1),
-                ..Default::default()
-            },
-        )?;
-    }
-
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "name".to_string(),
-        serde_json::to_value(name).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    __body_map.insert(
-        "layout".to_string(),
-        serde_json::to_value(layout).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = filter {
-        __body_map.insert(
-            "filter".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = visible_fields {
-        __body_map.insert(
-            "visible_fields".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = sort_by {
-        __body_map.insert(
-            "sort_by".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = group_by {
-        __body_map.insert(
-            "group_by".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = vertical_group_by {
-        __body_map.insert(
-            "vertical_group_by".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<ProjectsV2View>(
-        "POST",
-        &format!(
-            "/users/{}/projectsV2/{}/views",
-            crate::client::encode_path_segment(&user_id),
-            crate::client::encode_path_segment(&project_number)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_create_view_for_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-                ("503", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ProjectsListForUserParams {
-    pub username: String,
-    pub q: Option<String>,
-    pub before: Option<String>,
-    pub after: Option<String>,
-    pub per_page: Option<i64>,
-}
-
-/// List all projects owned by a specific user accessible by the authenticated user.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `q` - Limit results to projects of the specified type.
-/// * `before` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   before this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `after` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   after this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn projects_list_for_user(
-    config: &ClientConfig,
-    params: ProjectsListForUserParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<ProjectsV2>, SdkError> {
-    let ProjectsListForUserParams {
-        username,
-        q,
-        before,
-        after,
-        per_page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
-    if let Some(ref v) = q {
-        __query.push(("q", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = after {
-        __query.push(("after", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<ProjectsV2>>(
-        "GET",
-        &format!(
-            "/users/{}/projectsV2",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_list_for_user",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Retrieves a Projects v2 project owned by a specified GitHub user. Use `username` and `project_number` to identify the user and project; the response includes project metadata and ownership details.
-///
-/// Get a specific user-owned project.
-///
-/// # Arguments
-///
-/// * `project_number` - The project's number.
-/// * `username` - The handle for the GitHub user account.
-pub fn projects_get_for_user(
-    config: &ClientConfig,
-    project_number: i64,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<ProjectsV2, SdkError> {
-    Ok(sdk_request::<ProjectsV2>(
-        "GET",
-        &format!(
-            "/users/{}/projectsV2/{}",
-            crate::client::encode_path_segment(&username),
-            crate::client::encode_path_segment(&project_number)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_get_for_user",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
             ..Default::default()
         },
     )?

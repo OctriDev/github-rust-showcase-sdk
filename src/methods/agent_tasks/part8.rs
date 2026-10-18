@@ -2,7 +2,125 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::ArtifactsItemData3;
+
+impl AgentTasksListTasksResponseTasksItem {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(Some(value)) = self.archived_at.as_ref() {
+            crate::validation::validate_model_date_time("archived_at", value)?;
+        }
+        if let Some(value) = self.updated_at.as_ref() {
+            crate::validation::validate_model_date_time("updated_at", value)?;
+        }
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        Ok(())
+    }
+
+    pub fn new(
+        id: String,
+        state: AgentTasksListTasksResponseTasksItemStateEnum,
+        created_at: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id,
+            url: None,
+            html_url: None,
+            name: None,
+            creator: None,
+            creator_type: None,
+            user_collaborators: None,
+            owner: None,
+            repository: None,
+            state,
+            session_count: None,
+            artifacts: None,
+            archived_at: None,
+            updated_at: None,
+            created_at,
+            custom_agent: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AgentTasksListTasksResponse {
+    /// List of tasks
+    pub tasks: Vec<AgentTasksListTasksResponseTasksItem>,
+    /// Total count of active (non-archived) tasks
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_active_count: Option<i64>,
+    /// Total count of archived tasks
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_archived_count: Option<i64>,
+}
+
+impl AgentTasksListTasksResponse {
+    pub fn new(tasks: Vec<AgentTasksListTasksResponseTasksItem>) -> Self {
+        Self {
+            tasks,
+            total_active_count: None,
+            total_archived_count: None,
+        }
+    }
+}
+
+/// The entity who created this task
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AgentTasksGetTaskByIdResponseVariant0Creator {
+    /// The unique identifier of the user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<i64>,
+}
+
+impl AgentTasksGetTaskByIdResponseVariant0Creator {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self { id: None }
+    }
+}
+
+/// Type of the task creator
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
+    #[default]
+    User,
+    Organization,
+    Unknown(String),
+}
+
+impl AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::User => "user",
+            Self::Organization => "organization",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "user" => Self::User,
+            "organization" => Self::Organization,
+            _ => Self::Unknown(value),
+        })
+    }
+}
 
 impl std::fmt::Display for AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -165,124 +283,5 @@ impl<'de> serde::Deserialize<'de>
 impl std::fmt::Display for AgentTasksGetTaskByIdResponseVariant0ArtifactsItemProviderEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-/// Type of artifact. Available Values: `pull`, `branch`.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum {
-    #[default]
-    Pull,
-    Branch,
-    Unknown(String),
-}
-
-impl AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Pull => "pull",
-            Self::Branch => "branch",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "pull" => Self::Pull,
-            "branch" => Self::Branch,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// A resource generated by the task
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksGetTaskByIdResponseVariant0ArtifactsItem {
-    /// Provider namespace
-    pub provider: AgentTasksGetTaskByIdResponseVariant0ArtifactsItemProviderEnum,
-    /// Type of artifact. Available Values: `pull`, `branch`.
-    #[serde(rename = "type")]
-    pub type_: AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum,
-    /// Resource data (shape depends on type)
-    pub data: ArtifactsItemData3,
-}
-
-impl AgentTasksGetTaskByIdResponseVariant0ArtifactsItem {
-    pub fn new(
-        provider: AgentTasksGetTaskByIdResponseVariant0ArtifactsItemProviderEnum,
-        type_: AgentTasksGetTaskByIdResponseVariant0ArtifactsItemTypeEnum,
-        data: ArtifactsItemData3,
-    ) -> Self {
-        Self {
-            provider,
-            type_,
-            data,
-        }
-    }
-}
-
-/// Custom agent metadata associated with this task
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksGetTaskByIdResponseVariant0CustomAgent {
-    /// The custom agent's filename without the extension \- for example, `performance-optimizer` for a `.github/agents/performance-optimizer.agent.md` custom agent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
-}
-
-impl AgentTasksGetTaskByIdResponseVariant0CustomAgent {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self { id: None }
-    }
-}
-
-/// The user who created this session
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksGetTaskByIdResponseVariant1SessionsItemUser {
-    /// The unique identifier of the user
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-}
-
-impl AgentTasksGetTaskByIdResponseVariant1SessionsItemUser {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self { id: None }
-    }
-}
-
-/// The owner of the repository
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksGetTaskByIdResponseVariant1SessionsItemOwner {
-    /// The unique identifier of the user
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-}
-
-impl AgentTasksGetTaskByIdResponseVariant1SessionsItemOwner {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self { id: None }
     }
 }

@@ -66,10 +66,12 @@ pub struct SdkHttpError {
 #[serde(untagged)]
 pub enum SdkErrorBody {
     BasicError(Box<crate::types::BasicError>),
+    ForbiddenGist(Box<crate::types::ForbiddenGist>),
     PullRequestMergeAsyncResult(Box<crate::types::PullRequestMergeAsyncResult>),
     RepositoryAdvisoryDescriptionValidationError(
         Box<crate::types::RepositoryAdvisoryDescriptionValidationError>,
     ),
+    ServiceUnavailable(Box<crate::types::ServiceUnavailable>),
     ValidationError(Box<crate::types::ValidationError>),
     ValidationErrorSimple(Box<crate::types::ValidationErrorSimple>),
 }
@@ -96,12 +98,18 @@ impl SdkErrorBody {
             "BasicError" => serde_json::from_slice(body)
                 .ok()
                 .map(|value| Self::BasicError(Box::new(value))),
+            "ForbiddenGist" => serde_json::from_slice(body)
+                .ok()
+                .map(|value| Self::ForbiddenGist(Box::new(value))),
             "PullRequestMergeAsyncResult" => serde_json::from_slice(body)
                 .ok()
                 .map(|value| Self::PullRequestMergeAsyncResult(Box::new(value))),
             "RepositoryAdvisoryDescriptionValidationError" => serde_json::from_slice(body)
                 .ok()
                 .map(|value| Self::RepositoryAdvisoryDescriptionValidationError(Box::new(value))),
+            "ServiceUnavailable" => serde_json::from_slice(body)
+                .ok()
+                .map(|value| Self::ServiceUnavailable(Box::new(value))),
             "ValidationError" => serde_json::from_slice(body)
                 .ok()
                 .map(|value| Self::ValidationError(Box::new(value))),

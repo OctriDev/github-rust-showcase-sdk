@@ -2,626 +2,300 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::client::ClientConfig;
-use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{CheckAnnotation, CheckRun, CheckSuite, EmptyObject};
-use crate::validation::{validate_date_time, validate_items, LengthOpts};
+use crate::types::{CheckRun, CheckSuite};
 
-#[derive(Debug, Clone, Default)]
-pub struct ChecksCreateParams {
-    pub owner: String,
-    pub repo: String,
-    pub name: String,
-    pub head_sha: String,
-    pub details_url: Option<String>,
-    pub external_id: Option<String>,
-    pub status: Option<ChecksCreateStatusEnum>,
-    pub started_at: Option<String>,
-    pub conclusion: Option<ChecksCreateConclusionEnum>,
-    pub completed_at: Option<String>,
-    pub output: Option<ChecksCreateOutput>,
-    pub actions: Option<Vec<ChecksCreateActionsItem>>,
+impl ChecksUpdateVariant1 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.started_at.as_ref() {
+            crate::validation::validate_model_date_time("started_at", value)?;
+        }
+        if let Some(value) = self.completed_at.as_ref() {
+            crate::validation::validate_model_date_time("completed_at", value)?;
+        }
+        if let Some(value) = self.actions.as_ref() {
+            crate::validation::validate_items(
+                "actions",
+                value.as_slice(),
+                crate::validation::LengthOpts {
+                    max: Some(3),
+                    ..Default::default()
+                },
+            )?;
+        }
+        Ok(())
+    }
+
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            name: None,
+            details_url: None,
+            external_id: None,
+            started_at: None,
+            status: None,
+            conclusion: None,
+            completed_at: None,
+            output: None,
+            actions: None,
+            additional_properties: Default::default(),
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
 }
 
-/// Creates a new check run for a specific commit in a repository. To create a check run, you must use a GitHub App. OAuth apps and authenticated users are not able to create a check suite. In a check suite, GitHub limits the number of check runs with the same name to 1000\. Once these check runs exceed 1000, GitHub will start to automatically delete older check runs. \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `name` - The name of the check. For example, "code-coverage".
-/// * `head_sha` - The SHA of the commit.
-/// * `details_url` - The URL of the integrator's site that has the full details
-///   of the check. If the integrator does not provide this, then the homepage of
-///   the GitHub app is used.
-/// * `external_id` - A reference for the run on the integrator's system.
-/// * `status` - The current status of the check run. Only GitHub Actions can
-///   set a status of `waiting`, `pending`, or `requested`.
-/// * `started_at` - The time that the check run began. This is a timestamp in
-///   [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `conclusion` - \*\*Required if you provide `completed_at` or a `status` of
-///   `completed`\*\*. The final conclusion of the check. \*\*Note:\*\* Providing
-///   `conclusion` will automatically set the `status` parameter to `completed`.
-///   You cannot change a check run conclusion to `stale`, only GitHub can set
-///   this.
-/// * `completed_at` - The time the check completed. This is a timestamp in [ISO
-///   8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `output` - Check runs can accept a variety of data in the `output` object,
-///   including a `title` and `summary` and can optionally provide descriptive
-///   details about the run.
-/// * `actions` - Displays a button on GitHub that can be clicked to alert your
-///   app to do additional tasks. For example, a code linting app can display a
-///   button that automatically fixes detected errors. The button created in this
-///   object is displayed after the check run completes. When a user clicks the
-///   button, GitHub sends the [`check_run.requested_action`
-///   webhook](https://docs.github.com/webhooks/event-payloads/#check_run) to your
-///   app. Each action includes a `label`, `identifier` and `description`. A
-///   maximum of three actions are accepted. To learn more about check runs and
-///   requested actions, see "[Check runs and requested
-///   actions](https://docs.github.com/rest/guides/using-the-rest-api-to-interact-
-///   with-checks#check-runs-and-requested-actions)."
-pub fn checks_create(
-    config: &ClientConfig,
-    params: ChecksCreateParams,
-    options: Option<&RequestOptions>,
-) -> Result<CheckRun, SdkError> {
-    let ChecksCreateParams {
-        owner,
-        repo,
-        name,
-        head_sha,
-        details_url,
-        external_id,
-        status,
-        started_at,
-        conclusion,
-        completed_at,
-        output,
-        actions,
-    } = params;
-    if let Some(ref started_at_v) = started_at {
-        validate_date_time("started_at", started_at_v)?;
-    }
-    if let Some(ref completed_at_v) = completed_at {
-        validate_date_time("completed_at", completed_at_v)?;
-    }
-    if let Some(ref actions_v) = actions {
-        validate_items(
-            "actions",
-            actions_v,
-            LengthOpts {
-                max: Some(3),
-                ..Default::default()
-            },
-        )?;
-    }
-
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "name".to_string(),
-        serde_json::to_value(name).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    __body_map.insert(
-        "head_sha".to_string(),
-        serde_json::to_value(head_sha).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = details_url {
-        __body_map.insert(
-            "details_url".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = external_id {
-        __body_map.insert(
-            "external_id".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = status {
-        __body_map.insert(
-            "status".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = started_at {
-        __body_map.insert(
-            "started_at".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = conclusion {
-        __body_map.insert(
-            "conclusion".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = completed_at {
-        __body_map.insert(
-            "completed_at".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = output {
-        __body_map.insert(
-            "output".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = actions {
-        __body_map.insert(
-            "actions".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<CheckRun>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/check-runs",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_create",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ChecksUpdate {
+    Completed(Box<ChecksUpdateVariant0>),
+    Object(Box<ChecksUpdateVariant1>),
 }
 
-/// Gets a single check run using its `id`. \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `check_run_id` - The unique identifier of the check run.
-pub fn checks_get(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    check_run_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<CheckRun, SdkError> {
-    Ok(sdk_request::<CheckRun>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/check-runs/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_run_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_get",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
+impl<'de> serde::Deserialize<'de> for ChecksUpdate {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<ChecksUpdateVariant0>>(value.clone()) {
+            let candidate = Self::Completed(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ChecksUpdateVariant1>>(value.clone()) {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no ChecksUpdate branch accepts this payload"))
+    }
 }
 
-#[derive(Debug, Clone, Default)]
-pub struct ChecksUpdateParams {
-    pub owner: String,
-    pub repo: String,
-    pub check_run_id: i64,
-    pub name: Option<String>,
-    pub details_url: Option<String>,
-    pub external_id: Option<String>,
-    pub started_at: Option<String>,
-    pub status: Option<ChecksUpdateStatusEnum>,
-    pub conclusion: Option<ChecksUpdateConclusionEnum>,
-    pub completed_at: Option<String>,
-    pub output: Option<ChecksUpdateOutput>,
-    pub actions: Option<Vec<ChecksUpdateActionsItem>>,
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChecksSetSuitesPreferencesAutoTriggerChecksItem {
+    /// The `id` of the GitHub App.
+    pub app_id: i64,
+    /// Set to `true` to enable automatic creation of CheckSuite events upon pushes to the repository, or `false` to disable them.
+    pub setting: bool,
 }
 
-/// Updates a check run for a specific commit in a repository. \> [!NOTE] \> The endpoints to manage checks only look for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. OAuth apps and personal access tokens (classic) cannot use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `check_run_id` - The unique identifier of the check run.
-/// * `name` - The name of the check. For example, "code-coverage".
-/// * `details_url` - The URL of the integrator's site that has the full details
-///   of the check.
-/// * `external_id` - A reference for the run on the integrator's system.
-/// * `started_at` - This is a timestamp in [ISO
-///   8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `status` - The current status of the check run. Only GitHub Actions can
-///   set a status of `waiting`, `pending`, or `requested`.
-/// * `conclusion` - \*\*Required if you provide `completed_at` or a `status` of
-///   `completed`\*\*. The final conclusion of the check. \*\*Note:\*\* Providing
-///   `conclusion` will automatically set the `status` parameter to `completed`.
-///   You cannot change a check run conclusion to `stale`, only GitHub can set
-///   this.
-/// * `completed_at` - The time the check completed. This is a timestamp in [ISO
-///   8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `output` - Check runs can accept a variety of data in the `output` object,
-///   including a `title` and `summary` and can optionally provide descriptive
-///   details about the run.
-/// * `actions` - Possible further actions the integrator can perform, which a
-///   user may trigger. Each action includes a `label`, `identifier` and
-///   `description`. A maximum of three actions are accepted. To learn more about
-///   check runs and requested actions, see "[Check runs and requested
-///   actions](https://docs.github.com/rest/guides/using-the-rest-api-to-interact-
-///   with-checks#check-runs-and-requested-actions)."
-pub fn checks_update(
-    config: &ClientConfig,
-    params: ChecksUpdateParams,
-    options: Option<&RequestOptions>,
-) -> Result<CheckRun, SdkError> {
-    let ChecksUpdateParams {
-        owner,
-        repo,
-        check_run_id,
-        name,
-        details_url,
-        external_id,
-        started_at,
-        status,
-        conclusion,
-        completed_at,
-        output,
-        actions,
-    } = params;
-    if let Some(ref started_at_v) = started_at {
-        validate_date_time("started_at", started_at_v)?;
+impl ChecksSetSuitesPreferencesAutoTriggerChecksItem {
+    pub fn new(app_id: i64, setting: bool) -> Self {
+        Self { app_id, setting }
     }
-    if let Some(ref completed_at_v) = completed_at {
-        validate_date_time("completed_at", completed_at_v)?;
-    }
-    if let Some(ref actions_v) = actions {
-        validate_items(
-            "actions",
-            actions_v,
-            LengthOpts {
-                max: Some(3),
-                ..Default::default()
-            },
-        )?;
-    }
-
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = name {
-        __body_map.insert(
-            "name".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = details_url {
-        __body_map.insert(
-            "details_url".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = external_id {
-        __body_map.insert(
-            "external_id".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = started_at {
-        __body_map.insert(
-            "started_at".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = status {
-        __body_map.insert(
-            "status".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = conclusion {
-        __body_map.insert(
-            "conclusion".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = completed_at {
-        __body_map.insert(
-            "completed_at".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = output {
-        __body_map.insert(
-            "output".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = actions {
-        __body_map.insert(
-            "actions".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<CheckRun>(
-        "PATCH",
-        &format!(
-            "/repos/{}/{}/check-runs/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_run_id)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_update",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
 }
 
-#[derive(Debug, Clone, Default)]
-pub struct ChecksListAnnotationsParams {
-    pub owner: String,
-    pub repo: String,
-    pub check_run_id: i64,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChecksListForSuiteResponse {
+    pub total_count: i64,
+    pub check_runs: Vec<CheckRun>,
 }
 
-/// Lists annotations for a check run using the annotation `id`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `check_run_id` - The unique identifier of the check run.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn checks_list_annotations(
-    config: &ClientConfig,
-    params: ChecksListAnnotationsParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<CheckAnnotation>, SdkError> {
-    let ChecksListAnnotationsParams {
-        owner,
-        repo,
-        check_run_id,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
+impl ChecksListForSuiteResponse {
+    pub fn new(total_count: i64, check_runs: Vec<CheckRun>) -> Self {
+        Self {
+            total_count,
+            check_runs,
+        }
     }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChecksListForRefResponse {
+    pub total_count: i64,
+    pub check_runs: Vec<CheckRun>,
+}
+
+impl ChecksListForRefResponse {
+    pub fn new(total_count: i64, check_runs: Vec<CheckRun>) -> Self {
+        Self {
+            total_count,
+            check_runs,
+        }
     }
-
-    Ok(sdk_request::<Vec<CheckAnnotation>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/check-runs/{}/annotations",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_run_id)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_list_annotations",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
 }
 
-/// Triggers GitHub to rerequest an existing check run, without pushing new code to a repository. This endpoint will trigger the [`check_run` webhook](https://docs.github.com/webhooks/event-payloads/#check_run) event with the action `rerequested`. When a check run is `rerequested`, the `status` of the check suite it belongs to is reset to `queued` and the `conclusion` is cleared. The check run itself is not updated. GitHub apps recieving the [`check_run` webhook](https://docs.github.com/webhooks/event-payloads/#check_run) with the `rerequested` action should then decide if the check run should be reset or updated and call the [update `check_run` endpoint](https://docs.github.com/rest/checks/runs#update-a-check-run) to update the check_run if desired. For more information about how to re-run GitHub Actions jobs, see "[Re-run a job from a workflow run](https://docs.github.com/rest/actions/workflow-runs#re-run-a-job-from-a-workflow-run)".
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `check_run_id` - The unique identifier of the check run.
-pub fn checks_rerequest_run(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    check_run_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<EmptyObject, SdkError> {
-    Ok(sdk_request::<EmptyObject>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/check-runs/{}/rerequest",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_run_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_rerequest_run",
-            options,
-            errors: &[
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ChecksListSuitesForRefResponse {
+    pub total_count: i64,
+    pub check_suites: Vec<CheckSuite>,
 }
 
-/// Creates a check suite manually. By default, check suites are automatically created when you create a [check run](https://docs.github.com/rest/checks/runs). You only need to use this endpoint for manually creating check suites when you've disabled automatic creation using "[Update repository preferences for check suites](https://docs.github.com/rest/checks/suites#update-repository-preferences-for-check-suites)". \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array and a `null` value for `head_branch`. OAuth apps and personal access tokens (classic) cannot use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `head_sha` - The sha of the head commit.
-pub fn checks_create_suite(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    head_sha: String,
-    options: Option<&RequestOptions>,
-) -> Result<CheckSuite, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "head_sha".to_string(),
-        serde_json::to_value(head_sha).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    let __body = serde_json::Value::Object(__body_map);
+impl ChecksListSuitesForRefResponse {
+    pub fn new(total_count: i64, check_suites: Vec<CheckSuite>) -> Self {
+        Self {
+            total_count,
+            check_suites,
+        }
+    }
+}
 
-    Ok(sdk_request::<CheckSuite>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/check-suites",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_create_suite",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksCreateStatusEnum {
+    #[default]
+    Completed,
+    InProgress,
+    Pending,
+    Queued,
+    Requested,
+    Waiting,
+    Unknown(String),
+}
+
+impl ChecksCreateStatusEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Completed => "completed",
+            Self::InProgress => "in_progress",
+            Self::Pending => "pending",
+            Self::Queued => "queued",
+            Self::Requested => "requested",
+            Self::Waiting => "waiting",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ChecksCreateStatusEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ChecksCreateStatusEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "completed" => Self::Completed,
+            "in_progress" => Self::InProgress,
+            "pending" => Self::Pending,
+            "queued" => Self::Queued,
+            "requested" => Self::Requested,
+            "waiting" => Self::Waiting,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ChecksCreateStatusEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksCreateConclusionEnum {
+    #[default]
+    ActionRequired,
+    Cancelled,
+    Failure,
+    Neutral,
+    Skipped,
+    Stale,
+    Success,
+    TimedOut,
+    Unknown(String),
+}
+
+impl ChecksCreateConclusionEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::ActionRequired => "action_required",
+            Self::Cancelled => "cancelled",
+            Self::Failure => "failure",
+            Self::Neutral => "neutral",
+            Self::Skipped => "skipped",
+            Self::Stale => "stale",
+            Self::Success => "success",
+            Self::TimedOut => "timed_out",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ChecksCreateConclusionEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ChecksCreateConclusionEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "action_required" => Self::ActionRequired,
+            "cancelled" => Self::Cancelled,
+            "failure" => Self::Failure,
+            "neutral" => Self::Neutral,
+            "skipped" => Self::Skipped,
+            "stale" => Self::Stale,
+            "success" => Self::Success,
+            "timed_out" => Self::TimedOut,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ChecksCreateConclusionEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksListForSuiteEnum {
+    #[default]
+    Completed,
+    InProgress,
+    Queued,
+    Unknown(String),
+}
+
+impl ChecksListForSuiteEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Completed => "completed",
+            Self::InProgress => "in_progress",
+            Self::Queued => "queued",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ChecksListForSuiteEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ChecksListForSuiteEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "completed" => Self::Completed,
+            "in_progress" => Self::InProgress,
+            "queued" => Self::Queued,
+            _ => Self::Unknown(value),
+        })
+    }
 }

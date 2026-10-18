@@ -457,11 +457,35 @@ impl BasicError {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CustomPropertyValueValue {
     String(String),
     StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for CustomPropertyValueValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no CustomPropertyValueValue branch accepts this payload")
+        })
+    }
 }
 
 /// Custom property name and associated value
@@ -481,15 +505,4 @@ impl CustomPropertyValue {
             value,
         }
     }
-}
-
-/// Optional object value serialized in the `cvss_v3` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CvssSeveritiesCvssV3 {
-    /// The CVSS 3 vector string.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub vector_string: Option<String>,
-    /// The CVSS 3 score.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub score: Option<f64>,
 }

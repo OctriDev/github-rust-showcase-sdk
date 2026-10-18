@@ -4,204 +4,9 @@
 use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::SdkError;
-use crate::types::{Issue, SimpleUser};
+use crate::errors::{SdkError, SdkNetworkError};
+use crate::types::{Issue, IssueComment, IssuesCreateRequestLabelsItem};
 use crate::validation::validate_date_time;
-
-#[derive(Debug, Clone, Default)]
-pub struct IssuesListForOrgParams {
-    pub org: String,
-    pub filter: Option<IssuesListForOrgEnum>,
-    pub state: Option<IssuesListForOrgEnum5317c381>,
-    pub labels: Option<String>,
-    pub type_: Option<String>,
-    pub sort: Option<IssuesListForOrgEnum75c05bfe>,
-    pub direction: Option<SecurityAdvisoriesListGlobalAdvisoriesEnum>,
-    pub since: Option<String>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// List issues in an organization assigned to the authenticated user. \> [!NOTE] \> GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull request id, use the "[List pull requests](https://docs.github.com/rest/pulls/pulls#list-pull-requests)" endpoint. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `filter` - Indicates which sorts of issues to return. `assigned` means
-///   issues assigned to you. `created` means issues created by you. `mentioned`
-///   means issues mentioning you. `subscribed` means issues you're subscribed to
-///   updates for. `all` or `repos` means all issues you can see, regardless of
-///   participation or creation.
-/// * `state` - Indicates the state of the issues to return.
-/// * `labels` - A list of comma separated label names. Example: `bug,ui,@high`
-/// * `type_` - Can be the name of an issue type.
-/// * `sort` - What to sort results by.
-/// * `direction` - The direction to sort the results by.
-/// * `since` - Only show results that were last updated after the given time.
-///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
-///   format: `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn issues_list_for_org(
-    config: &ClientConfig,
-    params: IssuesListForOrgParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Issue>, SdkError> {
-    let IssuesListForOrgParams {
-        org,
-        filter,
-        state,
-        labels,
-        type_,
-        sort,
-        direction,
-        since,
-        per_page,
-        page,
-    } = params;
-    if let Some(ref since_v) = since {
-        validate_date_time("since", since_v)?;
-    }
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(9);
-    if let Some(ref v) = filter {
-        __query.push(("filter", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = state {
-        __query.push(("state", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = labels {
-        __query.push(("labels", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = type_ {
-        __query.push(("type", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = sort {
-        __query.push(("sort", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = direction {
-        __query.push(("direction", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = since {
-        __query.push(("since", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Issue>>(
-        "GET",
-        &format!("/orgs/{}/issues", crate::client::encode_path_segment(&org)),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_list_for_org",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the [available assignees](https://docs.github.com/articles/assigning-issues-and-pull-requests-to-other-github-users/) for issues in a repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn issues_list_assignees(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<SimpleUser>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<SimpleUser>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/assignees",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_list_assignees",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Checks whether a user can be assigned to issues in a repository. Use `owner` and `repo` to identify the repository and `assignee` to identify the user; a 204 response has no body when assignment is allowed.
-///
-/// Checks if a user has permission to be assigned to an issue in this repository. If the `assignee` can be assigned to issues in the repository, a `204` header with no content is returned. Otherwise a `404` status code is returned.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn issues_check_user_can_be_assigned(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    assignee: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/assignees/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&assignee)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "issues_check_user_can_be_assigned",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
 
 #[derive(Debug, Clone, Default)]
 pub struct IssuesListForRepoParams {
@@ -349,6 +154,407 @@ pub fn issues_list_for_repo(
                 ("404", "BasicError"),
                 ("422", "ValidationError"),
             ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone)]
+pub struct IssuesCreateParams {
+    pub owner: String,
+    pub repo: String,
+    pub title: IssuesCreateTitle,
+    pub body: Option<String>,
+    pub assignee: Option<Option<String>>,
+    pub milestone: Option<Option<IssuesCreateMilestone>>,
+    pub labels: Option<Vec<IssuesCreateRequestLabelsItem>>,
+    pub assignees: Option<Vec<String>>,
+    pub issue_field_values: Option<Vec<IssuesCreateIssueFieldValuesItem>>,
+    pub type_: Option<Option<String>>,
+    pub parent_issue_id: Option<i64>,
+}
+
+/// Creates an issue in a repository. Provide a `title`; you can also include a body, labels, assignees, milestone, issue type, parent issue, or issue field values. Creating an issue triggers notifications, and creating content too quickly may result in secondary rate limiting.
+///
+/// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status. This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)" and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)." This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `title` - The title of the issue.
+/// * `body` - The contents of the issue.
+/// * `assignee` - Login for the user that this issue should be assigned to.
+///   _NOTE: Only users with push access can set the assignee for new issues. The
+///   assignee is silently dropped otherwise. \*\*This field is closing down.\*\*_
+/// * `labels` - Labels to associate with this issue. _NOTE: Only users with
+///   push access can set labels for new issues. Labels are silently dropped
+///   otherwise._
+/// * `assignees` - Logins for Users to assign to this issue. _NOTE: Only users
+///   with push access can set assignees for new issues. Assignees are silently
+///   dropped otherwise._
+/// * `issue_field_values` - An array of issue field values to set on this
+///   issue. Each field value must include the field ID and the value to set.
+///   Issue fields are only available for organization-owned repositories with the
+///   feature enabled. Field values are silently dropped otherwise.
+/// * `type_` - The name of the issue type to associate with this issue. _NOTE:
+///   Only users with push access can set the type for new issues. The type is
+///   silently dropped otherwise._
+/// * `parent_issue_id` - The id of the parent issue to add this issue to as a
+///   sub-issue. _NOTE: Only users with triage access to both the parent issue's
+///   repository and this repository can set the parent issue._
+pub fn issues_create(
+    config: &ClientConfig,
+    params: IssuesCreateParams,
+    options: Option<&RequestOptions>,
+) -> Result<Issue, SdkError> {
+    let IssuesCreateParams {
+        owner,
+        repo,
+        title,
+        body,
+        assignee,
+        milestone,
+        labels,
+        assignees,
+        issue_field_values,
+        type_,
+        parent_issue_id,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "title".to_string(),
+        serde_json::to_value(title).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = body {
+        __body_map.insert(
+            "body".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = assignee {
+        __body_map.insert(
+            "assignee".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = milestone {
+        __body_map.insert(
+            "milestone".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = labels {
+        __body_map.insert(
+            "labels".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = assignees {
+        __body_map.insert(
+            "assignees".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = issue_field_values {
+        __body_map.insert(
+            "issue_field_values".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = type_ {
+        __body_map.insert(
+            "type".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = parent_issue_id {
+        __body_map.insert(
+            "parent_issue_id".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Issue>(
+        "POST",
+        &format!(
+            "/repos/{}/{}/issues",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_create",
+            options,
+            errors: &[
+                ("400", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("410", "BasicError"),
+                ("422", "ValidationError"),
+                ("503", "ServiceUnavailable"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesListCommentsForRepoParams {
+    pub owner: String,
+    pub repo: String,
+    pub sort: Option<AppsListAccountsForPlanEnum>,
+    pub direction: Option<IssuesListCommentsForRepoEnum>,
+    pub since: Option<String>,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+}
+
+/// You can use the REST API to list comments on issues and pull requests for a repository. Every pull request is an issue, but not every issue is a pull request. By default, issue comments are ordered by ascending ID. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `sort` - The property to sort the results by.
+/// * `direction` - Either `asc` or `desc`. Ignored without the `sort`
+///   parameter.
+/// * `since` - Only show results that were last updated after the given time.
+///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
+///   format: `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn issues_list_comments_for_repo(
+    config: &ClientConfig,
+    params: IssuesListCommentsForRepoParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<IssueComment>, SdkError> {
+    let IssuesListCommentsForRepoParams {
+        owner,
+        repo,
+        sort,
+        direction,
+        since,
+        per_page,
+        page,
+    } = params;
+    if let Some(ref since_v) = since {
+        validate_date_time("since", since_v)?;
+    }
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(5);
+    if let Some(ref v) = sort {
+        __query.push(("sort", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = direction {
+        __query.push(("direction", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = since {
+        __query.push(("since", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<IssueComment>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/issues/comments",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_list_comments_for_repo",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// You can use the REST API to get comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `comment_id` - The unique identifier of the comment.
+pub fn issues_get_comment(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    comment_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<IssueComment, SdkError> {
+    Ok(sdk_request::<IssueComment>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/issues/comments/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&comment_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_get_comment",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// You can use the REST API to update comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `comment_id` - The unique identifier of the comment.
+/// * `body` - The contents of the comment.
+pub fn issues_update_comment(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    comment_id: i64,
+    body: String,
+    options: Option<&RequestOptions>,
+) -> Result<IssueComment, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "body".to_string(),
+        serde_json::to_value(body).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<IssueComment>(
+        "PATCH",
+        &format!(
+            "/repos/{}/{}/issues/comments/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&comment_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_update_comment",
+            options,
+            errors: &[("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// You can use the REST API to delete comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `comment_id` - The unique identifier of the comment.
+pub fn issues_delete_comment(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    comment_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/repos/{}/{}/issues/comments/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&comment_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "issues_delete_comment",
+            options,
             ..Default::default()
         },
     )?

@@ -266,7 +266,7 @@ impl PushEvent {
     }
 }
 
-/// Required API value serialized in the `release` wire field.
+/// Required object value serialized in the `release` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ReleaseEventRelease {
     /// Required `uri`-formatted value serialized in the `url` wire field.
@@ -430,7 +430,7 @@ impl ReleaseEventRelease {
 pub struct ReleaseEvent {
     /// Required `string` value serialized in the `action` wire field.
     pub action: String,
-    /// Required API value serialized in the `release` wire field.
+    /// Required object value serialized in the `release` wire field.
     pub release: ReleaseEventRelease,
 }
 

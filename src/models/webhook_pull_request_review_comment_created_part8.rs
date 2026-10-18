@@ -3,6 +3,79 @@
 
 // webhook_pull_request_review_comment_created domain models (part 8)
 
+/// Required object value serialized in the `owner` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoOwner {
+    /// Optional `uri`-formatted value serialized in the `avatar_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avatar_url: Option<String>,
+    /// Optional `boolean` value serialized in the `deleted` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted: Option<bool>,
+    /// Optional `string` value serialized in the `email` wire field.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub email: Option<Option<String>>,
+    /// Optional `uri-template`-formatted value serialized in the `events_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub events_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `followers_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub followers_url: Option<String>,
+    /// Optional `uri-template`-formatted value serialized in the `following_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub following_url: Option<String>,
+    /// Optional `uri-template`-formatted value serialized in the `gists_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gists_url: Option<String>,
+    /// Optional `string` value serialized in the `gravatar_id` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gravatar_id: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `html_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub html_url: Option<String>,
+    /// Required `integer` value serialized in the `id` wire field.
+    pub id: i64,
+    /// Required `string` value serialized in the `login` wire field.
+    pub login: String,
+    /// Optional `string` value serialized in the `name` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Optional `string` value serialized in the `node_id` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node_id: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `organizations_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub organizations_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `received_events_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_events_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `repos_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repos_url: Option<String>,
+    /// Optional `boolean` value serialized in the `site_admin` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub site_admin: Option<bool>,
+    /// Optional `uri-template`-formatted value serialized in the `starred_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starred_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `subscriptions_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscriptions_url: Option<String>,
+    /// Optional enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoOwnerTypeEnum>,
+    /// Optional `uri`-formatted value serialized in the `url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    /// Optional `string` value serialized in the `user_view_type` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_view_type: Option<String>,
+}
+
 impl WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoOwner {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.avatar_url.as_ref() {
@@ -91,11 +164,35 @@ impl WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoPushedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoPushedAt branch accepts this payload"))
+    }
 }
 
 /// The default value for a squash merge commit message:

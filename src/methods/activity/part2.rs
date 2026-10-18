@@ -8,6 +8,97 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{Event, Thread, ThreadSubscription};
 use crate::validation::validate_date_time;
 
+#[derive(Debug, Clone, Default)]
+pub struct ActivityListNotificationsForAuthenticatedUserParams {
+    pub all: Option<bool>,
+    pub participating: Option<bool>,
+    pub since: Option<String>,
+    pub before: Option<String>,
+    pub page: Option<i64>,
+    pub per_page: Option<i64>,
+}
+
+/// List all notifications for the current user, sorted by most recently updated.
+///
+/// # Arguments
+///
+/// * `all` - If `true`, show notifications marked as read.
+/// * `participating` - If `true`, only shows notifications in which the user is
+///   directly participating or mentioned.
+/// * `since` - Only show results that were last updated after the given time.
+///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
+///   format: `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `before` - Only show notifications updated before the given time. This is
+///   a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
+///   `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `per_page` - The number of results per page (max 50). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn activity_list_notifications_for_authenticated_user(
+    config: &ClientConfig,
+    params: ActivityListNotificationsForAuthenticatedUserParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<Thread>, SdkError> {
+    let ActivityListNotificationsForAuthenticatedUserParams {
+        all,
+        participating,
+        since,
+        before,
+        page,
+        per_page,
+    } = params;
+    if let Some(ref since_v) = since {
+        validate_date_time("since", since_v)?;
+    }
+    if let Some(ref before_v) = before {
+        validate_date_time("before", before_v)?;
+    }
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
+    if let Some(ref v) = all {
+        __query.push(("all", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = participating {
+        __query.push(("participating", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = since {
+        __query.push(("since", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = before {
+        __query.push(("before", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<Thread>>(
+        "GET",
+        "/notifications",
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "activity_list_notifications_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Marks all notifications as "read" for the current user. If the number of notifications is too large to complete in one request, you will receive a `202 Accepted` status and GitHub will run an asynchronous process to mark notifications as "read." To check whether any "unread" notifications remain, you can use the [List notifications for the authenticated user](https://docs.github.com/rest/activity/notifications#list-notifications-for-the-authenticated-user) endpoint and pass the query parameter `all=false`.
 ///
 /// # Arguments
@@ -366,161 +457,6 @@ pub fn activity_list_repo_events(
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "activity_list_repo_events",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActivityListRepoNotificationsForAuthenticatedUserParams {
-    pub owner: String,
-    pub repo: String,
-    pub all: Option<bool>,
-    pub participating: Option<bool>,
-    pub since: Option<String>,
-    pub before: Option<String>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists all notifications for the current user in the specified repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `all` - If `true`, show notifications marked as read.
-/// * `participating` - If `true`, only shows notifications in which the user is
-///   directly participating or mentioned.
-/// * `since` - Only show results that were last updated after the given time.
-///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
-///   format: `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `before` - Only show notifications updated before the given time. This is
-///   a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn activity_list_repo_notifications_for_authenticated_user(
-    config: &ClientConfig,
-    params: ActivityListRepoNotificationsForAuthenticatedUserParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Thread>, SdkError> {
-    let ActivityListRepoNotificationsForAuthenticatedUserParams {
-        owner,
-        repo,
-        all,
-        participating,
-        since,
-        before,
-        per_page,
-        page,
-    } = params;
-    if let Some(ref since_v) = since {
-        validate_date_time("since", since_v)?;
-    }
-    if let Some(ref before_v) = before {
-        validate_date_time("before", before_v)?;
-    }
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
-    if let Some(ref v) = all {
-        __query.push(("all", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = participating {
-        __query.push(("participating", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = since {
-        __query.push(("since", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Thread>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/notifications",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "activity_list_repo_notifications_for_authenticated_user",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Marks all notifications in a repository as "read" for the current user. If the number of notifications is too large to complete in one request, you will receive a `202 Accepted` status and GitHub will run an asynchronous process to mark notifications as "read." To check whether any "unread" notifications remain, you can use the [List repository notifications for the authenticated user](https://docs.github.com/rest/activity/notifications#list-repository-notifications-for-the-authenticated-user) endpoint and pass the query parameter `all=false`.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `last_read_at` - Describes the last point that notifications were checked.
-///   Anything updated since this time will not be marked as read. If you omit
-///   this parameter, all notifications are marked as read. This is a timestamp in
-///   [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`. Default: The current timestamp.
-pub fn activity_mark_repo_notifications_as_read(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    last_read_at: Option<String>,
-    options: Option<&RequestOptions>,
-) -> Result<ActivityMarkRepoNotificationsAsReadResponse, SdkError> {
-    if let Some(ref last_read_at_v) = last_read_at {
-        validate_date_time("last_read_at", last_read_at_v)?;
-    }
-
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = last_read_at {
-        __body_map.insert(
-            "last_read_at".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<ActivityMarkRepoNotificationsAsReadResponse>(
-        "PUT",
-        &format!(
-            "/repos/{}/{}/notifications",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "activity_mark_repo_notifications_as_read",
             options,
             ..Default::default()
         },

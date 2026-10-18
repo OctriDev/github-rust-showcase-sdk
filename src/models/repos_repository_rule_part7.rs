@@ -3,6 +3,203 @@
 
 // repos_repository_rule domain models (part 7)
 
+impl RepositoryRulePullRequestParameters {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_range(
+            "required_approving_review_count",
+            self.required_approving_review_count as f64,
+            crate::validation::RangeOpts {
+                min: Some(0_f64),
+                max: Some(10_f64),
+                ..Default::default()
+            },
+        )?;
+        Ok(())
+    }
+
+    pub fn new(
+        dismiss_stale_reviews_on_push: bool,
+        require_code_owner_review: bool,
+        require_last_push_approval: bool,
+        required_approving_review_count: i64,
+        required_review_thread_resolution: bool,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            allowed_merge_methods: None,
+            dismiss_stale_reviews_on_push,
+            dismissal_restriction: None,
+            require_code_owner_review,
+            require_last_push_approval,
+            required_approving_review_count,
+            required_review_thread_resolution,
+            required_reviewers: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+/// Require all commits be made to a non-target branch and submitted via a pull request before they can be merged.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRulePullRequest {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRulePullRequestTypeEnum,
+    /// Optional object value serialized in the `parameters` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<RepositoryRulePullRequestParameters>,
+}
+
+impl RepositoryRulePullRequest {
+    pub fn new(type_: RepositoryRulePullRequestTypeEnum) -> Self {
+        Self {
+            type_,
+            parameters: None,
+        }
+    }
+}
+
+/// Required enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RepositoryRuleRequiredDeploymentsTypeEnum {
+    #[serde(rename = "required_deployments")]
+    #[default]
+    RequiredDeployments,
+}
+
+impl RepositoryRuleRequiredDeploymentsTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::RequiredDeployments => "required_deployments",
+        }
+    }
+}
+
+impl std::fmt::Display for RepositoryRuleRequiredDeploymentsTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryRuleRequiredDeploymentsTypeEnum::RequiredDeployments => {
+                f.write_str("required_deployments")
+            }
+        }
+    }
+}
+
+/// Optional object value serialized in the `parameters` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleRequiredDeploymentsParameters {
+    /// The environments that must be successfully deployed to before branches can be merged.
+    pub required_deployment_environments: Vec<String>,
+}
+
+impl RepositoryRuleRequiredDeploymentsParameters {
+    pub fn new(required_deployment_environments: Vec<String>) -> Self {
+        Self {
+            required_deployment_environments,
+        }
+    }
+}
+
+/// Choose which environments must be successfully deployed to before refs can be pushed into a ref that matches this rule.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleRequiredDeployments {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRuleRequiredDeploymentsTypeEnum,
+    /// Optional object value serialized in the `parameters` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<RepositoryRuleRequiredDeploymentsParameters>,
+}
+
+impl RepositoryRuleRequiredDeployments {
+    pub fn new(type_: RepositoryRuleRequiredDeploymentsTypeEnum) -> Self {
+        Self {
+            type_,
+            parameters: None,
+        }
+    }
+}
+
+/// Required enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RepositoryRuleRequiredLinearHistoryTypeEnum {
+    #[serde(rename = "required_linear_history")]
+    #[default]
+    RequiredLinearHistory,
+}
+
+impl RepositoryRuleRequiredLinearHistoryTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::RequiredLinearHistory => "required_linear_history",
+        }
+    }
+}
+
+impl std::fmt::Display for RepositoryRuleRequiredLinearHistoryTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryRuleRequiredLinearHistoryTypeEnum::RequiredLinearHistory => {
+                f.write_str("required_linear_history")
+            }
+        }
+    }
+}
+
+/// Prevent merge commits from being pushed to matching refs.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleRequiredLinearHistory {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRuleRequiredLinearHistoryTypeEnum,
+}
+
+impl RepositoryRuleRequiredLinearHistory {
+    pub fn new(type_: RepositoryRuleRequiredLinearHistoryTypeEnum) -> Self {
+        Self { type_ }
+    }
+}
+
+/// Required enumerated value serialized in the `type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RepositoryRuleRequiredSignaturesTypeEnum {
+    #[serde(rename = "required_signatures")]
+    #[default]
+    RequiredSignatures,
+}
+
+impl RepositoryRuleRequiredSignaturesTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::RequiredSignatures => "required_signatures",
+        }
+    }
+}
+
+impl std::fmt::Display for RepositoryRuleRequiredSignaturesTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RepositoryRuleRequiredSignaturesTypeEnum::RequiredSignatures => {
+                f.write_str("required_signatures")
+            }
+        }
+    }
+}
+
+/// Commits pushed to matching refs must have verified signatures.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryRuleRequiredSignatures {
+    /// Required enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type")]
+    pub type_: RepositoryRuleRequiredSignaturesTypeEnum,
+}
+
+impl RepositoryRuleRequiredSignatures {
+    pub fn new(type_: RepositoryRuleRequiredSignaturesTypeEnum) -> Self {
+        Self { type_ }
+    }
+}
+
 /// Required enumerated value serialized in the `type` wire field.
 #[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
 pub enum RepositoryRuleRequiredStatusChecksTypeEnum {
@@ -303,95 +500,4 @@ impl std::fmt::Display for RepositoryRuleUpdateTypeEnum {
 pub struct RepositoryRuleUpdateParameters {
     /// Branch can pull changes from its upstream repository
     pub update_allows_fetch_and_merge: bool,
-}
-
-impl RepositoryRuleUpdateParameters {
-    pub fn new(update_allows_fetch_and_merge: bool) -> Self {
-        Self {
-            update_allows_fetch_and_merge,
-        }
-    }
-}
-
-/// Only allow users with bypass permission to update matching refs.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleUpdate {
-    /// Required enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleUpdateTypeEnum,
-    /// Optional object value serialized in the `parameters` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parameters: Option<RepositoryRuleUpdateParameters>,
-}
-
-impl RepositoryRuleUpdate {
-    pub fn new(type_: RepositoryRuleUpdateTypeEnum) -> Self {
-        Self {
-            type_,
-            parameters: None,
-        }
-    }
-}
-
-/// Required enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum RepositoryRuleWorkflowsTypeEnum {
-    #[serde(rename = "workflows")]
-    #[default]
-    Workflows,
-}
-
-impl RepositoryRuleWorkflowsTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Workflows => "workflows",
-        }
-    }
-}
-
-impl std::fmt::Display for RepositoryRuleWorkflowsTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            RepositoryRuleWorkflowsTypeEnum::Workflows => f.write_str("workflows"),
-        }
-    }
-}
-
-/// Optional object value serialized in the `parameters` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleWorkflowsParameters {
-    /// Allow repositories and branches to be created if a check would otherwise prohibit it.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub do_not_enforce_on_create: Option<bool>,
-    /// Workflows that must pass for this rule to pass.
-    pub workflows: Vec<RepositoryRuleParamsWorkflowFileReference>,
-}
-
-impl RepositoryRuleWorkflowsParameters {
-    pub fn new(workflows: Vec<RepositoryRuleParamsWorkflowFileReference>) -> Self {
-        Self {
-            do_not_enforce_on_create: None,
-            workflows,
-        }
-    }
-}
-
-/// Require all changes made to a targeted branch to pass the specified workflows before they can be merged.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleWorkflows {
-    /// Required enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleWorkflowsTypeEnum,
-    /// Optional object value serialized in the `parameters` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parameters: Option<RepositoryRuleWorkflowsParameters>,
-}
-
-impl RepositoryRuleWorkflows {
-    pub fn new(type_: RepositoryRuleWorkflowsTypeEnum) -> Self {
-        Self {
-            type_,
-            parameters: None,
-        }
-    }
 }

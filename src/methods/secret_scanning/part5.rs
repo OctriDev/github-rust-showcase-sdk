@@ -228,6 +228,7 @@ pub fn secret_scanning_list_alerts_for_repo(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_list_alerts_for_repo",
             options,
+            errors: &[("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -275,6 +276,7 @@ pub fn secret_scanning_get_alert(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_get_alert",
             options,
+            errors: &[("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -402,6 +404,7 @@ pub fn secret_scanning_update_alert(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_update_alert",
             options,
+            errors: &[("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

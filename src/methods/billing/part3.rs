@@ -89,6 +89,7 @@ pub fn billing_get_github_billing_usage_summary_report_org(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -171,6 +172,7 @@ pub fn billing_get_github_billing_ai_credit_usage_report_user(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -253,6 +255,7 @@ pub fn billing_get_github_billing_premium_request_usage_report_user(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -309,6 +312,7 @@ pub fn billing_get_github_billing_usage_report_user(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -397,6 +401,7 @@ pub fn billing_get_github_billing_usage_summary_report_user(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

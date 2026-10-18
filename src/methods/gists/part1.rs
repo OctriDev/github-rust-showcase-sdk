@@ -4,7 +4,7 @@
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{BaseGist, GistComment, GistSimple};
+use crate::types::{BaseGist, GistSimple};
 use crate::validation::validate_date_time;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -66,11 +66,35 @@ impl std::fmt::Display for GistsCreatePublicVariant1Enum {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum GistsCreatePublic {
     Bool(bool),
     Literal(GistsCreatePublicVariant1Enum),
+}
+
+impl<'de> serde::Deserialize<'de> for GistsCreatePublic {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<bool>(value.clone()) {
+            let candidate = Self::Bool(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<GistsCreatePublicVariant1Enum>(value.clone()) {
+            let candidate = Self::Literal(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no GistsCreatePublic branch accepts this payload")
+        })
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -345,7 +369,7 @@ pub fn gists_get(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "gists_get",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("403", "ForbiddenGist"), ("404", "BasicError")],
             ..Default::default()
         },
     )?
@@ -367,7 +391,7 @@ pub fn gists_update(
     config: &ClientConfig,
     gist_id: String,
     description: Option<String>,
-    files: Option<std::collections::HashMap<String, GistsUpdateFilesValue>>,
+    files: Option<std::collections::HashMap<String, Option<GistsUpdateFilesValue>>>,
     options: Option<&RequestOptions>,
 ) -> Result<GistSimple, SdkError> {
     let mut __body_map = serde_json::Map::new();
@@ -428,53 +452,6 @@ pub fn gists_delete(
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "gists_delete",
-            options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the comments on a gist. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown. This is the default if you do not pass any specific media type.
-///
-/// # Arguments
-///
-/// * `gist_id` - The unique identifier of the gist.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn gists_list_comments(
-    config: &ClientConfig,
-    gist_id: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<GistComment>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<GistComment>>(
-        "GET",
-        &format!(
-            "/gists/{}/comments",
-            crate::client::encode_path_segment(&gist_id)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "gists_list_comments",
             options,
             errors: &[("403", "BasicError"), ("404", "BasicError")],
             ..Default::default()

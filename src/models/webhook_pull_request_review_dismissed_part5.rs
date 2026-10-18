@@ -3,6 +3,216 @@
 
 // webhook_pull_request_review_dismissed domain models (part 5)
 
+impl WebhookPullRequestReviewDismissedPullRequestBaseRepo {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("clone_url", &self.clone_url)?;
+        crate::validation::validate_uri("contributors_url", &self.contributors_url)?;
+        crate::validation::validate_uri("deployments_url", &self.deployments_url)?;
+        crate::validation::validate_uri("downloads_url", &self.downloads_url)?;
+        crate::validation::validate_uri("events_url", &self.events_url)?;
+        crate::validation::validate_uri("forks_url", &self.forks_url)?;
+        crate::validation::validate_uri("git_url", &self.git_url)?;
+        crate::validation::validate_uri("hooks_url", &self.hooks_url)?;
+        crate::validation::validate_uri("html_url", &self.html_url)?;
+        crate::validation::validate_uri("languages_url", &self.languages_url)?;
+        crate::validation::validate_uri("merges_url", &self.merges_url)?;
+        if let Some(value) = self.mirror_url.as_ref() {
+            crate::validation::validate_uri("mirror_url", value)?;
+        }
+        crate::validation::validate_uri("stargazers_url", &self.stargazers_url)?;
+        crate::validation::validate_uri("subscribers_url", &self.subscribers_url)?;
+        crate::validation::validate_uri("subscription_url", &self.subscription_url)?;
+        crate::validation::validate_uri("svn_url", &self.svn_url)?;
+        crate::validation::validate_uri("tags_url", &self.tags_url)?;
+        crate::validation::validate_uri("teams_url", &self.teams_url)?;
+        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
+        crate::validation::validate_uri("url", &self.url)?;
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        archive_url: String,
+        archived: bool,
+        assignees_url: String,
+        blobs_url: String,
+        branches_url: String,
+        clone_url: String,
+        collaborators_url: String,
+        comments_url: String,
+        commits_url: String,
+        compare_url: String,
+        contents_url: String,
+        contributors_url: String,
+        created_at: WebhookPullRequestReviewDismissedPullRequestBaseRepoCreatedAt,
+        default_branch: String,
+        deployments_url: String,
+        description: Option<String>,
+        downloads_url: String,
+        events_url: String,
+        fork: bool,
+        forks: i64,
+        forks_count: i64,
+        forks_url: String,
+        full_name: String,
+        git_commits_url: String,
+        git_refs_url: String,
+        git_tags_url: String,
+        git_url: String,
+        has_downloads: bool,
+        has_issues: bool,
+        has_pages: bool,
+        has_projects: bool,
+        has_wiki: bool,
+        has_discussions: bool,
+        homepage: Option<String>,
+        hooks_url: String,
+        html_url: String,
+        id: i64,
+        issue_comment_url: String,
+        issue_events_url: String,
+        issues_url: String,
+        keys_url: String,
+        labels_url: String,
+        language: Option<String>,
+        languages_url: String,
+        license: Option<WebhookPullRequestReviewDismissedPullRequestBaseRepoLicense>,
+        merges_url: String,
+        milestones_url: String,
+        mirror_url: Option<String>,
+        name: String,
+        node_id: String,
+        notifications_url: String,
+        open_issues: i64,
+        open_issues_count: i64,
+        owner: Option<WebhookPullRequestReviewDismissedPullRequestBaseRepoOwner>,
+        private: bool,
+        pulls_url: String,
+        pushed_at: Option<WebhookPullRequestReviewDismissedPullRequestBaseRepoPushedAt>,
+        releases_url: String,
+        size: i64,
+        ssh_url: String,
+        stargazers_count: i64,
+        stargazers_url: String,
+        statuses_url: String,
+        subscribers_url: String,
+        subscription_url: String,
+        svn_url: String,
+        tags_url: String,
+        teams_url: String,
+        topics: Vec<String>,
+        trees_url: String,
+        updated_at: String,
+        url: String,
+        visibility: WebhookPullRequestReviewDismissedPullRequestBaseRepoVisibilityEnum,
+        watchers: i64,
+        watchers_count: i64,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            allow_auto_merge: None,
+            allow_forking: None,
+            allow_merge_commit: None,
+            allow_rebase_merge: None,
+            allow_squash_merge: None,
+            allow_update_branch: None,
+            archive_url,
+            archived,
+            assignees_url,
+            blobs_url,
+            branches_url,
+            clone_url,
+            collaborators_url,
+            comments_url,
+            commits_url,
+            compare_url,
+            contents_url,
+            contributors_url,
+            created_at,
+            default_branch,
+            delete_branch_on_merge: None,
+            deployments_url,
+            description,
+            disabled: None,
+            downloads_url,
+            events_url,
+            fork,
+            forks,
+            forks_count,
+            forks_url,
+            full_name,
+            git_commits_url,
+            git_refs_url,
+            git_tags_url,
+            git_url,
+            has_downloads,
+            has_issues,
+            has_pages,
+            has_projects,
+            has_wiki,
+            has_discussions,
+            has_pull_requests: None,
+            pull_request_creation_policy: None,
+            homepage,
+            hooks_url,
+            html_url,
+            id,
+            is_template: None,
+            issue_comment_url,
+            issue_events_url,
+            issues_url,
+            keys_url,
+            labels_url,
+            language,
+            languages_url,
+            license,
+            master_branch: None,
+            merge_commit_message: None,
+            merge_commit_title: None,
+            merges_url,
+            milestones_url,
+            mirror_url,
+            name,
+            node_id,
+            notifications_url,
+            open_issues,
+            open_issues_count,
+            organization: None,
+            owner,
+            permissions: None,
+            private,
+            public: None,
+            pulls_url,
+            pushed_at,
+            releases_url,
+            role_name: None,
+            size,
+            squash_merge_commit_message: None,
+            squash_merge_commit_title: None,
+            ssh_url,
+            stargazers: None,
+            stargazers_count,
+            stargazers_url,
+            statuses_url,
+            subscribers_url,
+            subscription_url,
+            svn_url,
+            tags_url,
+            teams_url,
+            topics,
+            trees_url,
+            updated_at,
+            url,
+            use_squash_pr_title_as_default: None,
+            visibility,
+            watchers,
+            watchers_count,
+            web_commit_signoff_required: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 /// Optional enumerated value serialized in the `type` wire field.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewDismissedPullRequestBaseUserTypeEnum {
@@ -221,11 +431,35 @@ impl WebhookPullRequestReviewDismissedPullRequestBase {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewDismissedPullRequestHeadRepoCreatedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewDismissedPullRequestHeadRepoCreatedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewDismissedPullRequestHeadRepoCreatedAt branch accepts this payload"))
+    }
 }
 
 /// The policy controlling who can create pull requests: all or collaborators_only.
@@ -347,149 +581,5 @@ impl WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitMessageEnum 
             Self::Blank => "BLANK",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_BODY" => Self::PrBody,
-            "PR_TITLE" => Self::PrTitle,
-            "BLANK" => Self::Blank,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The default value for a merge commit title.
-///
-/// \- `PR_TITLE` \- default to the pull request's title.
-/// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitTitleEnum {
-    #[default]
-    PrTitle,
-    MergeMessage,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitTitleEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrTitle => "PR_TITLE",
-            Self::MergeMessage => "MERGE_MESSAGE",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitTitleEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitTitleEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_TITLE" => Self::PrTitle,
-            "MERGE_MESSAGE" => Self::MergeMessage,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewDismissedPullRequestHeadRepoMergeCommitTitleEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Optional enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewDismissedPullRequestHeadRepoOwnerTypeEnum {
-    #[default]
-    Bot,
-    User,
-    Organization,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewDismissedPullRequestHeadRepoOwnerTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Bot => "Bot",
-            Self::User => "User",
-            Self::Organization => "Organization",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhookPullRequestReviewDismissedPullRequestHeadRepoOwnerTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewDismissedPullRequestHeadRepoOwnerTypeEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "Bot" => Self::Bot,
-            "User" => Self::User,
-            "Organization" => Self::Organization,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhookPullRequestReviewDismissedPullRequestHeadRepoOwnerTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

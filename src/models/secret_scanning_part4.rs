@@ -475,23 +475,25 @@ impl SecretScanningCustomPatternToDelete {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum SecretScanningCustomPatternToUpdate {
-    Value(serde_json::Value),
-}
-
-/// A machine-readable code describing the error.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum SecretScanningCustomPatternValidationErrorCodeEnum {
-    #[default]
-    Invalid,
-    Unprocessable,
-    StartDelimiter,
-    EndDelimiter,
-    Name,
-    MustMatch,
-    MustNotMatch,
-    CustomPatternVersionMismatch,
-    Unknown(String),
+/// Fields to update on a custom pattern. At least one updatable field (`pattern`, `start_delimiter`, `end_delimiter`, `must_match`, or `must_not_match`) must also be provided. Only provided fields will be updated.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct SecretScanningCustomPatternToUpdate {
+    /// The updated regular expression of the custom pattern.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// The updated start delimiter regex for the custom pattern.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_delimiter: Option<String>,
+    /// The updated end delimiter regex for the custom pattern.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_delimiter: Option<String>,
+    /// Updated list of regexes that the secret must match.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub must_match: Option<Vec<String>>,
+    /// Updated list of regexes that the secret must not match.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub must_not_match: Option<Vec<String>>,
+    /// The version of the entity. This is used to confirm you're updating the current version of the entity and mitigate unintentionally overriding someone else's update.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub custom_pattern_version: Option<SecretScanningRowVersion>,
 }

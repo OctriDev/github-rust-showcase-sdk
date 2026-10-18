@@ -2,7 +2,7 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::TasksItemArtifactsItemData;
+use crate::types::AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemData;
 
 impl serde::Serialize
     for AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemProviderEnum
@@ -101,14 +101,14 @@ pub struct AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItem {
     #[serde(rename = "type")]
     pub type_: AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemTypeEnum,
     /// Resource data (shape depends on type)
-    pub data: TasksItemArtifactsItemData,
+    pub data: AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemData,
 }
 
 impl AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItem {
     pub fn new(
         provider: AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemProviderEnum,
         type_: AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemTypeEnum,
-        data: TasksItemArtifactsItemData,
+        data: AgentAutomationsListAutomationTasksResponseTasksItemArtifactsItemData,
     ) -> Self {
         Self {
             provider,
@@ -148,7 +148,7 @@ pub struct AgentAutomationsListAutomationTasksResponseTasksItem {
     pub name: Option<String>,
     /// The entity who created this task
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub creator: Option<AgentAutomationsListAutomationTasksResponseTasksItemCreatorVariant0>,
+    pub creator: Option<AgentAutomationsListAutomationTasksResponseTasksItemCreator>,
     /// Type of the task creator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creator_type: Option<AgentAutomationsListAutomationTasksResponseTasksItemCreatorTypeEnum>,

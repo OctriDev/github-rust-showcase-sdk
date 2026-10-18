@@ -6,49 +6,49 @@
 /// The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) the comment belongs to.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookIssueCommentCreatedIssue {
-    /// Optional `string` value serialized in the `active_lock_reason` wire field.
+    /// Required `string` value serialized in the `active_lock_reason` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub active_lock_reason: Option<String>,
     /// Required object value serialized in the `assignee` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
-    pub assignee: Option<WebhookIssueCommentCreatedIssueVariant1Assignee>,
-    /// Optional array value serialized in the `assignees` wire field.
+    pub assignee: Option<WebhookIssueCommentCreatedIssueAssignee>,
+    /// Required array value serialized in the `assignees` wire field.
     pub assignees: Vec<Option<serde_json::Value>>,
-    /// Optional `string` value serialized in the `author_association` wire field.
+    /// Required `string` value serialized in the `author_association` wire field.
     pub author_association: String,
-    /// Optional `string` value serialized in the `body` wire field.
+    /// Required `string` value serialized in the `body` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub body: Option<String>,
-    /// Optional `string` value serialized in the `closed_at` wire field.
+    /// Required `string` value serialized in the `closed_at` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub closed_at: Option<String>,
-    /// Optional `integer` value serialized in the `comments` wire field.
+    /// Required `integer` value serialized in the `comments` wire field.
     pub comments: i64,
-    /// Optional `string` value serialized in the `comments_url` wire field.
+    /// Required `string` value serialized in the `comments_url` wire field.
     pub comments_url: String,
-    /// Optional `string` value serialized in the `created_at` wire field.
+    /// Required `string` value serialized in the `created_at` wire field.
     pub created_at: String,
     /// Optional `boolean` value serialized in the `draft` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub draft: Option<bool>,
-    /// Optional `string` value serialized in the `events_url` wire field.
+    /// Required `string` value serialized in the `events_url` wire field.
     pub events_url: String,
-    /// Optional `string` value serialized in the `html_url` wire field.
+    /// Required `string` value serialized in the `html_url` wire field.
     pub html_url: String,
-    /// Optional `integer` value serialized in the `id` wire field.
+    /// Required `integer` value serialized in the `id` wire field.
     pub id: i64,
     /// Required array value serialized in the `labels` wire field.
-    pub labels: Vec<WebhookIssueCommentCreatedIssueVariant1LabelsItem>,
-    /// Optional `string` value serialized in the `labels_url` wire field.
+    pub labels: Vec<WebhookIssueCommentCreatedIssueLabelsItem>,
+    /// Required `string` value serialized in the `labels_url` wire field.
     pub labels_url: String,
     /// Required `boolean` value serialized in the `locked` wire field.
     pub locked: bool,
-    /// Optional object value serialized in the `milestone` wire field.
+    /// Required object value serialized in the `milestone` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub milestone: Option<serde_json::Value>,
-    /// Optional `string` value serialized in the `node_id` wire field.
+    /// Required `string` value serialized in the `node_id` wire field.
     pub node_id: String,
-    /// Optional `integer` value serialized in the `number` wire field.
+    /// Required `integer` value serialized in the `number` wire field.
     pub number: i64,
     /// Optional object value serialized in the `performed_via_github_app` wire field.
     #[serde(
@@ -59,10 +59,10 @@ pub struct WebhookIssueCommentCreatedIssue {
     pub performed_via_github_app: Option<Option<serde_json::Value>>,
     /// Optional object value serialized in the `pull_request` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pull_request: Option<WebhookIssueCommentCreatedIssueVariant0PullRequest>,
-    /// Optional object value serialized in the `reactions` wire field.
-    pub reactions: WebhookIssueCommentCreatedIssueVariant1Reactions,
-    /// Optional `string` value serialized in the `repository_url` wire field.
+    pub pull_request: Option<WebhookIssueCommentCreatedIssuePullRequest>,
+    /// Required object value serialized in the `reactions` wire field.
+    pub reactions: WebhookIssueCommentCreatedIssueReactions,
+    /// Required `string` value serialized in the `repository_url` wire field.
     pub repository_url: String,
     /// Optional object value serialized in the `sub_issues_summary` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -71,7 +71,7 @@ pub struct WebhookIssueCommentCreatedIssue {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issue_dependencies_summary: Option<IssueDependenciesSummary>,
     /// State of the issue; either 'open' or 'closed'
-    pub state: WebhookIssueCommentCreatedIssueVariant1StateEnum,
+    pub state: WebhookIssueCommentCreatedIssueStateEnum,
     /// Optional `string` value serialized in the `state_reason` wire field.
     #[serde(
         skip_serializing_if = "Option::is_none",
@@ -82,7 +82,7 @@ pub struct WebhookIssueCommentCreatedIssue {
     /// Optional `string` value serialized in the `timeline_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeline_url: Option<String>,
-    /// Optional `string` value serialized in the `title` wire field.
+    /// Required `string` value serialized in the `title` wire field.
     pub title: String,
     /// The type assigned to the issue. This is only present for issues in repositories where issue types are supported.
     #[serde(
@@ -92,19 +92,19 @@ pub struct WebhookIssueCommentCreatedIssue {
         with = "crate::client::double_option"
     )]
     pub type_: Option<Option<IssueType>>,
-    /// Optional `string` value serialized in the `updated_at` wire field.
+    /// Required `string` value serialized in the `updated_at` wire field.
     pub updated_at: String,
-    /// Optional `string` value serialized in the `url` wire field.
+    /// Required `string` value serialized in the `url` wire field.
     pub url: String,
-    /// Optional object value serialized in the `user` wire field.
-    pub user: WebhookIssueCommentCreatedIssueVariant1User,
+    /// Required object value serialized in the `user` wire field.
+    pub user: WebhookIssueCommentCreatedIssueUser,
 }
 
 impl WebhookIssueCommentCreatedIssue {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         active_lock_reason: Option<String>,
-        assignee: Option<WebhookIssueCommentCreatedIssueVariant1Assignee>,
+        assignee: Option<WebhookIssueCommentCreatedIssueAssignee>,
         assignees: Vec<Option<serde_json::Value>>,
         author_association: String,
         body: Option<String>,
@@ -115,19 +115,19 @@ impl WebhookIssueCommentCreatedIssue {
         events_url: String,
         html_url: String,
         id: i64,
-        labels: Vec<WebhookIssueCommentCreatedIssueVariant1LabelsItem>,
+        labels: Vec<WebhookIssueCommentCreatedIssueLabelsItem>,
         labels_url: String,
         locked: bool,
         milestone: Option<serde_json::Value>,
         node_id: String,
         number: i64,
-        reactions: WebhookIssueCommentCreatedIssueVariant1Reactions,
+        reactions: WebhookIssueCommentCreatedIssueReactions,
         repository_url: String,
-        state: WebhookIssueCommentCreatedIssueVariant1StateEnum,
+        state: WebhookIssueCommentCreatedIssueStateEnum,
         title: String,
         updated_at: String,
         url: String,
-        user: WebhookIssueCommentCreatedIssueVariant1User,
+        user: WebhookIssueCommentCreatedIssueUser,
     ) -> Self {
         Self {
             active_lock_reason,

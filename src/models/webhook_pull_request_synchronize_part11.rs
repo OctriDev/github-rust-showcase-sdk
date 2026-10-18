@@ -53,7 +53,9 @@ impl WebhookPullRequestSynchronizePullRequest {
         node_id: String,
         number: i64,
         patch_url: String,
-        requested_reviewers: Vec<WebhookPullRequestSynchronizePullRequestRequestedReviewersItem>,
+        requested_reviewers: Vec<
+            Option<WebhookPullRequestSynchronizePullRequestRequestedReviewersItem>,
+        >,
         requested_teams: Vec<WebhookPullRequestSynchronizePullRequestRequestedTeamsItem>,
         review_comment_url: String,
         review_comments_url: String,

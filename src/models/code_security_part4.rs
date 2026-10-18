@@ -364,11 +364,62 @@ impl CodeSecurityConfigurationRepositories {
     }
 }
 
+/// The visibility of newly created repositories for which the code security configuration will be applied to by default
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodeSecurityDefaultConfigurationsItemDefaultForNewReposEnum {
+    #[default]
+    Public,
+    PrivateAndInternal,
+    All,
+    Unknown(String),
+}
+
+impl CodeSecurityDefaultConfigurationsItemDefaultForNewReposEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Public => "public",
+            Self::PrivateAndInternal => "private_and_internal",
+            Self::All => "all",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for CodeSecurityDefaultConfigurationsItemDefaultForNewReposEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for CodeSecurityDefaultConfigurationsItemDefaultForNewReposEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "public" => Self::Public,
+            "private_and_internal" => Self::PrivateAndInternal,
+            "all" => Self::All,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CodeSecurityDefaultConfigurationsItemDefaultForNewReposEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct CodeSecurityDefaultConfigurationsItem {
     /// The visibility of newly created repositories for which the code security configuration will be applied to by default
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for_new_repos: Option<serde_json::Value>,
+    pub default_for_new_repos: Option<CodeSecurityDefaultConfigurationsItemDefaultForNewReposEnum>,
     /// A code security configuration
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configuration: Option<CodeSecurityConfiguration>,

@@ -402,12 +402,41 @@ impl RepositoryAdvisoryCredit {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue {
     String(String),
     Integer(i64),
     StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue branch accepts this payload"))
+    }
 }
 
 /// Required object value serialized in the `errors[]` wire field.
@@ -428,8 +457,12 @@ pub struct RepositoryAdvisoryDescriptionValidationErrorErrorsItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub index: Option<i64>,
     /// Optional API value serialized in the `value` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub value: Option<Option<RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue>>,
     /// The report template section the violation concerns.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub section: Option<String>,
@@ -496,53 +529,4 @@ impl RepositoryAdvisoryUpdateVulnerabilitiesItemPackage {
             name: None,
         }
     }
-}
-
-/// Required object value serialized in the `vulnerabilities[]` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryAdvisoryUpdateVulnerabilitiesItem {
-    /// The name of the package affected by the vulnerability.
-    pub package: RepositoryAdvisoryUpdateVulnerabilitiesItemPackage,
-    /// The range of the package versions affected by the vulnerability.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub vulnerable_version_range: Option<Option<String>>,
-    /// The package version(s) that resolve the vulnerability.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub patched_versions: Option<Option<String>>,
-    /// The functions in the package that are affected.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub vulnerable_functions: Option<Option<Vec<String>>>,
-}
-
-impl RepositoryAdvisoryUpdateVulnerabilitiesItem {
-    pub fn new(package: RepositoryAdvisoryUpdateVulnerabilitiesItemPackage) -> Self {
-        Self {
-            package,
-            vulnerable_version_range: None,
-            patched_versions: None,
-            vulnerable_functions: None,
-        }
-    }
-}
-
-/// Required object value serialized in the `credits[]` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryAdvisoryUpdateCreditsItem {
-    /// The username of the user credited.
-    pub login: String,
-    /// The type of credit the user is receiving.
-    #[serde(rename = "type")]
-    pub type_: SecurityAdvisoryCreditTypes,
 }

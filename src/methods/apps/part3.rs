@@ -21,7 +21,8 @@ pub struct AppsListReposAccessibleToInstallationResponseRepositoriesItem {
     pub forks: i64,
     /// Optional object value serialized in the `permissions` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<RepositoryPermissions>,
+    pub permissions:
+        Option<AppsListReposAccessibleToInstallationResponseRepositoriesItemPermissions>,
     /// A GitHub user.
     pub owner: SimpleUser,
     /// Whether the repository is private or public.
@@ -160,7 +161,9 @@ pub struct AppsListReposAccessibleToInstallationResponseRepositoriesItem {
     pub has_pull_requests: Option<bool>,
     /// The policy controlling who can create pull requests: all or collaborators_only.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pull_request_creation_policy: Option<RepositoryPullRequestCreationPolicyEnum>,
+    pub pull_request_creation_policy: Option<
+        AppsListReposAccessibleToInstallationResponseRepositoriesItemPullRequestCreationPolicyEnum,
+    >,
     /// Whether the repository is archived.
     pub archived: bool,
     /// Returns whether or not this repository disabled.
@@ -203,27 +206,33 @@ pub struct AppsListReposAccessibleToInstallationResponseRepositoriesItem {
     /// \- `PR_TITLE` \- default to the pull request's title.
     /// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub squash_merge_commit_title: Option<RepositorySquashMergeCommitTitleEnum>,
+    pub squash_merge_commit_title: Option<
+        AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitTitleEnum,
+    >,
     /// The default value for a squash merge commit message:
     ///
     /// \- `PR_BODY` \- default to the pull request's body.
     /// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
     /// \- `BLANK` \- default to a blank commit message.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub squash_merge_commit_message: Option<RepositorySquashMergeCommitMessageEnum>,
+    pub squash_merge_commit_message: Option<
+        AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitMessageEnum,
+    >,
     /// The default value for a merge commit title.
     ///
     /// \- `PR_TITLE` \- default to the pull request's title.
     /// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merge_commit_title: Option<RepositoryMergeCommitTitleEnum>,
+    pub merge_commit_title:
+        Option<AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitTitleEnum>,
     /// The default value for a merge commit message.
     ///
     /// \- `PR_TITLE` \- default to the pull request's title.
     /// \- `PR_BODY` \- default to the pull request's body.
     /// \- `BLANK` \- default to a blank commit message.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub merge_commit_message: Option<RepositoryMergeCommitMessageEnum>,
+    pub merge_commit_message:
+        Option<AppsListReposAccessibleToInstallationResponseRepositoriesItemMergeCommitMessageEnum>,
     /// Whether to allow merge commits for pull requests.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_merge_commit: Option<bool>,
@@ -248,7 +257,8 @@ pub struct AppsListReposAccessibleToInstallationResponseRepositoriesItem {
     pub anonymous_access_enabled: Option<bool>,
     /// The status of the code search index for this repository
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code_search_index_status: Option<RepositoryCodeSearchIndexStatus>,
+    pub code_search_index_status:
+        Option<AppsListReposAccessibleToInstallationResponseRepositoriesItemCodeSearchIndexStatus>,
     /// The custom properties that were defined for the repository. The keys are the custom property names, and the values are the corresponding custom property values. Present for org repos only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_properties: Option<std::collections::HashMap<String, serde_json::Value>>,

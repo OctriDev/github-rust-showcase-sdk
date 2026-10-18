@@ -5,9 +5,126 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{CheckSuite, CheckSuitePreference, EmptyObject};
+use crate::types::{CheckAnnotation, CheckRun, EmptyObject};
+use crate::validation::{validate_date_time, validate_items, LengthOpts};
 
-/// Changes the default automatic flow when creating check suites. By default, a check suite is automatically created each time code is pushed to a repository. When you disable the automatic creation of check suites, you can manually [Create a check suite](https://docs.github.com/rest/checks/suites#create-a-check-suite). You must have admin permissions in the repository to set preferences for check suites.
+impl std::fmt::Display for ChecksListForSuiteEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksListForSuiteEnum2c07543f {
+    #[default]
+    All,
+    Latest,
+    Unknown(String),
+}
+
+impl ChecksListForSuiteEnum2c07543f {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::Latest => "latest",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ChecksListForSuiteEnum2c07543f {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ChecksListForSuiteEnum2c07543f {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "latest" => Self::Latest,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ChecksListForSuiteEnum2c07543f {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ChecksListForRefEnum {
+    #[default]
+    All,
+    Latest,
+    Unknown(String),
+}
+
+impl ChecksListForRefEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::Latest => "latest",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ChecksListForRefEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ChecksListForRefEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "latest" => Self::Latest,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ChecksListForRefEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ChecksCreateParams {
+    pub owner: String,
+    pub repo: String,
+    pub name: String,
+    pub head_sha: String,
+    pub details_url: Option<String>,
+    pub external_id: Option<String>,
+    pub status: Option<ChecksCreateStatusEnum>,
+    pub started_at: Option<String>,
+    pub conclusion: Option<ChecksCreateConclusionEnum>,
+    pub completed_at: Option<String>,
+    pub output: Option<ChecksCreateOutput>,
+    pub actions: Option<Vec<ChecksCreateActionsItem>>,
+}
+
+/// Creates a new check run for a specific commit in a repository. To create a check run, you must use a GitHub App. OAuth apps and authenticated users are not able to create a check suite. In a check suite, GitHub limits the number of check runs with the same name to 1000\. Once these check runs exceed 1000, GitHub will start to automatically delete older check runs. \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array.
 ///
 /// # Arguments
 ///
@@ -15,19 +132,174 @@ use crate::types::{CheckSuite, CheckSuitePreference, EmptyObject};
 ///   sensitive.
 /// * `repo` - The name of the repository without the `.git` extension. The name
 ///   is not case sensitive.
-/// * `auto_trigger_checks` - Enables or disables automatic creation of
-///   CheckSuite events upon pushes to the repository. Enabled by default.
-pub fn checks_set_suites_preferences(
+/// * `name` - The name of the check. For example, "code-coverage".
+/// * `head_sha` - The SHA of the commit.
+/// * `details_url` - The URL of the integrator's site that has the full details
+///   of the check. If the integrator does not provide this, then the homepage of
+///   the GitHub app is used.
+/// * `external_id` - A reference for the run on the integrator's system.
+/// * `status` - The current status of the check run. Only GitHub Actions can
+///   set a status of `waiting`, `pending`, or `requested`.
+/// * `started_at` - The time that the check run began. This is a timestamp in
+///   [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
+///   `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `conclusion` - \*\*Required if you provide `completed_at` or a `status` of
+///   `completed`\*\*. The final conclusion of the check. \*\*Note:\*\* Providing
+///   `conclusion` will automatically set the `status` parameter to `completed`.
+///   You cannot change a check run conclusion to `stale`, only GitHub can set
+///   this.
+/// * `completed_at` - The time the check completed. This is a timestamp in [ISO
+///   8601](https://en.wikipedia.org/wiki/ISO_8601) format:
+///   `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `output` - Check runs can accept a variety of data in the `output` object,
+///   including a `title` and `summary` and can optionally provide descriptive
+///   details about the run.
+/// * `actions` - Displays a button on GitHub that can be clicked to alert your
+///   app to do additional tasks. For example, a code linting app can display a
+///   button that automatically fixes detected errors. The button created in this
+///   object is displayed after the check run completes. When a user clicks the
+///   button, GitHub sends the [`check_run.requested_action`
+///   webhook](https://docs.github.com/webhooks/event-payloads/#check_run) to your
+///   app. Each action includes a `label`, `identifier` and `description`. A
+///   maximum of three actions are accepted. To learn more about check runs and
+///   requested actions, see "[Check runs and requested
+///   actions](https://docs.github.com/rest/guides/using-the-rest-api-to-interact-
+///   with-checks#check-runs-and-requested-actions)."
+pub fn checks_create(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
-    auto_trigger_checks: Option<Vec<ChecksSetSuitesPreferencesAutoTriggerChecksItem>>,
+    params: ChecksCreateParams,
     options: Option<&RequestOptions>,
-) -> Result<CheckSuitePreference, SdkError> {
+) -> Result<CheckRun, SdkError> {
+    let ChecksCreateParams {
+        owner,
+        repo,
+        name,
+        head_sha,
+        details_url,
+        external_id,
+        status,
+        started_at,
+        conclusion,
+        completed_at,
+        output,
+        actions,
+    } = params;
+    if let Some(ref started_at_v) = started_at {
+        validate_date_time("started_at", started_at_v)?;
+    }
+    if let Some(ref completed_at_v) = completed_at {
+        validate_date_time("completed_at", completed_at_v)?;
+    }
+    if let Some(ref actions_v) = actions {
+        validate_items(
+            "actions",
+            actions_v,
+            LengthOpts {
+                max: Some(3),
+                ..Default::default()
+            },
+        )?;
+    }
+
     let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = auto_trigger_checks {
+    __body_map.insert(
+        "name".to_string(),
+        serde_json::to_value(name).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    __body_map.insert(
+        "head_sha".to_string(),
+        serde_json::to_value(head_sha).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = details_url {
         __body_map.insert(
-            "auto_trigger_checks".to_string(),
+            "details_url".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = external_id {
+        __body_map.insert(
+            "external_id".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = status {
+        __body_map.insert(
+            "status".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = started_at {
+        __body_map.insert(
+            "started_at".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = conclusion {
+        __body_map.insert(
+            "conclusion".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = completed_at {
+        __body_map.insert(
+            "completed_at".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = output {
+        __body_map.insert(
+            "output".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = actions {
+        __body_map.insert(
+            "actions".to_string(),
             serde_json::to_value(value).map_err(|e| {
                 SdkError::Network(SdkNetworkError {
                     message: format!("encode body field: {}", e),
@@ -38,10 +310,10 @@ pub fn checks_set_suites_preferences(
     }
     let __body = serde_json::Value::Object(__body_map);
 
-    Ok(sdk_request::<CheckSuitePreference>(
-        "PATCH",
+    Ok(sdk_request::<CheckRun>(
+        "POST",
         &format!(
-            "/repos/{}/{}/check-suites/preferences",
+            "/repos/{}/{}/check-runs",
             crate::client::encode_path_segment(&owner),
             crate::client::encode_path_segment(&repo)
         ),
@@ -49,7 +321,7 @@ pub fn checks_set_suites_preferences(
         RequestOpts {
             body: Some(__body),
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_set_suites_preferences",
+            operation_id: "checks_create",
             options,
             ..Default::default()
         },
@@ -57,7 +329,7 @@ pub fn checks_set_suites_preferences(
     .data)
 }
 
-/// Gets a single check suite using its `id`. \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array and a `null` value for `head_branch`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
+/// Gets a single check run using its `id`. \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
 ///
 /// # Arguments
 ///
@@ -65,26 +337,70 @@ pub fn checks_set_suites_preferences(
 ///   sensitive.
 /// * `repo` - The name of the repository without the `.git` extension. The name
 ///   is not case sensitive.
-/// * `check_suite_id` - The unique identifier of the check suite.
-pub fn checks_get_suite(
+/// * `check_run_id` - The unique identifier of the check run.
+pub fn checks_get(
     config: &ClientConfig,
     owner: String,
     repo: String,
-    check_suite_id: i64,
+    check_run_id: i64,
     options: Option<&RequestOptions>,
-) -> Result<CheckSuite, SdkError> {
-    Ok(sdk_request::<CheckSuite>(
+) -> Result<CheckRun, SdkError> {
+    Ok(sdk_request::<CheckRun>(
         "GET",
         &format!(
-            "/repos/{}/{}/check-suites/{}",
+            "/repos/{}/{}/check-runs/{}",
             crate::client::encode_path_segment(&owner),
             crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_suite_id)
+            crate::client::encode_path_segment(&check_run_id)
         ),
         config,
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_get_suite",
+            operation_id: "checks_get",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Updates a check run for a specific commit in a repository. \> [!NOTE] \> The endpoints to manage checks only look for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. OAuth apps and personal access tokens (classic) cannot use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `check_run_id` - The unique identifier of the check run.
+pub fn checks_update(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    check_run_id: i64,
+    body: ChecksUpdate,
+    options: Option<&RequestOptions>,
+) -> Result<CheckRun, SdkError> {
+    let __body = serde_json::to_value(body).map_err(|e| {
+        SdkError::Network(SdkNetworkError {
+            message: format!("encode body: {}", e),
+            request_id: None,
+        })
+    })?;
+
+    Ok(sdk_request::<CheckRun>(
+        "PATCH",
+        &format!(
+            "/repos/{}/{}/check-runs/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&check_run_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "checks_update",
             options,
             ..Default::default()
         },
@@ -93,18 +409,15 @@ pub fn checks_get_suite(
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct ChecksListForSuiteParams {
+pub struct ChecksListAnnotationsParams {
     pub owner: String,
     pub repo: String,
-    pub check_suite_id: i64,
-    pub check_name: Option<String>,
-    pub status: Option<ChecksListForSuiteEnum>,
-    pub filter: Option<ChecksListForSuiteEnum2c07543f>,
+    pub check_run_id: i64,
     pub per_page: Option<i64>,
     pub page: Option<i64>,
 }
 
-/// Lists check runs for a check suite using its `id`. \> [!NOTE] \> The endpoints to manage checks only look for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
+/// Lists annotations for a check run using the annotation `id`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
 ///
 /// # Arguments
 ///
@@ -112,11 +425,7 @@ pub struct ChecksListForSuiteParams {
 ///   sensitive.
 /// * `repo` - The name of the repository without the `.git` extension. The name
 ///   is not case sensitive.
-/// * `check_suite_id` - The unique identifier of the check suite.
-/// * `check_name` - Returns check runs with the specified `name`.
-/// * `status` - Returns check runs with the specified `status`.
-/// * `filter` - Filters check runs by their `completed_at` timestamp. `latest`
-///   returns the most recent check runs.
+/// * `check_run_id` - The unique identifier of the check run.
 /// * `per_page` - The number of results per page (max 100). For more
 ///   information, see "[Using pagination in the REST
 ///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
@@ -125,31 +434,19 @@ pub struct ChecksListForSuiteParams {
 ///   see "[Using pagination in the REST
 ///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
 ///   -rest-api)."
-pub fn checks_list_for_suite(
+pub fn checks_list_annotations(
     config: &ClientConfig,
-    params: ChecksListForSuiteParams,
+    params: ChecksListAnnotationsParams,
     options: Option<&RequestOptions>,
-) -> Result<ChecksListForSuiteResponse, SdkError> {
-    let ChecksListForSuiteParams {
+) -> Result<Vec<CheckAnnotation>, SdkError> {
+    let ChecksListAnnotationsParams {
         owner,
         repo,
-        check_suite_id,
-        check_name,
-        status,
-        filter,
+        check_run_id,
         per_page,
         page,
     } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(5);
-    if let Some(ref v) = check_name {
-        __query.push(("check_name", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = status {
-        __query.push(("status", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = filter {
-        __query.push(("filter", crate::client::query_value(v)));
-    }
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
     if let Some(ref v) = per_page {
         __query.push(("per_page", crate::client::query_value(v)));
     }
@@ -157,19 +454,19 @@ pub fn checks_list_for_suite(
         __query.push(("page", crate::client::query_value(v)));
     }
 
-    Ok(sdk_request::<ChecksListForSuiteResponse>(
+    Ok(sdk_request::<Vec<CheckAnnotation>>(
         "GET",
         &format!(
-            "/repos/{}/{}/check-suites/{}/check-runs",
+            "/repos/{}/{}/check-runs/{}/annotations",
             crate::client::encode_path_segment(&owner),
             crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_suite_id)
+            crate::client::encode_path_segment(&check_run_id)
         ),
         config,
         RequestOpts {
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_list_for_suite",
+            operation_id: "checks_list_annotations",
             options,
             ..Default::default()
         },
@@ -177,7 +474,7 @@ pub fn checks_list_for_suite(
     .data)
 }
 
-/// Triggers GitHub to rerequest an existing check suite, without pushing new code to a repository. This endpoint will trigger the [`check_suite` webhook](https://docs.github.com/webhooks/event-payloads/#check_suite) event with the action `rerequested`. When a check suite is `rerequested`, its `status` is reset to `queued` and the `conclusion` is cleared.
+/// Triggers GitHub to rerequest an existing check run, without pushing new code to a repository. This endpoint will trigger the [`check_run` webhook](https://docs.github.com/webhooks/event-payloads/#check_run) event with the action `rerequested`. When a check run is `rerequested`, the `status` of the check suite it belongs to is reset to `queued` and the `conclusion` is cleared. The check run itself is not updated. GitHub apps recieving the [`check_run` webhook](https://docs.github.com/webhooks/event-payloads/#check_run) with the `rerequested` action should then decide if the check run should be reset or updated and call the [update `check_run` endpoint](https://docs.github.com/rest/checks/runs#update-a-check-run) to update the check_run if desired. For more information about how to re-run GitHub Actions jobs, see "[Re-run a job from a workflow run](https://docs.github.com/rest/actions/workflow-runs#re-run-a-job-from-a-workflow-run)".
 ///
 /// # Arguments
 ///
@@ -185,205 +482,32 @@ pub fn checks_list_for_suite(
 ///   sensitive.
 /// * `repo` - The name of the repository without the `.git` extension. The name
 ///   is not case sensitive.
-/// * `check_suite_id` - The unique identifier of the check suite.
-pub fn checks_rerequest_suite(
+/// * `check_run_id` - The unique identifier of the check run.
+pub fn checks_rerequest_run(
     config: &ClientConfig,
     owner: String,
     repo: String,
-    check_suite_id: i64,
+    check_run_id: i64,
     options: Option<&RequestOptions>,
 ) -> Result<EmptyObject, SdkError> {
     Ok(sdk_request::<EmptyObject>(
         "POST",
         &format!(
-            "/repos/{}/{}/check-suites/{}/rerequest",
+            "/repos/{}/{}/check-runs/{}/rerequest",
             crate::client::encode_path_segment(&owner),
             crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&check_suite_id)
+            crate::client::encode_path_segment(&check_run_id)
         ),
         config,
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_rerequest_suite",
+            operation_id: "checks_rerequest_run",
             options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ChecksListForRefParams {
-    pub owner: String,
-    pub repo: String,
-    pub ref_: String,
-    pub check_name: Option<String>,
-    pub status: Option<ChecksListForSuiteEnum>,
-    pub filter: Option<ChecksListForRefEnum>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-    pub app_id: Option<i64>,
-}
-
-/// Lists check runs for a Git reference in a repository. Set `ref` to a commit SHA, branch name, or tag name, and use `check_name`, `status`, `filter`, or `app_id` to narrow the results; use `page` and `per_page` to paginate the results. If the reference has more than 1,000 check suites, results are limited to the 1,000 most recent suites; use the check-suite endpoints to retrieve additional runs.
-///
-/// Lists check runs for a commit ref. The `ref` can be a SHA, branch name, or a tag name. \> [!NOTE] \> The endpoints to manage checks only look for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array. If there are more than 1000 check suites on a single git reference, this endpoint will limit check runs to the 1000 most recent check suites. To iterate over all possible check runs, use the [List check suites for a Git reference](https://docs.github.com/rest/reference/checks#list-check-suites-for-a-git-reference) endpoint and provide the `check_suite_id` parameter to the [List check runs in a check suite](https://docs.github.com/rest/reference/checks#list-check-runs-in-a-check-suite) endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `ref_` - The commit reference. Can be a commit SHA, branch name
-///   (`heads/BRANCH_NAME`), or tag name (`tags/TAG_NAME`). For more information,
-///   see "[Git
-///   References](https://git-scm.com/book/en/v2/Git-Internals-Git-References)" in
-///   the Git documentation.
-/// * `check_name` - Returns check runs with the specified `name`.
-/// * `status` - Returns check runs with the specified `status`.
-/// * `filter` - Filters check runs by their `completed_at` timestamp. `latest`
-///   returns the most recent check runs.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn checks_list_for_ref(
-    config: &ClientConfig,
-    params: ChecksListForRefParams,
-    options: Option<&RequestOptions>,
-) -> Result<ChecksListForRefResponse, SdkError> {
-    let ChecksListForRefParams {
-        owner,
-        repo,
-        ref_,
-        check_name,
-        status,
-        filter,
-        per_page,
-        page,
-        app_id,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
-    if let Some(ref v) = check_name {
-        __query.push(("check_name", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = status {
-        __query.push(("status", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = filter {
-        __query.push(("filter", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = app_id {
-        __query.push(("app_id", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ChecksListForRefResponse>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/commits/{}/check-runs",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&ref_)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_list_for_ref",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ChecksListSuitesForRefParams {
-    pub owner: String,
-    pub repo: String,
-    pub ref_: String,
-    pub app_id: Option<i64>,
-    pub check_name: Option<String>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists check suites for a commit `ref`. The `ref` can be a SHA, branch name, or a tag name. \> [!NOTE] \> The endpoints to manage checks only look for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array and a `null` value for `head_branch`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `ref_` - The commit reference. Can be a commit SHA, branch name
-///   (`heads/BRANCH_NAME`), or tag name (`tags/TAG_NAME`). For more information,
-///   see "[Git
-///   References](https://git-scm.com/book/en/v2/Git-Internals-Git-References)" in
-///   the Git documentation.
-/// * `app_id` - Filters check suites by GitHub App `id`.
-/// * `check_name` - Returns check runs with the specified `name`.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn checks_list_suites_for_ref(
-    config: &ClientConfig,
-    params: ChecksListSuitesForRefParams,
-    options: Option<&RequestOptions>,
-) -> Result<ChecksListSuitesForRefResponse, SdkError> {
-    let ChecksListSuitesForRefParams {
-        owner,
-        repo,
-        ref_,
-        app_id,
-        check_name,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
-    if let Some(ref v) = app_id {
-        __query.push(("app_id", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = check_name {
-        __query.push(("check_name", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ChecksListSuitesForRefResponse>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/commits/{}/check-suites",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&ref_)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "checks_list_suites_for_ref",
-            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "BasicError"),
+            ],
             ..Default::default()
         },
     )?

@@ -2,7 +2,7 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::ArtifactsItemData;
+use crate::types::AgentTasksCreateTaskInRepoResponseArtifactsItemData;
 
 impl serde::Serialize for AgentTasksCreateTaskInRepoResponseStateEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -141,14 +141,14 @@ pub struct AgentTasksCreateTaskInRepoResponseArtifactsItem {
     #[serde(rename = "type")]
     pub type_: AgentTasksCreateTaskInRepoResponseArtifactsItemTypeEnum,
     /// Resource data (shape depends on type)
-    pub data: ArtifactsItemData,
+    pub data: AgentTasksCreateTaskInRepoResponseArtifactsItemData,
 }
 
 impl AgentTasksCreateTaskInRepoResponseArtifactsItem {
     pub fn new(
         provider: AgentTasksCreateTaskInRepoResponseArtifactsItemProviderEnum,
         type_: AgentTasksCreateTaskInRepoResponseArtifactsItemTypeEnum,
-        data: ArtifactsItemData,
+        data: AgentTasksCreateTaskInRepoResponseArtifactsItemData,
     ) -> Self {
         Self {
             provider,
@@ -188,7 +188,7 @@ pub struct AgentTasksCreateTaskInRepoResponse {
     pub name: Option<String>,
     /// The entity who created this task
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub creator: Option<AgentTasksCreateTaskInRepoResponseCreatorVariant0>,
+    pub creator: Option<AgentTasksCreateTaskInRepoResponseCreator>,
     /// Type of the task creator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creator_type: Option<AgentTasksCreateTaskInRepoResponseCreatorTypeEnum>,
@@ -266,15 +266,15 @@ impl AgentTasksCreateTaskInRepoResponse {
     }
 }
 
-/// A GitHub user
+/// The entity who created this task
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksGetTaskByRepoAndIdResponseVariant0CreatorVariant0 {
+pub struct AgentTasksGetTaskByRepoAndIdResponseVariant0Creator {
     /// The unique identifier of the user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
 }
 
-impl AgentTasksGetTaskByRepoAndIdResponseVariant0CreatorVariant0 {
+impl AgentTasksGetTaskByRepoAndIdResponseVariant0Creator {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self { id: None }

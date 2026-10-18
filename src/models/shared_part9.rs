@@ -3,6 +3,18 @@
 
 // shared domain models (part 9)
 
+/// The default value for a merge commit title.
+///
+///   \- `PR_TITLE` \- default to the pull request's title.
+///   \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum FullRepositoryMergeCommitTitleEnum {
+    #[default]
+    PrTitle,
+    MergeMessage,
+    Unknown(String),
+}
+
 impl FullRepositoryMergeCommitTitleEnum {
     pub fn as_str(&self) -> &str {
         match self {

@@ -5,7 +5,7 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{Deployment, DeploymentStatus};
+use crate::types::{Deployment, DeploymentStatus, ReposCreateDeploymentRequestPayload};
 use crate::validation::{validate_length, LengthOpts};
 
 #[derive(Debug, Clone, Default)]
@@ -16,7 +16,7 @@ pub struct ReposCreateDeploymentParams {
     pub task: Option<String>,
     pub auto_merge: Option<bool>,
     pub required_contexts: Option<Vec<String>>,
-    pub payload: Option<ReposCreateDeploymentPayload>,
+    pub payload: Option<ReposCreateDeploymentRequestPayload>,
     pub environment: Option<String>,
     pub description: Option<Option<String>>,
     pub transient_environment: Option<bool>,
@@ -43,6 +43,8 @@ pub struct ReposCreateDeploymentParams {
 ///   against commit status checks. If you omit this parameter, GitHub verifies
 ///   all unique contexts before creating a deployment. To bypass checking
 ///   entirely, pass an empty array. Defaults to all unique contexts.
+/// * `payload` - Typed representation of the
+///   `ReposCreateDeploymentRequestPayload` API schema.
 /// * `environment` - Name for the target deployment environment (e.g.,
 ///   `production`, `staging`, `qa`).
 /// * `description` - Short description of the deployment.

@@ -121,10 +121,245 @@ impl CodeQualitySetup {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum CodeQualitySetupUpdate {
-    Value(serde_json::Value),
+/// The desired state of code quality setup.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodeQualitySetupUpdateStateEnum {
+    #[default]
+    Configured,
+    NotConfigured,
+    Unknown(String),
+}
+
+impl CodeQualitySetupUpdateStateEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Configured => "configured",
+            Self::NotConfigured => "not-configured",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for CodeQualitySetupUpdateStateEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for CodeQualitySetupUpdateStateEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "configured" => Self::Configured,
+            "not-configured" => Self::NotConfigured,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CodeQualitySetupUpdateStateEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Runner type to be used.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodeQualitySetupUpdateRunnerTypeEnum {
+    #[default]
+    Standard,
+    Labeled,
+    Unknown(String),
+}
+
+impl CodeQualitySetupUpdateRunnerTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Standard => "standard",
+            Self::Labeled => "labeled",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for CodeQualitySetupUpdateRunnerTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for CodeQualitySetupUpdateRunnerTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "standard" => Self::Standard,
+            "labeled" => Self::Labeled,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CodeQualitySetupUpdateRunnerTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Required enumerated value serialized in the `languages[]` wire field.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodeQualitySetupUpdateLanguagesItemEnum {
+    #[default]
+    Csharp,
+    Go,
+    JavaKotlin,
+    JavascriptTypescript,
+    Python,
+    Ruby,
+    Unknown(String),
+}
+
+impl CodeQualitySetupUpdateLanguagesItemEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Csharp => "csharp",
+            Self::Go => "go",
+            Self::JavaKotlin => "java-kotlin",
+            Self::JavascriptTypescript => "javascript-typescript",
+            Self::Python => "python",
+            Self::Ruby => "ruby",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for CodeQualitySetupUpdateLanguagesItemEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for CodeQualitySetupUpdateLanguagesItemEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "csharp" => Self::Csharp,
+            "go" => Self::Go,
+            "java-kotlin" => Self::JavaKotlin,
+            "javascript-typescript" => Self::JavascriptTypescript,
+            "python" => Self::Python,
+            "ruby" => Self::Ruby,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CodeQualitySetupUpdateLanguagesItemEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Whether AI findings run for Code Quality on this repository.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodeQualitySetupUpdateAiFindingsOptionEnum {
+    #[default]
+    Disabled,
+    OnPush,
+    Unknown(String),
+}
+
+impl CodeQualitySetupUpdateAiFindingsOptionEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Disabled => "disabled",
+            Self::OnPush => "on_push",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for CodeQualitySetupUpdateAiFindingsOptionEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for CodeQualitySetupUpdateAiFindingsOptionEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "disabled" => Self::Disabled,
+            "on_push" => Self::OnPush,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CodeQualitySetupUpdateAiFindingsOptionEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Configuration for code quality setup.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct CodeQualitySetupUpdate {
+    /// The desired state of code quality setup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<CodeQualitySetupUpdateStateEnum>,
+    /// Runner type to be used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub runner_type: Option<CodeQualitySetupUpdateRunnerTypeEnum>,
+    /// Runner label to be used if the runner type is labeled.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub runner_label: Option<Option<String>>,
+    /// Languages to be analyzed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub languages: Option<Vec<CodeQualitySetupUpdateLanguagesItemEnum>>,
+    /// Whether AI findings run for Code Quality on this repository.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ai_findings_option: Option<CodeQualitySetupUpdateAiFindingsOptionEnum>,
+}
+
+impl CodeQualitySetupUpdate {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            state: None,
+            runner_type: None,
+            runner_label: None,
+            languages: None,
+            ai_findings_option: None,
+        }
+    }
 }
 
 /// You can use `run_url` to track the status of the run. This includes a property status and conclusion.

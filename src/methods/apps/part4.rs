@@ -257,3 +257,129 @@ impl AppsListInstallationsForAuthenticatedUserResponse {
         }
     }
 }
+
+/// Optional object value serialized in the `permissions` wire field.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPermissions {
+    /// Required `boolean` value serialized in the `admin` wire field.
+    pub admin: bool,
+    /// Required `boolean` value serialized in the `pull` wire field.
+    pub pull: bool,
+    /// Optional `boolean` value serialized in the `triage` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub triage: Option<bool>,
+    /// Required `boolean` value serialized in the `push` wire field.
+    pub push: bool,
+    /// Optional `boolean` value serialized in the `maintain` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maintain: Option<bool>,
+}
+
+impl AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPermissions {
+    pub fn new(admin: bool, pull: bool, push: bool) -> Self {
+        Self {
+            admin,
+            pull,
+            triage: None,
+            push,
+            maintain: None,
+        }
+    }
+}
+
+/// The policy controlling who can create pull requests: all or collaborators_only.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPullRequestCreationPolicyEnum
+{
+    #[default]
+    All,
+    CollaboratorsOnly,
+    Unknown(String),
+}
+
+impl AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPullRequestCreationPolicyEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::CollaboratorsOnly => "collaborators_only",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPullRequestCreationPolicyEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPullRequestCreationPolicyEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "collaborators_only" => Self::CollaboratorsOnly,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemPullRequestCreationPolicyEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The default value for a squash merge commit title:
+///
+/// \- `PR_TITLE` \- default to the pull request's title.
+/// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemSquashMergeCommitTitleEnum
+{
+    #[default]
+    PrTitle,
+    CommitOrPrTitle,
+    Unknown(String),
+}
+
+impl
+    AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemSquashMergeCommitTitleEnum
+{
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrTitle => "PR_TITLE",
+            Self::CommitOrPrTitle => "COMMIT_OR_PR_TITLE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemSquashMergeCommitTitleEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItemSquashMergeCommitTitleEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_TITLE" => Self::PrTitle,
+            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
+            _ => Self::Unknown(value),
+        })
+    }
+}

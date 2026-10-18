@@ -3,13 +3,6 @@
 
 // shared_deployment domain models
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum DeploymentPayload {
-    ValueMap(std::collections::HashMap<String, serde_json::Value>),
-    String(String),
-}
-
 /// A request for a specific ref(branch,sha,tag) to be deployed
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Deployment {
@@ -111,6 +104,22 @@ impl Deployment {
         };
         value.validate_constraints()?;
         Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+pub enum DeploymentPayload {
+    ValueMap(std::collections::HashMap<String, serde_json::Value>),
+    String(String),
+}
+
+impl DeploymentPayload {
+    pub fn as_string_wire_value(&self) -> Option<&str> {
+        match self {
+            Self::String(value) => Some(value.as_str()),
+            _ => None,
+        }
     }
 }
 

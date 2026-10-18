@@ -5,7 +5,7 @@
 
 /// A GitHub resource (pull request, issue, etc.)
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ArtifactsItemDataVariant0 {
+pub struct AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant0 {
     /// GitHub resource ID
     pub id: i64,
     /// GraphQL global ID
@@ -13,7 +13,7 @@ pub struct ArtifactsItemDataVariant0 {
     pub global_id: Option<String>,
 }
 
-impl ArtifactsItemDataVariant0 {
+impl AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant0 {
     pub fn new(id: i64) -> Self {
         Self {
             id,
@@ -24,29 +24,57 @@ impl ArtifactsItemDataVariant0 {
 
 /// A Git branch reference
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ArtifactsItemDataVariant1 {
+pub struct AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant1 {
     /// Head branch name
     pub head_ref: String,
     /// Base branch name
     pub base_ref: String,
 }
 
-impl ArtifactsItemDataVariant1 {
+impl AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant1 {
     pub fn new(head_ref: String, base_ref: String) -> Self {
         Self { head_ref, base_ref }
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
-pub enum ArtifactsItemData {
-    Object(Box<ArtifactsItemDataVariant0>),
-    Object2(Box<ArtifactsItemDataVariant1>),
+pub enum AgentTasksCreateTaskInRepoResponseArtifactsItemData {
+    Object(Box<AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant0>),
+    Object2(Box<AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant1>),
+}
+
+impl<'de> serde::Deserialize<'de> for AgentTasksCreateTaskInRepoResponseArtifactsItemData {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant0>,
+        >(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentTasksCreateTaskInRepoResponseArtifactsItemDataVariant1>,
+        >(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no AgentTasksCreateTaskInRepoResponseArtifactsItemData branch accepts this payload"))
+    }
 }
 
 /// A GitHub resource (pull request, issue, etc.)
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ArtifactsItemData2Variant0 {
+pub struct AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant0 {
     /// GitHub resource ID
     pub id: i64,
     /// GraphQL global ID
@@ -54,7 +82,7 @@ pub struct ArtifactsItemData2Variant0 {
     pub global_id: Option<String>,
 }
 
-impl ArtifactsItemData2Variant0 {
+impl AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant0 {
     pub fn new(id: i64) -> Self {
         Self {
             id,
@@ -65,29 +93,57 @@ impl ArtifactsItemData2Variant0 {
 
 /// A Git branch reference
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ArtifactsItemData2Variant1 {
+pub struct AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant1 {
     /// Head branch name
     pub head_ref: String,
     /// Base branch name
     pub base_ref: String,
 }
 
-impl ArtifactsItemData2Variant1 {
+impl AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant1 {
     pub fn new(head_ref: String, base_ref: String) -> Self {
         Self { head_ref, base_ref }
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
-pub enum ArtifactsItemData2 {
-    Object(Box<ArtifactsItemData2Variant0>),
-    Object2(Box<ArtifactsItemData2Variant1>),
+pub enum AgentTasksListTasksForRepoResponseTasksItemArtifactsItemData {
+    Object(Box<AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant0>),
+    Object2(Box<AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant1>),
+}
+
+impl<'de> serde::Deserialize<'de> for AgentTasksListTasksForRepoResponseTasksItemArtifactsItemData {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant0>,
+        >(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentTasksListTasksForRepoResponseTasksItemArtifactsItemDataVariant1>,
+        >(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no AgentTasksListTasksForRepoResponseTasksItemArtifactsItemData branch accepts this payload"))
+    }
 }
 
 /// A GitHub resource (pull request, issue, etc.)
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ArtifactsItemData3Variant0 {
+pub struct AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant0 {
     /// GitHub resource ID
     pub id: i64,
     /// GraphQL global ID
@@ -95,7 +151,7 @@ pub struct ArtifactsItemData3Variant0 {
     pub global_id: Option<String>,
 }
 
-impl ArtifactsItemData3Variant0 {
+impl AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant0 {
     pub fn new(id: i64) -> Self {
         Self {
             id,
@@ -106,104 +162,50 @@ impl ArtifactsItemData3Variant0 {
 
 /// A Git branch reference
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ArtifactsItemData3Variant1 {
+pub struct AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant1 {
     /// Head branch name
     pub head_ref: String,
     /// Base branch name
     pub base_ref: String,
 }
 
-impl ArtifactsItemData3Variant1 {
+impl AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant1 {
     pub fn new(head_ref: String, base_ref: String) -> Self {
         Self { head_ref, base_ref }
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
-pub enum ArtifactsItemData3 {
-    Object(Box<ArtifactsItemData3Variant0>),
-    Object2(Box<ArtifactsItemData3Variant1>),
+pub enum AgentTasksListTasksResponseTasksItemArtifactsItemData {
+    Object(Box<AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant0>),
+    Object2(Box<AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant1>),
 }
 
-/// A GitHub resource (pull request, issue, etc.)
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct TasksItemArtifactsItemData2Variant0 {
-    /// GitHub resource ID
-    pub id: i64,
-    /// GraphQL global ID
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub global_id: Option<String>,
-}
-
-impl TasksItemArtifactsItemData2Variant0 {
-    pub fn new(id: i64) -> Self {
-        Self {
-            id,
-            global_id: None,
+impl<'de> serde::Deserialize<'de> for AgentTasksListTasksResponseTasksItemArtifactsItemData {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant0>,
+        >(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
         }
-    }
-}
-
-/// A Git branch reference
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct TasksItemArtifactsItemData2Variant1 {
-    /// Head branch name
-    pub head_ref: String,
-    /// Base branch name
-    pub base_ref: String,
-}
-
-impl TasksItemArtifactsItemData2Variant1 {
-    pub fn new(head_ref: String, base_ref: String) -> Self {
-        Self { head_ref, base_ref }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum TasksItemArtifactsItemData2 {
-    Object(Box<TasksItemArtifactsItemData2Variant0>),
-    Object2(Box<TasksItemArtifactsItemData2Variant1>),
-}
-
-/// A GitHub resource (pull request, issue, etc.)
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct TasksItemArtifactsItemData3Variant0 {
-    /// GitHub resource ID
-    pub id: i64,
-    /// GraphQL global ID
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub global_id: Option<String>,
-}
-
-impl TasksItemArtifactsItemData3Variant0 {
-    pub fn new(id: i64) -> Self {
-        Self {
-            id,
-            global_id: None,
+        if let Ok(branch) = serde_json::from_value::<
+            Box<AgentTasksListTasksResponseTasksItemArtifactsItemDataVariant1>,
+        >(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
         }
+        lossy.ok_or_else(|| serde::de::Error::custom("no AgentTasksListTasksResponseTasksItemArtifactsItemData branch accepts this payload"))
     }
-}
-
-/// A Git branch reference
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct TasksItemArtifactsItemData3Variant1 {
-    /// Head branch name
-    pub head_ref: String,
-    /// Base branch name
-    pub base_ref: String,
-}
-
-impl TasksItemArtifactsItemData3Variant1 {
-    pub fn new(head_ref: String, base_ref: String) -> Self {
-        Self { head_ref, base_ref }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum TasksItemArtifactsItemData3 {
-    Object(Box<TasksItemArtifactsItemData3Variant0>),
-    Object2(Box<TasksItemArtifactsItemData3Variant1>),
 }
