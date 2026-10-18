@@ -70,7 +70,11 @@ pub fn pulls_list_files(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "pulls_list_files",
             options,
-            errors: &[("422", "ValidationError"), ("500", "BasicError")],
+            errors: &[
+                ("422", "ValidationError"),
+                ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -519,7 +523,7 @@ pub fn pulls_request_reviewers(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "pulls_request_reviewers",
             options,
-            errors: &[("403", "BasicError")],
+            errors: &[("403", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

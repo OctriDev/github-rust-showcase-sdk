@@ -12569,20 +12569,10 @@ fn checks_update_checks_update_reaches_mock_and_decodes_response() {
     let _ = &config;
     let actual = checks::checks_update(
         &config,
-        checks::ChecksUpdateParams {
-            owner: decode(fixture(r#""owner""#)),
-            repo: decode(fixture(r#""repo""#)),
-            check_run_id: decode(fixture(r#"1"#)),
-            name: Some(decode(fixture(r#""mighty_readme""#))),
-            details_url: None,
-            external_id: None,
-            started_at: Some(decode(fixture(r#""2018-05-04T01:14:52Z""#))),
-            status: Some(decode(fixture(r#""completed""#))),
-            conclusion: Some(decode(fixture(r#""success""#))),
-            completed_at: Some(decode(fixture(r#""2018-05-04T01:14:52Z""#))),
-            output: Some(decode(fixture(r#"{"title":"Mighty Readme report","summary":"There are 0 failures, 2 warnings, and 1 notices.","text":"You may have some misspelled words on lines 2 and 4. You also may want to add a section in your README about how to install your app.","annotations":[{"path":"README.md","annotation_level":"warning","title":"Spell Checker","message":"Check your spelling for 'banaas'.","raw_details":"Do you mean 'bananas' or 'banana'?","start_line":2,"end_line":2},{"path":"README.md","annotation_level":"warning","title":"Spell Checker","message":"Check your spelling for 'aples'","raw_details":"Do you mean 'apples' or 'Naples'","start_line":4,"end_line":4}],"images":[{"alt":"Super bananas","image_url":"http://example.com/images/42"}]}"#))),
-            actions: None,
-        },
+        decode(fixture(r#""owner""#)),
+        decode(fixture(r#""repo""#)),
+        decode(fixture(r#"1"#)),
+        decode(fixture(r#"{"name":"mighty_readme","started_at":"2018-05-04T01:14:52Z","status":"completed","conclusion":"success","completed_at":"2018-05-04T01:14:52Z","output":{"title":"Mighty Readme report","summary":"There are 0 failures, 2 warnings, and 1 notices.","text":"You may have some misspelled words on lines 2 and 4. You also may want to add a section in your README about how to install your app.","annotations":[{"path":"README.md","annotation_level":"warning","title":"Spell Checker","message":"Check your spelling for 'banaas'.","raw_details":"Do you mean 'bananas' or 'banana'?","start_line":2,"end_line":2},{"path":"README.md","annotation_level":"warning","title":"Spell Checker","message":"Check your spelling for 'aples'","raw_details":"Do you mean 'apples' or 'Naples'","start_line":4,"end_line":4}],"images":[{"alt":"Super bananas","image_url":"http://example.com/images/42"}]}}"#)),
         None,
     )
     .expect("checks_update request failed");
@@ -17768,7 +17758,7 @@ fn codespaces_set_repositories_for_secret_for_authenticated_user_codespaces_set_
     codespaces::codespaces_set_repositories_for_secret_for_authenticated_user(
         &config,
         decode(fixture(r#""Example Name""#)),
-        decode(fixture(r#"[1296269,1296280]"#)),
+        decode(fixture(r#"[1,1]"#)),
         None,
     )
     .expect("codespaces_set_repositories_for_secret_for_authenticated_user request failed");
@@ -17789,7 +17779,7 @@ fn codespaces_set_repositories_for_secret_for_authenticated_user_codespaces_set_
     let result = codespaces::codespaces_set_repositories_for_secret_for_authenticated_user(
         &config,
         decode(fixture(r#""Example Name""#)),
-        decode(fixture(r#"[1296269,1296280]"#)),
+        decode(fixture(r#"[1,1]"#)),
         None,
     );
     let Err(::octridev_github::errors::SdkError::Http(error)) = result else {
@@ -23060,24 +23050,24 @@ fn gists_get_gists_get_reaches_mock_and_decodes_response() {
 }
 
 #[test]
-fn gists_get_gists_get_404_decodes_declared_error() {
+fn gists_get_gists_get_403_decodes_declared_error() {
     let Some(config) = configured_client() else {
         return;
     };
     let config = ClientConfig {
         base_url: config
             .base_url
-            .map(|base_url| format!("{base_url}/__mockStatus/404")),
+            .map(|base_url| format!("{base_url}/__mockStatus/403")),
         ..config
     };
     let result = gists::gists_get(&config, decode(fixture(r#""gist-1""#)), None);
     let Err(::octridev_github::errors::SdkError::Http(error)) = result else {
-        panic!("gists_get did not fail with SdkError::Http on 404");
+        panic!("gists_get did not fail with SdkError::Http on 403");
     };
-    assert_eq!(error.status_code, 404);
+    assert_eq!(error.status_code, 403);
     let actual = serde_json::to_value(&error.data).expect("serialize declared error body");
     let expected = fixture(
-        r#"{"message":"example text","documentation_url":"https://example.com","url":"https://example.com","status":"active"}"#,
+        r#"{"block":{"reason":"reason","created_at":"2024-01-01T00:00:00Z","html_url":"https://example.com"},"message":"example text","documentation_url":"https://example.com"}"#,
     );
     assert!(
         representative(&actual, &expected),
@@ -23109,14 +23099,14 @@ fn gists_get_comment_gists_get_comment_reaches_mock_and_decodes_response() {
 }
 
 #[test]
-fn gists_get_comment_gists_get_comment_404_decodes_declared_error() {
+fn gists_get_comment_gists_get_comment_403_decodes_declared_error() {
     let Some(config) = configured_client() else {
         return;
     };
     let config = ClientConfig {
         base_url: config
             .base_url
-            .map(|base_url| format!("{base_url}/__mockStatus/404")),
+            .map(|base_url| format!("{base_url}/__mockStatus/403")),
         ..config
     };
     let result = gists::gists_get_comment(
@@ -23126,12 +23116,12 @@ fn gists_get_comment_gists_get_comment_404_decodes_declared_error() {
         None,
     );
     let Err(::octridev_github::errors::SdkError::Http(error)) = result else {
-        panic!("gists_get_comment did not fail with SdkError::Http on 404");
+        panic!("gists_get_comment did not fail with SdkError::Http on 403");
     };
-    assert_eq!(error.status_code, 404);
+    assert_eq!(error.status_code, 403);
     let actual = serde_json::to_value(&error.data).expect("serialize declared error body");
     let expected = fixture(
-        r#"{"message":"example text","documentation_url":"https://example.com","url":"https://example.com","status":"active"}"#,
+        r#"{"block":{"reason":"reason","created_at":"2024-01-01T00:00:00Z","html_url":"https://example.com"},"message":"example text","documentation_url":"https://example.com"}"#,
     );
     assert!(
         representative(&actual, &expected),
@@ -37005,9 +36995,7 @@ fn projects_add_field_for_org_projects_add_field_for_org_reaches_mock_and_decode
         &config,
         decode(fixture(r#"1"#)),
         decode(fixture(r#""org""#)),
-        decode(fixture(
-            r#"{"name":"Team notes","data_type":"text","issue_field_id":1}"#,
-        )),
+        decode(fixture(r#"{"name":"Team notes","data_type":"text"}"#)),
         None,
     )
     .expect("projects_add_field_for_org request failed");
@@ -37036,9 +37024,7 @@ fn projects_add_field_for_org_projects_add_field_for_org_401_decodes_declared_er
         &config,
         decode(fixture(r#"1"#)),
         decode(fixture(r#""org""#)),
-        decode(fixture(
-            r#"{"name":"Team notes","data_type":"text","issue_field_id":1}"#,
-        )),
+        decode(fixture(r#"{"name":"Team notes","data_type":"text"}"#)),
         None,
     );
     let Err(::octridev_github::errors::SdkError::Http(error)) = result else {

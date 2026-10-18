@@ -3,6 +3,17 @@
 
 // shared domain models (part 8)
 
+/// Optional object value serialized in the `cvss_v3` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct CvssSeveritiesCvssV3 {
+    /// The CVSS 3 vector string.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub vector_string: Option<String>,
+    /// The CVSS 3 score.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub score: Option<f64>,
+}
+
 impl CvssSeveritiesCvssV3 {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.score.as_ref() {
@@ -505,16 +516,4 @@ impl std::fmt::Display for FullRepositorySquashMergeCommitMessageEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
-}
-
-/// The default value for a merge commit title.
-///
-///   \- `PR_TITLE` \- default to the pull request's title.
-///   \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum FullRepositoryMergeCommitTitleEnum {
-    #[default]
-    PrTitle,
-    MergeMessage,
-    Unknown(String),
 }

@@ -3,6 +3,25 @@
 
 // webhooks_pull_request5 domain models (part 3)
 
+/// The policy controlling who can create pull requests: all or collaborators_only.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhooksPullRequest5BaseRepoPullRequestCreationPolicyEnum {
+    #[default]
+    All,
+    CollaboratorsOnly,
+    Unknown(String),
+}
+
+impl WebhooksPullRequest5BaseRepoPullRequestCreationPolicyEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::CollaboratorsOnly => "collaborators_only",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for WebhooksPullRequest5BaseRepoPullRequestCreationPolicyEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -393,11 +412,37 @@ impl WebhooksPullRequest5BaseRepoPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhooksPullRequest5BaseRepoPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5BaseRepoPushedAt {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no WebhooksPullRequest5BaseRepoPushedAt branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// The default value for a squash merge commit message:
@@ -446,42 +491,5 @@ impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5BaseRepoSquashMergeCom
             "BLANK" => Self::Blank,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The default value for a squash merge commit title:
-///
-/// \- `PR_TITLE` \- default to the pull request's title.
-/// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhooksPullRequest5BaseRepoSquashMergeCommitTitleEnum {
-    #[default]
-    PrTitle,
-    CommitOrPrTitle,
-    Unknown(String),
-}
-
-impl WebhooksPullRequest5BaseRepoSquashMergeCommitTitleEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrTitle => "PR_TITLE",
-            Self::CommitOrPrTitle => "COMMIT_OR_PR_TITLE",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhooksPullRequest5BaseRepoSquashMergeCommitTitleEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

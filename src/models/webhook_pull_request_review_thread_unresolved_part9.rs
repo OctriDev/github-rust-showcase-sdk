@@ -71,7 +71,7 @@ pub struct WebhookPullRequestReviewThreadUnresolvedPullRequest {
     pub patch_url: String,
     /// Required array value serialized in the `requested_reviewers` wire field.
     pub requested_reviewers:
-        Vec<WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedReviewersItem>,
+        Vec<Option<WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedReviewersItem>>,
     /// Required array value serialized in the `requested_teams` wire field.
     pub requested_teams: Vec<WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedTeamsItem>,
     /// Required `uri-template`-formatted value serialized in the `review_comment_url` wire field.
@@ -145,7 +145,7 @@ impl WebhookPullRequestReviewThreadUnresolvedPullRequest {
         number: i64,
         patch_url: String,
         requested_reviewers: Vec<
-            WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedReviewersItem,
+            Option<WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedReviewersItem>,
         >,
         requested_teams: Vec<WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedTeamsItem>,
         review_comment_url: String,

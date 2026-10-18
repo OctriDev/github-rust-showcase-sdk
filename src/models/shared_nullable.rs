@@ -154,11 +154,35 @@ impl NullableIntegration {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum NullableIntegrationOwner {
     SimpleUser(Box<SimpleUser>),
     Enterprise(Box<Enterprise>),
+}
+
+impl<'de> serde::Deserialize<'de> for NullableIntegrationOwner {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<SimpleUser>>(value.clone()) {
+            let candidate = Self::SimpleUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<Enterprise>>(value.clone()) {
+            let candidate = Self::Enterprise(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no NullableIntegrationOwner branch accepts this payload")
+        })
+    }
 }
 
 /// Comments provide a way for people to collaborate on an issue.
@@ -502,42 +526,4 @@ impl NullablePinnedIssueComment {
         value.validate_constraints()?;
         Ok(value)
     }
-}
-
-/// Optional object value serialized in the `permissions` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct NullableRepositoryPermissions {
-    /// Required `boolean` value serialized in the `admin` wire field.
-    pub admin: bool,
-    /// Required `boolean` value serialized in the `pull` wire field.
-    pub pull: bool,
-    /// Optional `boolean` value serialized in the `triage` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub triage: Option<bool>,
-    /// Required `boolean` value serialized in the `push` wire field.
-    pub push: bool,
-    /// Optional `boolean` value serialized in the `maintain` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub maintain: Option<bool>,
-}
-
-impl NullableRepositoryPermissions {
-    pub fn new(admin: bool, pull: bool, push: bool) -> Self {
-        Self {
-            admin,
-            pull,
-            triage: None,
-            push,
-            maintain: None,
-        }
-    }
-}
-
-/// The policy controlling who can create pull requests: all or collaborators_only.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum NullableRepositoryPullRequestCreationPolicyEnum {
-    #[default]
-    All,
-    CollaboratorsOnly,
-    Unknown(String),
 }

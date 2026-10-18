@@ -50,7 +50,7 @@ impl std::fmt::Display for WebhookIssuesClosedActionEnum {
 
 /// Optional object value serialized in the `pull_request` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesClosedIssueVariant0PullRequest {
+pub struct WebhookIssuesClosedIssuePullRequest {
     /// Optional `uri`-formatted value serialized in the `diff_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub diff_url: Option<String>,
@@ -72,7 +72,7 @@ pub struct WebhookIssuesClosedIssueVariant0PullRequest {
     pub url: Option<String>,
 }
 
-impl WebhookIssuesClosedIssueVariant0PullRequest {
+impl WebhookIssuesClosedIssuePullRequest {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.diff_url.as_ref() {
             crate::validation::validate_uri("diff_url", value)?;
@@ -106,9 +106,9 @@ impl WebhookIssuesClosedIssueVariant0PullRequest {
     }
 }
 
-/// Optional object value serialized in the `reactions` wire field.
+/// Required object value serialized in the `reactions` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesClosedIssueVariant1Reactions {
+pub struct WebhookIssuesClosedIssueReactions {
     /// Optional `integer` value serialized in the `\+1` wire field.
     #[serde(rename = "+1", skip_serializing_if = "Option::is_none")]
     pub plus_1: Option<i64>,
@@ -141,7 +141,7 @@ pub struct WebhookIssuesClosedIssueVariant1Reactions {
     pub url: Option<String>,
 }
 
-impl WebhookIssuesClosedIssueVariant1Reactions {
+impl WebhookIssuesClosedIssueReactions {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -161,14 +161,14 @@ impl WebhookIssuesClosedIssueVariant1Reactions {
 
 /// Required enumerated value serialized in the `state` wire field.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookIssuesClosedIssueVariant1StateEnum {
+pub enum WebhookIssuesClosedIssueStateEnum {
     #[default]
     Closed,
     Open,
     Unknown(String),
 }
 
-impl WebhookIssuesClosedIssueVariant1StateEnum {
+impl WebhookIssuesClosedIssueStateEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::Closed => "closed",
@@ -178,7 +178,7 @@ impl WebhookIssuesClosedIssueVariant1StateEnum {
     }
 }
 
-impl serde::Serialize for WebhookIssuesClosedIssueVariant1StateEnum {
+impl serde::Serialize for WebhookIssuesClosedIssueStateEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -187,7 +187,7 @@ impl serde::Serialize for WebhookIssuesClosedIssueVariant1StateEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for WebhookIssuesClosedIssueVariant1StateEnum {
+impl<'de> serde::Deserialize<'de> for WebhookIssuesClosedIssueStateEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -201,15 +201,15 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesClosedIssueVariant1StateEnum 
     }
 }
 
-impl std::fmt::Display for WebhookIssuesClosedIssueVariant1StateEnum {
+impl std::fmt::Display for WebhookIssuesClosedIssueStateEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-/// Optional object value serialized in the `user` wire field.
+/// Required object value serialized in the `user` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesClosedIssueVariant1User {
+pub struct WebhookIssuesClosedIssueUser {
     /// Optional `string` value serialized in the `avatar_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -269,7 +269,7 @@ pub struct WebhookIssuesClosedIssueVariant1User {
     pub user_view_type: Option<String>,
 }
 
-impl WebhookIssuesClosedIssueVariant1User {
+impl WebhookIssuesClosedIssueUser {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -299,7 +299,7 @@ impl WebhookIssuesClosedIssueVariant1User {
 /// The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookIssuesClosedIssue {
-    /// Optional `string` value serialized in the `active_lock_reason` wire field.
+    /// Required `string` value serialized in the `active_lock_reason` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub active_lock_reason: Option<String>,
     /// Optional object value serialized in the `assignee` wire field.
@@ -309,45 +309,45 @@ pub struct WebhookIssuesClosedIssue {
         with = "crate::client::double_option"
     )]
     pub assignee: Option<Option<serde_json::Value>>,
-    /// Optional array value serialized in the `assignees` wire field.
+    /// Required array value serialized in the `assignees` wire field.
     pub assignees: Vec<Option<serde_json::Value>>,
-    /// Optional `string` value serialized in the `author_association` wire field.
+    /// Required `string` value serialized in the `author_association` wire field.
     pub author_association: String,
-    /// Optional `string` value serialized in the `body` wire field.
+    /// Required `string` value serialized in the `body` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub body: Option<String>,
     /// Required `string` value serialized in the `closed_at` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub closed_at: Option<String>,
-    /// Optional `integer` value serialized in the `comments` wire field.
+    /// Required `integer` value serialized in the `comments` wire field.
     pub comments: i64,
-    /// Optional `string` value serialized in the `comments_url` wire field.
+    /// Required `string` value serialized in the `comments_url` wire field.
     pub comments_url: String,
-    /// Optional `string` value serialized in the `created_at` wire field.
+    /// Required `string` value serialized in the `created_at` wire field.
     pub created_at: String,
     /// Optional `boolean` value serialized in the `draft` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub draft: Option<bool>,
-    /// Optional `string` value serialized in the `events_url` wire field.
+    /// Required `string` value serialized in the `events_url` wire field.
     pub events_url: String,
-    /// Optional `string` value serialized in the `html_url` wire field.
+    /// Required `string` value serialized in the `html_url` wire field.
     pub html_url: String,
-    /// Optional `integer` value serialized in the `id` wire field.
+    /// Required `integer` value serialized in the `id` wire field.
     pub id: i64,
     /// Optional array value serialized in the `labels` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<Option<serde_json::Value>>>,
-    /// Optional `string` value serialized in the `labels_url` wire field.
+    /// Required `string` value serialized in the `labels_url` wire field.
     pub labels_url: String,
     /// Optional `boolean` value serialized in the `locked` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locked: Option<bool>,
-    /// Optional object value serialized in the `milestone` wire field.
+    /// Required object value serialized in the `milestone` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub milestone: Option<serde_json::Value>,
-    /// Optional `string` value serialized in the `node_id` wire field.
+    /// Required `string` value serialized in the `node_id` wire field.
     pub node_id: String,
-    /// Optional `integer` value serialized in the `number` wire field.
+    /// Required `integer` value serialized in the `number` wire field.
     pub number: i64,
     /// Optional object value serialized in the `performed_via_github_app` wire field.
     #[serde(
@@ -358,10 +358,10 @@ pub struct WebhookIssuesClosedIssue {
     pub performed_via_github_app: Option<Option<serde_json::Value>>,
     /// Optional object value serialized in the `pull_request` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pull_request: Option<WebhookIssuesClosedIssueVariant0PullRequest>,
-    /// Optional object value serialized in the `reactions` wire field.
-    pub reactions: WebhookIssuesClosedIssueVariant1Reactions,
-    /// Optional `string` value serialized in the `repository_url` wire field.
+    pub pull_request: Option<WebhookIssuesClosedIssuePullRequest>,
+    /// Required object value serialized in the `reactions` wire field.
+    pub reactions: WebhookIssuesClosedIssueReactions,
+    /// Required `string` value serialized in the `repository_url` wire field.
     pub repository_url: String,
     /// Comments provide a way for people to collaborate on an issue.
     #[serde(
@@ -380,7 +380,7 @@ pub struct WebhookIssuesClosedIssue {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issue_field_values: Option<Vec<IssueFieldValue>>,
     /// Required enumerated value serialized in the `state` wire field.
-    pub state: WebhookIssuesClosedIssueVariant1StateEnum,
+    pub state: WebhookIssuesClosedIssueStateEnum,
     /// Optional `string` value serialized in the `state_reason` wire field.
     #[serde(
         skip_serializing_if = "Option::is_none",
@@ -391,7 +391,7 @@ pub struct WebhookIssuesClosedIssue {
     /// Optional `string` value serialized in the `timeline_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeline_url: Option<String>,
-    /// Optional `string` value serialized in the `title` wire field.
+    /// Required `string` value serialized in the `title` wire field.
     pub title: String,
     /// The type assigned to the issue. This is only present for issues in repositories where issue types are supported.
     #[serde(
@@ -401,12 +401,12 @@ pub struct WebhookIssuesClosedIssue {
         with = "crate::client::double_option"
     )]
     pub type_: Option<Option<IssueType>>,
-    /// Optional `string` value serialized in the `updated_at` wire field.
+    /// Required `string` value serialized in the `updated_at` wire field.
     pub updated_at: String,
-    /// Optional `string` value serialized in the `url` wire field.
+    /// Required `string` value serialized in the `url` wire field.
     pub url: String,
-    /// Optional object value serialized in the `user` wire field.
-    pub user: WebhookIssuesClosedIssueVariant1User,
+    /// Required object value serialized in the `user` wire field.
+    pub user: WebhookIssuesClosedIssueUser,
 }
 
 impl WebhookIssuesClosedIssue {
@@ -427,13 +427,13 @@ impl WebhookIssuesClosedIssue {
         milestone: Option<serde_json::Value>,
         node_id: String,
         number: i64,
-        reactions: WebhookIssuesClosedIssueVariant1Reactions,
+        reactions: WebhookIssuesClosedIssueReactions,
         repository_url: String,
-        state: WebhookIssuesClosedIssueVariant1StateEnum,
+        state: WebhookIssuesClosedIssueStateEnum,
         title: String,
         updated_at: String,
         url: String,
-        user: WebhookIssuesClosedIssueVariant1User,
+        user: WebhookIssuesClosedIssueUser,
     ) -> Self {
         Self {
             active_lock_reason,

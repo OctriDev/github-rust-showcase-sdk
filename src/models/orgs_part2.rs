@@ -3,6 +3,26 @@
 
 // orgs domain models (part 2)
 
+impl<'de> serde::Deserialize<'de> for CustomPropertyValuesEditableByEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "org_actors" => Self::OrgActors,
+            "org_and_repo_actors" => Self::OrgAndRepoActors,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for CustomPropertyValuesEditableByEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// Custom property defined on an organization
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct CustomProperty {
@@ -139,11 +159,37 @@ impl std::fmt::Display for CustomPropertySetPayloadValueTypeEnum {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CustomPropertySetPayloadDefaultValue {
     String(String),
     StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for CustomPropertySetPayloadDefaultValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no CustomPropertySetPayloadDefaultValue branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// Who can edit the values of the property
@@ -433,42 +479,5 @@ impl<'de> serde::Deserialize<'de> for IssueFieldVisibilityEnum {
             "all" => Self::All,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for IssueFieldVisibilityEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The color of the option.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssueFieldOptionsItemColorEnum {
-    #[default]
-    Gray,
-    Blue,
-    Green,
-    Yellow,
-    Orange,
-    Red,
-    Pink,
-    Purple,
-    Unknown(String),
-}
-
-impl IssueFieldOptionsItemColorEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Gray => "gray",
-            Self::Blue => "blue",
-            Self::Green => "green",
-            Self::Yellow => "yellow",
-            Self::Orange => "orange",
-            Self::Red => "red",
-            Self::Pink => "pink",
-            Self::Purple => "purple",
-            Self::Unknown(value) => value.as_str(),
-        }
     }
 }

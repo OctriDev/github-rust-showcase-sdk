@@ -2,211 +2,309 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-
-impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsAssigneesItemIgnoredReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesUpdateResponseVariant1SuggestionsAssigneesItem {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub login: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rationale: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub suggest: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confidence: Option<IssuesUpdateResponseVariant1SuggestionsAssigneesItemConfidenceEnum>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored_reason:
-        Option<IssuesUpdateResponseVariant1SuggestionsAssigneesItemIgnoredReasonEnum>,
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsAssigneesItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            login: None,
-            rationale: None,
-            suggest: None,
-            confidence: None,
-            ignored: None,
-            ignored_reason: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
-    #[default]
-    Low,
-    Medium,
-    High,
-    Unknown(String),
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Low => "low",
-            Self::Medium => "medium",
-            Self::High => "high",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "low" => Self::Low,
-            "medium" => Self::Medium,
-            "high" => Self::High,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
-    #[default]
-    AlreadyApplied,
-    IssueAlreadyClosed,
-    Unknown(String),
-}
-
-impl IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::AlreadyApplied => "already_applied",
-            Self::IssueAlreadyClosed => "issue_already_closed",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "already_applied" => Self::AlreadyApplied,
-            "issue_already_closed" => Self::IssueAlreadyClosed,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
+use crate::types::{
+    AuthorAssociation, IssueDependenciesSummary, IssueFieldValue, IssueLabelsItem, IssueType,
+    NullableIntegration, NullableIssueComment, NullableMilestone, NullableSimpleUser,
+    ReactionRollup, Repository, SimpleUser, SubIssuesSummary,
+};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesUpdateResponseVariant1SuggestionsStateItem {
+pub struct IssuesUpdateResponse {
+    /// Required `int64`-formatted value serialized in the `id` wire field.
+    pub id: i64,
+    /// Required `string` value serialized in the `node_id` wire field.
+    pub node_id: String,
+    /// URL for the issue
+    pub url: String,
+    /// Required `uri`-formatted value serialized in the `repository_url` wire field.
+    pub repository_url: String,
+    /// Required `string` value serialized in the `labels_url` wire field.
+    pub labels_url: String,
+    /// Required `uri`-formatted value serialized in the `comments_url` wire field.
+    pub comments_url: String,
+    /// Required `uri`-formatted value serialized in the `events_url` wire field.
+    pub events_url: String,
+    /// Required `uri`-formatted value serialized in the `html_url` wire field.
+    pub html_url: String,
+    /// Number uniquely identifying the issue within its repository
+    pub number: i64,
+    /// State of the issue; either 'open' or 'closed'
+    pub state: String,
+    /// The reason for the current state
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub state_reason: Option<Option<IssueStateReasonEnum>>,
+    /// Title of the issue
+    pub title: String,
+    /// Contents of the issue
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub body: Option<Option<String>>,
+    /// A GitHub user.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub user: Option<NullableSimpleUser>,
+    /// Labels to associate with this issue; pass one or more label names to replace the set of labels on this issue; send an empty array to clear all labels from the issue; note that the labels are silently dropped for users without push access to the repository
+    pub labels: Vec<IssueLabelsItem>,
+    /// A GitHub user.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub assignee: Option<NullableSimpleUser>,
+    /// Optional array value serialized in the `assignees` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub assignees: Option<Vec<SimpleUser>>,
+    /// A collection of related issues and pull requests.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub milestone: Option<NullableMilestone>,
+    /// Required `boolean` value serialized in the `locked` wire field.
+    pub locked: bool,
+    /// Optional `string` value serialized in the `active_lock_reason` wire field.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub active_lock_reason: Option<Option<String>>,
+    /// Required `integer` value serialized in the `comments` wire field.
+    pub comments: i64,
+    /// Optional object value serialized in the `pull_request` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state_reason: Option<String>,
+    pub pull_request: Option<IssuePullRequest>,
+    /// Required `date-time`-formatted value serialized in the `closed_at` wire field.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub closed_at: Option<String>,
+    /// Required `date-time`-formatted value serialized in the `created_at` wire field.
+    pub created_at: String,
+    /// Required `date-time`-formatted value serialized in the `updated_at` wire field.
+    pub updated_at: String,
+    /// Optional `boolean` value serialized in the `draft` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duplicate_issue_id: Option<i64>,
+    pub draft: Option<bool>,
+    /// A GitHub user.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub closed_by: Option<Option<NullableSimpleUser>>,
+    /// Optional `string` value serialized in the `body_html` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rationale: Option<String>,
+    pub body_html: Option<String>,
+    /// Optional `string` value serialized in the `body_text` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub suggest: Option<bool>,
+    pub body_text: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `timeline_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub confidence: Option<IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum>,
+    pub timeline_url: Option<String>,
+    /// The type assigned to the issue. This is only present for issues in repositories where issue types are supported.
+    #[serde(
+        rename = "type",
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub type_: Option<Option<IssueType>>,
+    /// A repository on GitHub.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored: Option<bool>,
+    pub repository: Option<Repository>,
+    /// GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub performed_via_github_app: Option<Option<NullableIntegration>>,
+    /// How the author is associated with the repository.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ignored_reason: Option<IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum>,
+    pub author_association: Option<AuthorAssociation>,
+    /// Optional object value serialized in the `reactions` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reactions: Option<ReactionRollup>,
+    /// Optional object value serialized in the `sub_issues_summary` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sub_issues_summary: Option<SubIssuesSummary>,
+    /// URL to get the parent issue of this issue, if it is a sub-issue
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub parent_issue_url: Option<Option<String>>,
+    /// Comments provide a way for people to collaborate on an issue.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub pinned_comment: Option<Option<NullableIssueComment>>,
+    /// Optional object value serialized in the `issue_dependencies_summary` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issue_dependencies_summary: Option<IssueDependenciesSummary>,
+    /// Optional array value serialized in the `issue_field_values` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issue_field_values: Option<Vec<IssueFieldValue>>,
+    /// Pending suggestions for each suggestible field (`type`,
+    /// `issue_field_values`, `labels`, `assignees`, `state`) the
+    /// request touched. Omitted for fields not in the request or
+    /// with no pending or ignored suggestions. Items tagged
+    /// `ignored` are echoes of the current request's inputs that
+    /// were not persisted as pending suggestions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggestions: Option<IssuesUpdateResponseVariant1Suggestions>,
 }
 
-impl IssuesUpdateResponseVariant1SuggestionsStateItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            value: None,
+impl IssuesUpdateResponse {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("url", &self.url)?;
+        crate::validation::validate_uri("repository_url", &self.repository_url)?;
+        crate::validation::validate_uri("comments_url", &self.comments_url)?;
+        crate::validation::validate_uri("events_url", &self.events_url)?;
+        crate::validation::validate_uri("html_url", &self.html_url)?;
+        if let Some(value) = self.closed_at.as_ref() {
+            crate::validation::validate_model_date_time("closed_at", value)?;
+        }
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
+        if let Some(value) = self.timeline_url.as_ref() {
+            crate::validation::validate_uri("timeline_url", value)?;
+        }
+        if let Some(Some(value)) = self.parent_issue_url.as_ref() {
+            crate::validation::validate_uri("parent_issue_url", value)?;
+        }
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        id: i64,
+        node_id: String,
+        url: String,
+        repository_url: String,
+        labels_url: String,
+        comments_url: String,
+        events_url: String,
+        html_url: String,
+        number: i64,
+        state: String,
+        title: String,
+        user: Option<NullableSimpleUser>,
+        labels: Vec<IssueLabelsItem>,
+        assignee: Option<NullableSimpleUser>,
+        milestone: Option<NullableMilestone>,
+        locked: bool,
+        comments: i64,
+        closed_at: Option<String>,
+        created_at: String,
+        updated_at: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id,
+            node_id,
+            url,
+            repository_url,
+            labels_url,
+            comments_url,
+            events_url,
+            html_url,
+            number,
+            state,
             state_reason: None,
-            duplicate_issue_id: None,
-            rationale: None,
-            suggest: None,
-            confidence: None,
-            ignored: None,
-            ignored_reason: None,
-        }
+            title,
+            body: None,
+            user,
+            labels,
+            assignee,
+            assignees: None,
+            milestone,
+            locked,
+            active_lock_reason: None,
+            comments,
+            pull_request: None,
+            closed_at,
+            created_at,
+            updated_at,
+            draft: None,
+            closed_by: None,
+            body_html: None,
+            body_text: None,
+            timeline_url: None,
+            type_: None,
+            repository: None,
+            performed_via_github_app: None,
+            author_association: None,
+            reactions: None,
+            sub_issues_summary: None,
+            parent_issue_url: None,
+            pinned_comment: None,
+            issue_dependencies_summary: None,
+            issue_field_values: None,
+            suggestions: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
     }
 }
 
-/// Pending suggestions for each suggestible field (`type`,
-/// `issue_field_values`, `labels`, `assignees`, `state`) the
-/// request touched. Omitted for fields not in the request or
-/// with no pending or ignored suggestions. Items tagged
-/// `ignored` are echoes of the current request's inputs that
-/// were not persisted as pending suggestions.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesUpdateResponseVariant1Suggestions {
-    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Vec<IssuesUpdateResponseVariant1SuggestionsTypeItem>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub issue_field_values:
-        Option<Vec<IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItem>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub labels: Option<Vec<IssuesUpdateResponseVariant1SuggestionsLabelsItem>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub assignees: Option<Vec<IssuesUpdateResponseVariant1SuggestionsAssigneesItem>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<Vec<IssuesUpdateResponseVariant1SuggestionsStateItem>>,
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum IssuesAddIssueFieldValuesIssueFieldValuesItemValue {
+    String(String),
+    Number(f64),
+    StringArray(Vec<String>),
 }
 
-impl IssuesUpdateResponseVariant1Suggestions {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            type_: None,
-            issue_field_values: None,
-            labels: None,
-            assignees: None,
-            state: None,
+impl<'de> serde::Deserialize<'de> for IssuesAddIssueFieldValuesIssueFieldValuesItemValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
         }
+        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
+            let candidate = Self::Number(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no IssuesAddIssueFieldValuesIssueFieldValuesItemValue branch accepts this payload",
+            )
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct IssuesAddIssueFieldValuesIssueFieldValuesItem {
+    /// The ID of the issue field to set
+    pub field_id: i64,
+    /// The value to set for the field. The type depends on the field's data type:
+    /// \- For text fields: provide a string value
+    /// \- For single_select fields: provide the option name as a string (must match an existing option)
+    /// \- For number fields: provide a numeric value
+    /// \- For multi_select fields: provide an array of option names (must match existing options)
+    /// \- For date fields: provide an ISO 8601 date string
+    pub value: IssuesAddIssueFieldValuesIssueFieldValuesItemValue,
+}
+
+impl IssuesAddIssueFieldValuesIssueFieldValuesItem {
+    pub fn new(field_id: i64, value: IssuesAddIssueFieldValuesIssueFieldValuesItemValue) -> Self {
+        Self { field_id, value }
     }
 }

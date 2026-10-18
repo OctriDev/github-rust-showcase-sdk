@@ -3,6 +3,39 @@
 
 // webhook_pull_request_review_thread_resolved domain models (part 3)
 
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoCreatedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoCreatedAt branch accepts this payload"))
+    }
+}
+
+/// The policy controlling who can create pull requests: all or collaborators_only.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPullRequestCreationPolicyEnum {
+    #[default]
+    All,
+    CollaboratorsOnly,
+    Unknown(String),
+}
+
 impl WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPullRequestCreationPolicyEnum {
     pub fn as_str(&self) -> &str {
         match self {
@@ -305,11 +338,35 @@ impl WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPushedAt
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPushedAt branch accepts this payload"))
+    }
 }
 
 /// Required enumerated value serialized in the `visibility` wire field.

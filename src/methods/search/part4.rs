@@ -102,6 +102,7 @@ pub fn search_issues_and_pull_requests(
                 ("401", "BasicError"),
                 ("403", "BasicError"),
                 ("422", "ValidationError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -264,7 +265,7 @@ pub fn search_repos(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "search_repos",
             options,
-            errors: &[("422", "ValidationError")],
+            errors: &[("422", "ValidationError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -391,7 +392,7 @@ pub fn search_users(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "search_users",
             options,
-            errors: &[("422", "ValidationError")],
+            errors: &[("422", "ValidationError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

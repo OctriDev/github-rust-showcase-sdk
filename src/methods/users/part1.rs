@@ -3,11 +3,35 @@
 
 use crate::types::{PrivateUser, PublicUser};
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum UsersGetAuthenticatedResponse {
     PrivateUser(Box<PrivateUser>),
     PublicUser(Box<PublicUser>),
+}
+
+impl<'de> serde::Deserialize<'de> for UsersGetAuthenticatedResponse {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<PrivateUser>>(value.clone()) {
+            let candidate = Self::PrivateUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PublicUser>>(value.clone()) {
+            let candidate = Self::PublicUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no UsersGetAuthenticatedResponse branch accepts this payload")
+        })
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -36,12 +60,47 @@ impl UsersAddEmailForAuthenticatedUserVariant0 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum UsersAddEmailForAuthenticatedUser {
     Object(Box<UsersAddEmailForAuthenticatedUserVariant0>),
     StringArray(Vec<String>),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de> for UsersAddEmailForAuthenticatedUser {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<UsersAddEmailForAuthenticatedUserVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no UsersAddEmailForAuthenticatedUser branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// Deletes one or more email addresses from your GitHub account. Must contain at least one email address. \*\*Note:\*\* Alternatively, you can pass a single email address or an `array` of emails addresses directly, but we recommend that you pass an object using the `emails` key.
@@ -71,7 +130,7 @@ impl UsersDeleteEmailForAuthenticatedUserVariant0 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum UsersDeleteEmailForAuthenticatedUser {
     Object(Box<UsersDeleteEmailForAuthenticatedUserVariant0>),
@@ -79,18 +138,102 @@ pub enum UsersDeleteEmailForAuthenticatedUser {
     String(String),
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+impl<'de> serde::Deserialize<'de> for UsersDeleteEmailForAuthenticatedUser {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<
+            Box<UsersDeleteEmailForAuthenticatedUserVariant0>,
+        >(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no UsersDeleteEmailForAuthenticatedUser branch accepts this payload",
+            )
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum UsersGetByIdResponse {
     PrivateUser(Box<PrivateUser>),
     PublicUser(Box<PublicUser>),
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+impl<'de> serde::Deserialize<'de> for UsersGetByIdResponse {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<PrivateUser>>(value.clone()) {
+            let candidate = Self::PrivateUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PublicUser>>(value.clone()) {
+            let candidate = Self::PublicUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no UsersGetByIdResponse branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum UsersGetByUsernameResponse {
     PrivateUser(Box<PrivateUser>),
     PublicUser(Box<PublicUser>),
+}
+
+impl<'de> serde::Deserialize<'de> for UsersGetByUsernameResponse {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<PrivateUser>>(value.clone()) {
+            let candidate = Self::PrivateUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PublicUser>>(value.clone()) {
+            let candidate = Self::PublicUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no UsersGetByUsernameResponse branch accepts this payload")
+        })
+    }
 }
 
 /// The bundle of the attestation.
@@ -169,16 +312,17 @@ impl UsersListAttestationsBulkResponsePageInfo {
     }
 }
 
+pub type UsersListAttestationsBulkResponseAttestationsSubjectDigests = std::collections::HashMap<
+    String,
+    Option<Vec<UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItem>>,
+>;
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct UsersListAttestationsBulkResponse {
     /// Mapping of subject digest to bundles.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attestations_subject_digests: Option<
-        std::collections::HashMap<
-            String,
-            Vec<UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItem>,
-        >,
-    >,
+    pub attestations_subject_digests:
+        Option<UsersListAttestationsBulkResponseAttestationsSubjectDigests>,
     /// Information about the current page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page_info: Option<UsersListAttestationsBulkResponsePageInfo>,
@@ -192,128 +336,4 @@ impl UsersListAttestationsBulkResponse {
             page_info: None,
         }
     }
-}
-
-/// The attestation's Sigstore Bundle.
-/// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsResponseAttestationsItemBundle {
-    #[serde(rename = "mediaType", skip_serializing_if = "Option::is_none")]
-    pub media_type: Option<String>,
-    #[serde(
-        rename = "verificationMaterial",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub verification_material: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(rename = "dsseEnvelope", skip_serializing_if = "Option::is_none")]
-    pub dsse_envelope: Option<std::collections::HashMap<String, serde_json::Value>>,
-}
-
-impl UsersListAttestationsResponseAttestationsItemBundle {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            media_type: None,
-            verification_material: None,
-            dsse_envelope: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsResponseAttestationsItem {
-    /// The attestation's Sigstore Bundle.
-    /// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bundle: Option<UsersListAttestationsResponseAttestationsItemBundle>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub repository_id: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bundle_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub initiator: Option<String>,
-}
-
-impl UsersListAttestationsResponseAttestationsItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            bundle: None,
-            repository_id: None,
-            bundle_url: None,
-            initiator: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attestations: Option<Vec<UsersListAttestationsResponseAttestationsItem>>,
-}
-
-impl UsersListAttestationsResponse {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self { attestations: None }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
-    #[default]
-    Private,
-    Public,
-    Unknown(String),
-}
-
-impl UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Private => "private",
-            Self::Public => "public",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "private" => Self::Private,
-            "public" => Self::Public,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for UsersSetPrimaryEmailVisibilityForAuthenticatedUserVisibilityEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum UsersGetContextForUserEnum {
-    #[default]
-    Issue,
-    Organization,
-    PullRequest,
-    Repository,
-    Unknown(String),
 }

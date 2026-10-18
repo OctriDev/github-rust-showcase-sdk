@@ -53,7 +53,7 @@ impl WebhooksPullRequest5 {
         node_id: String,
         number: i64,
         patch_url: String,
-        requested_reviewers: Vec<WebhooksPullRequest5RequestedReviewersItem>,
+        requested_reviewers: Vec<Option<WebhooksPullRequest5RequestedReviewersItem>>,
         requested_teams: Vec<WebhooksPullRequest5RequestedTeamsItem>,
         review_comment_url: String,
         review_comments_url: String,

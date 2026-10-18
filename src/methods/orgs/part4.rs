@@ -7,6 +7,79 @@ use crate::types::{
     WebhookConfigInsecureSsl, WebhookConfigSecret, WebhookConfigUrl,
 };
 
+impl OrgsListAttestationsResponseAttestationsItemBundle {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            media_type: None,
+            verification_material: None,
+            dsse_envelope: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct OrgsListAttestationsResponseAttestationsItem {
+    /// The attestation's Sigstore Bundle.
+    /// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub bundle: Option<Option<OrgsListAttestationsResponseAttestationsItemBundle>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repository_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bundle_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub initiator: Option<String>,
+}
+
+impl OrgsListAttestationsResponseAttestationsItem {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            bundle: None,
+            repository_id: None,
+            bundle_url: None,
+            initiator: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct OrgsListAttestationsResponse {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attestations: Option<Vec<OrgsListAttestationsResponseAttestationsItem>>,
+}
+
+impl OrgsListAttestationsResponse {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self { attestations: None }
+    }
+}
+
+/// Key/value pairs to provide settings for this webhook.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct OrgsCreateWebhookConfig {
+    /// The URL to which the payloads will be delivered.
+    pub url: WebhookConfigUrl,
+    /// The media type used to serialize the payloads. Supported values include `json` and `form`. The default is `form`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content_type: Option<WebhookConfigContentType>,
+    /// If provided, the `secret` will be used as the `key` to generate the HMAC hex digest value for [delivery signature headers](https://docs.github.com/webhooks/event-payloads/#delivery-headers).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub secret: Option<WebhookConfigSecret>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub insecure_ssl: Option<WebhookConfigInsecureSsl>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
+}
+
 impl OrgsCreateWebhookConfig {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         crate::validation::validate_uri("url", &self.url)?;
@@ -233,67 +306,4 @@ pub enum OrgsUpdateDefaultRepositoryPermissionEnum {
     Read,
     Write,
     Unknown(String),
-}
-
-impl OrgsUpdateDefaultRepositoryPermissionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Admin => "admin",
-            Self::None => "none",
-            Self::Read => "read",
-            Self::Write => "write",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for OrgsUpdateDefaultRepositoryPermissionEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for OrgsUpdateDefaultRepositoryPermissionEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "admin" => Self::Admin,
-            "none" => Self::None,
-            "read" => Self::Read,
-            "write" => Self::Write,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for OrgsUpdateDefaultRepositoryPermissionEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum OrgsUpdateMembersAllowedRepositoryCreationTypeEnum {
-    #[default]
-    All,
-    None,
-    Private,
-    Unknown(String),
-}
-
-impl OrgsUpdateMembersAllowedRepositoryCreationTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::All => "all",
-            Self::None => "none",
-            Self::Private => "private",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
 }

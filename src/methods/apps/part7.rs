@@ -2,17 +2,266 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::client::ClientConfig;
-use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{
-    AppPermissions, HookDelivery, HookDeliveryItem, Installation, InstallationToken, Integration,
-    IntegrationInstallationRequest, WebhookConfig, WebhookConfigContentType,
-    WebhookConfigInsecureSsl, WebhookConfigSecret, WebhookConfigUrl,
-};
-use crate::validation::{validate_date_time, validate_uri};
+use crate::types::{NullableLicenseSimple, SimpleUser};
 
-impl serde::Serialize for AppsListAccountsForPlanEnumfe431365 {
+impl AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItem {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("html_url", &self.html_url)?;
+        crate::validation::validate_uri("url", &self.url)?;
+        crate::validation::validate_uri("contributors_url", &self.contributors_url)?;
+        crate::validation::validate_uri("deployments_url", &self.deployments_url)?;
+        crate::validation::validate_uri("downloads_url", &self.downloads_url)?;
+        crate::validation::validate_uri("events_url", &self.events_url)?;
+        crate::validation::validate_uri("forks_url", &self.forks_url)?;
+        crate::validation::validate_uri("languages_url", &self.languages_url)?;
+        crate::validation::validate_uri("merges_url", &self.merges_url)?;
+        crate::validation::validate_uri("stargazers_url", &self.stargazers_url)?;
+        crate::validation::validate_uri("subscribers_url", &self.subscribers_url)?;
+        crate::validation::validate_uri("subscription_url", &self.subscription_url)?;
+        crate::validation::validate_uri("tags_url", &self.tags_url)?;
+        crate::validation::validate_uri("teams_url", &self.teams_url)?;
+        if let Some(value) = self.mirror_url.as_ref() {
+            crate::validation::validate_uri("mirror_url", value)?;
+        }
+        crate::validation::validate_uri("hooks_url", &self.hooks_url)?;
+        crate::validation::validate_uri("svn_url", &self.svn_url)?;
+        if let Some(value) = self.homepage.as_ref() {
+            crate::validation::validate_uri("homepage", value)?;
+        }
+        if let Some(value) = self.pushed_at.as_ref() {
+            crate::validation::validate_model_date_time("pushed_at", value)?;
+        }
+        if let Some(value) = self.created_at.as_ref() {
+            crate::validation::validate_model_date_time("created_at", value)?;
+        }
+        if let Some(value) = self.updated_at.as_ref() {
+            crate::validation::validate_model_date_time("updated_at", value)?;
+        }
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        id: i64,
+        node_id: String,
+        name: String,
+        full_name: String,
+        license: Option<NullableLicenseSimple>,
+        forks: i64,
+        owner: SimpleUser,
+        private: bool,
+        html_url: String,
+        description: Option<String>,
+        fork: bool,
+        url: String,
+        archive_url: String,
+        assignees_url: String,
+        blobs_url: String,
+        branches_url: String,
+        collaborators_url: String,
+        comments_url: String,
+        commits_url: String,
+        compare_url: String,
+        contents_url: String,
+        contributors_url: String,
+        deployments_url: String,
+        downloads_url: String,
+        events_url: String,
+        forks_url: String,
+        git_commits_url: String,
+        git_refs_url: String,
+        git_tags_url: String,
+        git_url: String,
+        issue_comment_url: String,
+        issue_events_url: String,
+        issues_url: String,
+        keys_url: String,
+        labels_url: String,
+        languages_url: String,
+        merges_url: String,
+        milestones_url: String,
+        notifications_url: String,
+        pulls_url: String,
+        releases_url: String,
+        ssh_url: String,
+        stargazers_url: String,
+        statuses_url: String,
+        subscribers_url: String,
+        subscription_url: String,
+        tags_url: String,
+        teams_url: String,
+        trees_url: String,
+        clone_url: String,
+        mirror_url: Option<String>,
+        hooks_url: String,
+        svn_url: String,
+        homepage: Option<String>,
+        language: Option<String>,
+        forks_count: i64,
+        stargazers_count: i64,
+        watchers_count: i64,
+        size: i64,
+        default_branch: String,
+        open_issues_count: i64,
+        has_issues: bool,
+        has_projects: bool,
+        has_wiki: bool,
+        has_pages: bool,
+        has_downloads: bool,
+        archived: bool,
+        disabled: bool,
+        pushed_at: Option<String>,
+        created_at: Option<String>,
+        updated_at: Option<String>,
+        open_issues: i64,
+        watchers: i64,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id,
+            node_id,
+            name,
+            full_name,
+            license,
+            forks,
+            permissions: None,
+            owner,
+            private,
+            html_url,
+            description,
+            fork,
+            url,
+            archive_url,
+            assignees_url,
+            blobs_url,
+            branches_url,
+            collaborators_url,
+            comments_url,
+            commits_url,
+            compare_url,
+            contents_url,
+            contributors_url,
+            deployments_url,
+            downloads_url,
+            events_url,
+            forks_url,
+            git_commits_url,
+            git_refs_url,
+            git_tags_url,
+            git_url,
+            issue_comment_url,
+            issue_events_url,
+            issues_url,
+            keys_url,
+            labels_url,
+            languages_url,
+            merges_url,
+            milestones_url,
+            notifications_url,
+            pulls_url,
+            releases_url,
+            ssh_url,
+            stargazers_url,
+            statuses_url,
+            subscribers_url,
+            subscription_url,
+            tags_url,
+            teams_url,
+            trees_url,
+            clone_url,
+            mirror_url,
+            hooks_url,
+            svn_url,
+            homepage,
+            language,
+            forks_count,
+            stargazers_count,
+            watchers_count,
+            size,
+            default_branch,
+            open_issues_count,
+            is_template: None,
+            topics: None,
+            has_issues,
+            has_projects,
+            has_wiki,
+            has_pages,
+            has_downloads,
+            has_discussions: None,
+            has_pull_requests: None,
+            pull_request_creation_policy: None,
+            archived,
+            disabled,
+            visibility: None,
+            pushed_at,
+            created_at,
+            updated_at,
+            allow_rebase_merge: None,
+            temp_clone_token: None,
+            allow_squash_merge: None,
+            allow_auto_merge: None,
+            delete_branch_on_merge: None,
+            allow_update_branch: None,
+            use_squash_pr_title_as_default: None,
+            squash_merge_commit_title: None,
+            squash_merge_commit_message: None,
+            merge_commit_title: None,
+            merge_commit_message: None,
+            allow_merge_commit: None,
+            allow_forking: None,
+            web_commit_signoff_required: None,
+            open_issues,
+            watchers,
+            master_branch: None,
+            starred_at: None,
+            anonymous_access_enabled: None,
+            code_search_index_status: None,
+            custom_properties: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct AppsListInstallationReposForAuthenticatedUserResponse {
+    pub total_count: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repository_selection: Option<String>,
+    pub repositories: Vec<AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItem>,
+}
+
+impl AppsListInstallationReposForAuthenticatedUserResponse {
+    pub fn new(
+        total_count: i64,
+        repositories: Vec<AppsListInstallationReposForAuthenticatedUserResponseRepositoriesItem>,
+    ) -> Self {
+        Self {
+            total_count,
+            repository_selection: None,
+            repositories,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AppsListWebhookDeliveriesEnum {
+    #[default]
+    Failure,
+    Success,
+    Unknown(String),
+}
+
+impl AppsListWebhookDeliveriesEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Failure => "failure",
+            Self::Success => "success",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AppsListWebhookDeliveriesEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -21,35 +270,82 @@ impl serde::Serialize for AppsListAccountsForPlanEnumfe431365 {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for AppsListAccountsForPlanEnumfe431365 {
+impl<'de> serde::Deserialize<'de> for AppsListWebhookDeliveriesEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         let value = <String as serde::Deserialize>::deserialize(deserializer)?;
         Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
+            "failure" => Self::Failure,
+            "success" => Self::Success,
             _ => Self::Unknown(value),
         })
     }
 }
 
-impl std::fmt::Display for AppsListAccountsForPlanEnumfe431365 {
+impl std::fmt::Display for AppsListWebhookDeliveriesEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum AppsListAccountsForPlanStubbedEnum {
+pub enum AppsListAccountsForPlanEnum {
+    #[default]
+    Created,
+    Updated,
+    Unknown(String),
+}
+
+impl AppsListAccountsForPlanEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Created => "created",
+            Self::Updated => "updated",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AppsListAccountsForPlanEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AppsListAccountsForPlanEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "created" => Self::Created,
+            "updated" => Self::Updated,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for AppsListAccountsForPlanEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AppsListAccountsForPlanEnumfe431365 {
     #[default]
     Asc,
     Desc,
     Unknown(String),
 }
 
-impl AppsListAccountsForPlanStubbedEnum {
+impl AppsListAccountsForPlanEnumfe431365 {
     pub fn as_str(&self) -> &str {
         match self {
             Self::Asc => "asc",
@@ -57,519 +353,4 @@ impl AppsListAccountsForPlanStubbedEnum {
             Self::Unknown(value) => value.as_str(),
         }
     }
-}
-
-impl serde::Serialize for AppsListAccountsForPlanStubbedEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AppsListAccountsForPlanStubbedEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for AppsListAccountsForPlanStubbedEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Returns the GitHub App associated with the authentication credentials used. To see how many app installations are associated with this GitHub App, see the `installations_count` in the response. For more details about your app's installations, see the "[List installations for the authenticated app](https://docs.github.com/rest/apps/apps#list-installations-for-the-authenticated-app)" endpoint. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-pub fn apps_get_authenticated(
-    config: &ClientConfig,
-    options: Option<&RequestOptions>,
-) -> Result<Integration, SdkError> {
-    Ok(sdk_request::<Integration>(
-        "GET",
-        "/app",
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_authenticated",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Creates a GitHub App from a manifest to complete the GitHub App Manifest flow. Use the temporary `code` to retrieve the app details and credentials, including its `id`, `pem`, and `webhook_secret`.
-///
-/// Use this endpoint to complete the handshake necessary when implementing the [GitHub App Manifest flow](https://docs.github.com/apps/building-github-apps/creating-github-apps-from-a-manifest/). When you create a GitHub App with the manifest flow, you receive a temporary `code` used to retrieve the GitHub App's `id`, `pem` (private key), and `webhook_secret`.
-pub fn apps_create_from_manifest(
-    config: &ClientConfig,
-    code: String,
-    options: Option<&RequestOptions>,
-) -> Result<AppsCreateFromManifestResponse, SdkError> {
-    Ok(sdk_request::<AppsCreateFromManifestResponse>(
-        "POST",
-        &format!(
-            "/app-manifests/{}/conversions",
-            crate::client::encode_path_segment(&code)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_create_from_manifest",
-            options,
-            errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Returns the webhook configuration for a GitHub App. For more information about configuring a webhook for your app, see "Creating a GitHub App." You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-pub fn apps_get_webhook_config_for_app(
-    config: &ClientConfig,
-    options: Option<&RequestOptions>,
-) -> Result<WebhookConfig, SdkError> {
-    Ok(sdk_request::<WebhookConfig>(
-        "GET",
-        "/app/hook/config",
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_webhook_config_for_app",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Updates the webhook configuration for a GitHub App, including its payload URL and delivery settings. Supply `url` as a URI; `content_type` defaults to `form`, and `insecure_ssl` defaults to `0`. Authenticate with a GitHub App JWT to access this endpoint.
-///
-/// Updates the webhook configuration for a GitHub App. For more information about configuring a webhook for your app, see "Creating a GitHub App." You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `url` - The URL to which the payloads will be delivered.
-/// * `content_type` - The media type used to serialize the payloads. Supported
-///   values include `json` and `form`. The default is `form`.
-/// * `secret` - If provided, the `secret` will be used as the `key` to generate
-///   the HMAC hex digest value for [delivery signature
-///   headers](https://docs.github.com/webhooks/event-payloads/#delivery-headers).
-pub fn apps_update_webhook_config_for_app(
-    config: &ClientConfig,
-    url: Option<WebhookConfigUrl>,
-    content_type: Option<WebhookConfigContentType>,
-    secret: Option<WebhookConfigSecret>,
-    insecure_ssl: Option<WebhookConfigInsecureSsl>,
-    options: Option<&RequestOptions>,
-) -> Result<WebhookConfig, SdkError> {
-    if let Some(ref url_v) = url {
-        validate_uri("url", url_v)?;
-    }
-
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = url {
-        __body_map.insert(
-            "url".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = content_type {
-        __body_map.insert(
-            "content_type".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = secret {
-        __body_map.insert(
-            "secret".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = insecure_ssl {
-        __body_map.insert(
-            "insecure_ssl".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<WebhookConfig>(
-        "PATCH",
-        "/app/hook/config",
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_update_webhook_config_for_app",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Returns a list of webhook deliveries for the webhook configured for a GitHub App. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `cursor` - Used for pagination: the starting delivery from which the page
-///   of deliveries is fetched. Refer to the `link` header for the next and
-///   previous page cursors.
-/// * `status` - Returns webhook deliveries filtered by delivery outcome
-///   classification based on `status_code` range. A `status` of `success` returns
-///   deliveries with a `status_code` in the 200-399 range (inclusive). A `status`
-///   of `failure` returns deliveries with a `status_code` in the 400-599 range
-///   (inclusive).
-pub fn apps_list_webhook_deliveries(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    cursor: Option<String>,
-    status: Option<AppsListWebhookDeliveriesEnum>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<HookDeliveryItem>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = cursor {
-        __query.push(("cursor", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = status {
-        __query.push(("status", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<HookDeliveryItem>>(
-        "GET",
-        "/app/hook/deliveries",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_list_webhook_deliveries",
-            options,
-            errors: &[("400", "BasicError"), ("422", "ValidationError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Retrieves a delivery for a webhook configured for a GitHub App. Use `delivery_id` to identify the delivery whose request, response, and delivery status you need to inspect. Authenticate with a GitHub App JWT to access this endpoint.
-///
-/// Returns a delivery for the webhook configured for a GitHub App. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-pub fn apps_get_webhook_delivery(
-    config: &ClientConfig,
-    delivery_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<HookDelivery, SdkError> {
-    Ok(sdk_request::<HookDelivery>(
-        "GET",
-        &format!(
-            "/app/hook/deliveries/{}",
-            crate::client::encode_path_segment(&delivery_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_webhook_delivery",
-            options,
-            errors: &[("400", "BasicError"), ("422", "ValidationError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Triggers a redelivery attempt for a delivery made by a webhook configured for a GitHub App. Supply `delivery_id` to identify the delivery to attempt again. Authenticate with a GitHub App JWT to access this endpoint.
-///
-/// Redeliver a delivery for the webhook configured for a GitHub App. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-pub fn apps_redeliver_webhook_delivery(
-    config: &ClientConfig,
-    delivery_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "POST",
-        &format!(
-            "/app/hook/deliveries/{}/attempts",
-            crate::client::encode_path_segment(&delivery_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_redeliver_webhook_delivery",
-            options,
-            errors: &[("400", "BasicError"), ("422", "ValidationError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists all the pending installation requests for the authenticated GitHub App.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn apps_list_installation_requests_for_authenticated_app(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<IntegrationInstallationRequest>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<IntegrationInstallationRequest>>(
-        "GET",
-        "/app/installation-requests",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_list_installation_requests_for_authenticated_app",
-            options,
-            errors: &[("401", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists installations for the authenticated GitHub App. Use `since` to filter for installations updated after a timestamp, and use `page` and `per_page` to paginate the results. Each installation includes its granted permissions; authenticate with a GitHub App JWT to access this endpoint.
-///
-/// The permissions the installation has are included under the `permissions` key. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `since` - Only show results that were last updated after the given time.
-///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
-///   format: `YYYY-MM-DDTHH:MM:SSZ`.
-pub fn apps_list_installations(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    since: Option<String>,
-    outdated: Option<String>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Installation>, SdkError> {
-    if let Some(ref since_v) = since {
-        validate_date_time("since", since_v)?;
-    }
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = since {
-        __query.push(("since", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = outdated {
-        __query.push(("outdated", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Installation>>(
-        "GET",
-        "/app/installations",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_list_installations",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Enables an authenticated GitHub App to find an installation's information using the installation id. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `installation_id` - The unique identifier of the installation.
-pub fn apps_get_installation(
-    config: &ClientConfig,
-    installation_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<Installation, SdkError> {
-    Ok(sdk_request::<Installation>(
-        "GET",
-        &format!(
-            "/app/installations/{}",
-            crate::client::encode_path_segment(&installation_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_get_installation",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Uninstalls a GitHub App on a user, organization, or enterprise account. If you prefer to temporarily suspend an app's access to your account's resources, then we recommend the "[Suspend an app installation](https://docs.github.com/rest/apps/apps#suspend-an-app-installation)" endpoint. You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-///
-/// # Arguments
-///
-/// * `installation_id` - The unique identifier of the installation.
-pub fn apps_delete_installation(
-    config: &ClientConfig,
-    installation_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/app/installations/{}",
-            crate::client::encode_path_segment(&installation_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "apps_delete_installation",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 \- Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access. \> [!NOTE] \> Starting April 27, 2026, GitHub began a staged rollout of a stateless format (`ghs_APPID_JWT`) to all newly minted GitHub App installation tokens, making them more performant and improving the reliability of our API surface. If your application expects or relies on installation tokens being exactly 40 characters long, it may not handle this new token format correctly. You can now validate your apps and workflows using a temporary request header that lets you enable the token format on demand. For more information about the temporary header, see [the GitHub blog](https://github.blog/changelog/2026-05-15-github-app-installation-tokens-per-request-override-header). Optionally, you can use the `repositories` or `repository_ids` body parameters to specify individual repositories that the installation access token can access. If you don't use `repositories` or `repository_ids` to grant access to specific repositories, the installation access token will have access to all repositories that the installation was granted access to. The installation access token cannot be granted access to repositories that the installation was not granted access to. Up to 500 repositories can be listed in this manner. Optionally, use the `permissions` body parameter to specify the permissions that the installation access token should have. If `permissions` is not specified, the installation access token will have all of the permissions that were granted to the app. The installation access token cannot be granted permissions that the app…
-///
-/// # Arguments
-///
-/// * `installation_id` - The unique identifier of the installation.
-/// * `repositories` - List of repository names that the token should have
-///   access to
-/// * `repository_ids` - List of repository IDs that the token should have
-///   access to
-/// * `permissions` - The permissions granted to the fine-grained access token.
-pub fn apps_create_installation_access_token(
-    config: &ClientConfig,
-    installation_id: i64,
-    repositories: Option<Vec<String>>,
-    repository_ids: Option<Vec<i64>>,
-    permissions: Option<AppPermissions>,
-    options: Option<&RequestOptions>,
-) -> Result<InstallationToken, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = repositories {
-        __body_map.insert(
-            "repositories".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = repository_ids {
-        __body_map.insert(
-            "repository_ids".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = permissions {
-        __body_map.insert(
-            "permissions".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<InstallationToken>(
-        "POST",
-        &format!(
-            "/app/installations/{}/access_tokens",
-            crate::client::encode_path_segment(&installation_id)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "apps_create_installation_access_token",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
 }

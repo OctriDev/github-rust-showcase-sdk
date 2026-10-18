@@ -89,18 +89,48 @@ impl RuleSuitePullRequestPullRequest {
     }
 }
 
+/// Optional enumerated value serialized in the `rule_type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RuleSuitePullRequestRuleTypeEnum {
+    #[serde(rename = "pull_request")]
+    #[default]
+    PullRequest,
+}
+
+impl RuleSuitePullRequestRuleTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PullRequest => "pull_request",
+        }
+    }
+}
+
+impl std::fmt::Display for RuleSuitePullRequestRuleTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RuleSuitePullRequestRuleTypeEnum::PullRequest => f.write_str("pull_request"),
+        }
+    }
+}
+
 /// Metadata for a pull request rule evaluation result.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct RuleSuitePullRequest {
     /// The pull request associated with the rule evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pull_request: Option<RuleSuitePullRequestPullRequest>,
+    /// Optional enumerated value serialized in the `rule_type` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rule_type: Option<RuleSuitePullRequestRuleTypeEnum>,
 }
 
 impl RuleSuitePullRequest {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
-        Self { pull_request: None }
+        Self {
+            pull_request: None,
+            rule_type: None,
+        }
     }
 }
 
@@ -166,18 +196,50 @@ impl RuleSuiteRequiredStatusChecksChecksItem {
     }
 }
 
+/// Optional enumerated value serialized in the `rule_type` wire field.
+#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
+pub enum RuleSuiteRequiredStatusChecksRuleTypeEnum {
+    #[serde(rename = "required_status_checks")]
+    #[default]
+    RequiredStatusChecks,
+}
+
+impl RuleSuiteRequiredStatusChecksRuleTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::RequiredStatusChecks => "required_status_checks",
+        }
+    }
+}
+
+impl std::fmt::Display for RuleSuiteRequiredStatusChecksRuleTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RuleSuiteRequiredStatusChecksRuleTypeEnum::RequiredStatusChecks => {
+                f.write_str("required_status_checks")
+            }
+        }
+    }
+}
+
 /// Metadata for a required status checks rule evaluation result.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct RuleSuiteRequiredStatusChecks {
     /// The status checks associated with the rule evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub checks: Option<Vec<RuleSuiteRequiredStatusChecksChecksItem>>,
+    /// Optional enumerated value serialized in the `rule_type` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rule_type: Option<RuleSuiteRequiredStatusChecksRuleTypeEnum>,
 }
 
 impl RuleSuiteRequiredStatusChecks {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
-        Self { checks: None }
+        Self {
+            checks: None,
+            rule_type: None,
+        }
     }
 }
 

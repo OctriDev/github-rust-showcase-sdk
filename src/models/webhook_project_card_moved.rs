@@ -74,9 +74,9 @@ impl WebhookProjectCardMovedChanges {
     }
 }
 
-/// Optional object value serialized in the `creator` wire field.
+/// Required object value serialized in the `creator` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookProjectCardMovedProjectCardVariant1Creator {
+pub struct WebhookProjectCardMovedProjectCardCreator {
     /// Optional `string` value serialized in the `avatar_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -133,7 +133,7 @@ pub struct WebhookProjectCardMovedProjectCardVariant1Creator {
     pub url: Option<String>,
 }
 
-impl WebhookProjectCardMovedProjectCardVariant1Creator {
+impl WebhookProjectCardMovedProjectCardCreator {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -159,38 +159,38 @@ impl WebhookProjectCardMovedProjectCardVariant1Creator {
     }
 }
 
-/// Required API value serialized in the `project_card` wire field.
+/// Required object value serialized in the `project_card` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookProjectCardMovedProjectCard {
     /// Required `number` value serialized in the `after_id` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub after_id: Option<f64>,
-    /// Optional `boolean` value serialized in the `archived` wire field.
+    /// Required `boolean` value serialized in the `archived` wire field.
     pub archived: bool,
-    /// Optional `integer` value serialized in the `column_id` wire field.
+    /// Required `integer` value serialized in the `column_id` wire field.
     pub column_id: i64,
-    /// Optional `string` value serialized in the `column_url` wire field.
+    /// Required `string` value serialized in the `column_url` wire field.
     pub column_url: String,
     /// Optional `uri`-formatted value serialized in the `content_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content_url: Option<String>,
-    /// Optional `string` value serialized in the `created_at` wire field.
+    /// Required `string` value serialized in the `created_at` wire field.
     pub created_at: String,
-    /// Optional object value serialized in the `creator` wire field.
+    /// Required object value serialized in the `creator` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
-    pub creator: Option<WebhookProjectCardMovedProjectCardVariant1Creator>,
-    /// Optional `integer` value serialized in the `id` wire field.
+    pub creator: Option<WebhookProjectCardMovedProjectCardCreator>,
+    /// Required `integer` value serialized in the `id` wire field.
     pub id: i64,
-    /// Optional `string` value serialized in the `node_id` wire field.
+    /// Required `string` value serialized in the `node_id` wire field.
     pub node_id: String,
-    /// Optional `string` value serialized in the `note` wire field.
+    /// Required `string` value serialized in the `note` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub note: Option<String>,
-    /// Optional `string` value serialized in the `project_url` wire field.
+    /// Required `string` value serialized in the `project_url` wire field.
     pub project_url: String,
-    /// Optional `string` value serialized in the `updated_at` wire field.
+    /// Required `string` value serialized in the `updated_at` wire field.
     pub updated_at: String,
-    /// Optional `string` value serialized in the `url` wire field.
+    /// Required `string` value serialized in the `url` wire field.
     pub url: String,
 }
 
@@ -209,7 +209,7 @@ impl WebhookProjectCardMovedProjectCard {
         column_id: i64,
         column_url: String,
         created_at: String,
-        creator: Option<WebhookProjectCardMovedProjectCardVariant1Creator>,
+        creator: Option<WebhookProjectCardMovedProjectCardCreator>,
         id: i64,
         node_id: String,
         note: Option<String>,
@@ -259,7 +259,7 @@ pub struct WebhookProjectCardMoved {
     /// organization, or when the event occurs from activity in a repository owned by an organization.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub organization: Option<OrganizationSimpleWebhooks>,
-    /// Required API value serialized in the `project_card` wire field.
+    /// Required object value serialized in the `project_card` wire field.
     pub project_card: WebhookProjectCardMovedProjectCard,
     /// The repository on GitHub where the event occurred. Webhook payloads contain the `repository` property
     /// when the event occurs from activity in a repository.

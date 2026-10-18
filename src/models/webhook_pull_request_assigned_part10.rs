@@ -386,7 +386,8 @@ pub struct WebhookPullRequestAssignedPullRequest {
     )]
     pub rebaseable: Option<Option<bool>>,
     /// Required array value serialized in the `requested_reviewers` wire field.
-    pub requested_reviewers: Vec<WebhookPullRequestAssignedPullRequestRequestedReviewersItem>,
+    pub requested_reviewers:
+        Vec<Option<WebhookPullRequestAssignedPullRequestRequestedReviewersItem>>,
     /// Required array value serialized in the `requested_teams` wire field.
     pub requested_teams: Vec<WebhookPullRequestAssignedPullRequestRequestedTeamsItem>,
     /// Required `uri-template`-formatted value serialized in the `review_comment_url` wire field.

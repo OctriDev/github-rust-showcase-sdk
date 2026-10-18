@@ -3,6 +3,45 @@
 
 // orgs domain models (part 7)
 
+/// List of custom property values for a repository
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct OrgRepoCustomPropertyValues {
+    /// Required `integer` value serialized in the `repository_id` wire field.
+    pub repository_id: i64,
+    /// Required `string` value serialized in the `repository_name` wire field.
+    pub repository_name: String,
+    /// Required `string` value serialized in the `repository_full_name` wire field.
+    pub repository_full_name: String,
+    /// List of custom property names and associated values
+    pub properties: Vec<CustomPropertyValue>,
+}
+
+impl OrgRepoCustomPropertyValues {
+    pub fn new(
+        repository_id: i64,
+        repository_name: String,
+        repository_full_name: String,
+        properties: Vec<CustomPropertyValue>,
+    ) -> Self {
+        Self {
+            repository_id,
+            repository_name,
+            repository_full_name,
+            properties,
+        }
+    }
+}
+
+/// Repository name and associated external custom property value
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryExternalPropertyPayload {
+    /// The name of the repository
+    pub repository_name: String,
+    /// The value assigned to the repository. Set to `null` to unset the value for this repository.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub value: Option<String>,
+}
+
 impl RepositoryExternalPropertyPayload {
     pub fn new(repository_name: String, value: Option<String>) -> Self {
         Self {

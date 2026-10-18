@@ -3,6 +3,29 @@
 
 use super::*;
 
+impl serde::Serialize for ReposCreateInOrgSquashMergeCommitTitleEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposCreateInOrgSquashMergeCommitTitleEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
+            "PR_TITLE" => Self::PrTitle,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for ReposCreateInOrgSquashMergeCommitTitleEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
@@ -254,20 +277,4 @@ impl<'de> serde::Deserialize<'de> for ReposGetOrgRuleSuitesEnum7b29ef42 {
             _ => Self::Unknown(value),
         })
     }
-}
-
-impl std::fmt::Display for ReposGetOrgRuleSuitesEnum7b29ef42 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposGetOrgRuleSuitesEnum7f640cd8 {
-    #[default]
-    All,
-    Bypass,
-    Fail,
-    Pass,
-    Unknown(String),
 }

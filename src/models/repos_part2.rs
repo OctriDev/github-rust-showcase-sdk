@@ -477,28 +477,6 @@ impl ReferrerTraffic {
     }
 }
 
-/// Generated name and body describing a release
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ReleaseNotesContent {
-    /// The generated name of the release
-    pub name: String,
-    /// The generated body describing the contents of the release supporting markdown formatting
-    pub body: String,
-}
-
-impl ReleaseNotesContent {
-    pub fn new(name: String, body: String) -> Self {
-        Self { name, body }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum ReviewersItemReviewer {
-    SimpleUser(Box<SimpleUser>),
-    Team(Box<Team>),
-}
-
 /// Required object value serialized in the `commit` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ShortBranchCommit {
@@ -506,4 +484,17 @@ pub struct ShortBranchCommit {
     pub sha: String,
     /// Required `uri`-formatted value serialized in the `url` wire field.
     pub url: String,
+}
+
+impl ShortBranchCommit {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("url", &self.url)?;
+        Ok(())
+    }
+
+    pub fn new(sha: String, url: String) -> Result<Self, crate::errors::SdkError> {
+        let value = Self { sha, url };
+        value.validate_constraints()?;
+        Ok(value)
+    }
 }

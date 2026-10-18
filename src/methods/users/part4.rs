@@ -5,8 +5,504 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{GpgKey, Hovercard, SimpleUser};
-use crate::validation::{validate_items, LengthOpts};
+use crate::types::{Email, Key, SimpleUser, SocialAccount, SshSigningKey};
+use crate::validation::{validate_items, validate_pattern, LengthOpts};
+
+/// Adds a public SSH key to the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `write:public_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `key` - The public SSH key to add to your GitHub account.
+/// * `title` - A descriptive name for the new key.
+pub fn users_create_public_ssh_key_for_authenticated_user(
+    config: &ClientConfig,
+    key: String,
+    title: Option<String>,
+    options: Option<&RequestOptions>,
+) -> Result<Key, SdkError> {
+    validate_pattern(
+        "key",
+        &key,
+        "^ssh-(rsa|dss|ed25519) |^ecdsa-sha2-nistp(256|384|521) ",
+    )?;
+
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "key".to_string(),
+        serde_json::to_value(key).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = title {
+        __body_map.insert(
+            "title".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Key>(
+        "POST",
+        "/user/keys",
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_create_public_ssh_key_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// View extended details for a single public SSH key. OAuth app tokens and personal access tokens (classic) need the `read:public_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `key_id` - The unique identifier of the key.
+pub fn users_get_public_ssh_key_for_authenticated_user(
+    config: &ClientConfig,
+    key_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<Key, SdkError> {
+    Ok(sdk_request::<Key>(
+        "GET",
+        &format!("/user/keys/{}", crate::client::encode_path_segment(&key_id)),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_get_public_ssh_key_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Removes a public SSH key from the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `admin:public_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `key_id` - The unique identifier of the key.
+pub fn users_delete_public_ssh_key_for_authenticated_user(
+    config: &ClientConfig,
+    key_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!("/user/keys/{}", crate::client::encode_path_segment(&key_id)),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "users_delete_public_ssh_key_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Lists your publicly visible email address, which you can set with the [Set primary email visibility for the authenticated user](https://docs.github.com/rest/users/emails#set-primary-email-visibility-for-the-authenticated-user) endpoint. OAuth app tokens and personal access tokens (classic) need the `user:email` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn users_list_public_emails_for_authenticated_user(
+    config: &ClientConfig,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<Email>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<Email>>(
+        "GET",
+        "/user/public_emails",
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_list_public_emails_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Lists the social accounts linked to the authenticated user. Use `page` and `per_page` to paginate the results.
+///
+/// Lists all of your social accounts.
+///
+/// # Arguments
+///
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn users_list_social_accounts_for_authenticated_user(
+    config: &ClientConfig,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<SocialAccount>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<SocialAccount>>(
+        "GET",
+        "/user/social_accounts",
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_list_social_accounts_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Add one or more social accounts to the authenticated user's profile. OAuth app tokens and personal access tokens (classic) need the `user` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `account_urls` - Full URLs for the social media profiles to add.
+pub fn users_add_social_account_for_authenticated_user(
+    config: &ClientConfig,
+    account_urls: Vec<String>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<SocialAccount>, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "account_urls".to_string(),
+        serde_json::to_value(account_urls).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Vec<SocialAccount>>(
+        "POST",
+        "/user/social_accounts",
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_add_social_account_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Deletes one or more social accounts from the authenticated user's profile. OAuth app tokens and personal access tokens (classic) need the `user` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `account_urls` - Full URLs for the social media profiles to delete.
+pub fn users_delete_social_account_for_authenticated_user(
+    config: &ClientConfig,
+    account_urls: Vec<String>,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "account_urls".to_string(),
+        serde_json::to_value(account_urls).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        "/user/social_accounts",
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "users_delete_social_account_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Lists the SSH signing keys for the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `read:ssh_signing_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn users_list_ssh_signing_keys_for_authenticated_user(
+    config: &ClientConfig,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<SshSigningKey>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<SshSigningKey>>(
+        "GET",
+        "/user/ssh_signing_keys",
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_list_ssh_signing_keys_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Creates an SSH signing key for the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `write:ssh_signing_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `key` - The public SSH key to add to your GitHub account. For more
+///   information, see "[Checking for existing SSH
+///   keys](https://docs.github.com/authentication/connecting-to-github-with-ssh/c
+///   hecking-for-existing-ssh-keys)."
+/// * `title` - A descriptive name for the new key.
+pub fn users_create_ssh_signing_key_for_authenticated_user(
+    config: &ClientConfig,
+    key: String,
+    title: Option<String>,
+    options: Option<&RequestOptions>,
+) -> Result<SshSigningKey, SdkError> {
+    validate_pattern("key", &key, "^ssh-(rsa|dss|ed25519) |^ecdsa-sha2-nistp(256|384|521) |^(sk-ssh-ed25519|sk-ecdsa-sha2-nistp256)@openssh.com ")?;
+
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "key".to_string(),
+        serde_json::to_value(key).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = title {
+        __body_map.insert(
+            "title".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<SshSigningKey>(
+        "POST",
+        "/user/ssh_signing_keys",
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_create_ssh_signing_key_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets extended details for an SSH signing key. OAuth app tokens and personal access tokens (classic) need the `read:ssh_signing_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `ssh_signing_key_id` - The unique identifier of the SSH signing key.
+pub fn users_get_ssh_signing_key_for_authenticated_user(
+    config: &ClientConfig,
+    ssh_signing_key_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<SshSigningKey, SdkError> {
+    Ok(sdk_request::<SshSigningKey>(
+        "GET",
+        &format!(
+            "/user/ssh_signing_keys/{}",
+            crate::client::encode_path_segment(&ssh_signing_key_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_get_ssh_signing_key_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Deletes an SSH signing key from the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `admin:ssh_signing_key` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `ssh_signing_key_id` - The unique identifier of the SSH signing key.
+pub fn users_delete_ssh_signing_key_for_authenticated_user(
+    config: &ClientConfig,
+    ssh_signing_key_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/user/ssh_signing_keys/{}",
+            crate::client::encode_path_segment(&ssh_signing_key_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "users_delete_ssh_signing_key_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Provides publicly available information about someone with a GitHub account. This method takes their durable user `ID` instead of their `login`, which can change over time. If you are requesting information about an [Enterprise Managed User](https://docs.github.com/enterprise-cloud@latest/admin/managing-iam/understanding-iam-for-enterprises/about-enterprise-managed-users), or a GitHub App bot that is installed in an organization that uses Enterprise Managed Users, your requests must be authenticated as a user or GitHub App that has access to the organization to view that account's information. If you are not authorized, the request will return a `404 Not Found` status. The `email` key in the following response is the publicly visible email address from your GitHub [profile page](https://github.com/settings/profile). When setting up your profile, you can select a primary email address to be public which provides an email entry for this endpoint. If you do not set a public email address for `email`, then it will have a value of `null`. You only see publicly visible email addresses when authenticated with GitHub. For more information, see [Authentication](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#authentication). The Emails API enables you to list all of your email addresses, and toggle a primary email to be visible publicly. For more information, see [Emails API](https://docs.github.com/rest/users/emails).
+///
+/// # Arguments
+///
+/// * `account_id` - account_id parameter
+pub fn users_get_by_id(
+    config: &ClientConfig,
+    account_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<UsersGetByIdResponse, SdkError> {
+    Ok(sdk_request::<UsersGetByIdResponse>(
+        "GET",
+        &format!("/user/{}", crate::client::encode_path_segment(&account_id)),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_get_by_id",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Lists all users, in the order that they signed up on GitHub. This list includes personal user accounts and organization accounts. Note: Pagination is powered exclusively by the `since` parameter. Use the [Link header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api#using-link-headers) to get the URL for the next page of users.
 ///
@@ -175,404 +671,6 @@ pub fn users_list_attestations_bulk(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "users_list_attestations_bulk",
             options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Deletes artifact attestations for a user in bulk, identifying them by subject digest or unique attestation ID. Provide either `subject_digests` or `attestation_ids`, but not both; the selected list must contain between 1 and 1,024 entries.
-///
-/// Delete artifact attestations in bulk by either subject digests or unique ID.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `body` - The request body must include either `subject_digests` or
-///   `attestation_ids`, but not both.
-pub fn users_delete_attestations_bulk(
-    config: &ClientConfig,
-    username: String,
-    body: serde_json::Value,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let __body = serde_json::to_value(body).map_err(|e| {
-        SdkError::Network(SdkNetworkError {
-            message: format!("encode body: {}", e),
-            request_id: None,
-        })
-    })?;
-
-    Ok(sdk_request::<serde_json::Value>(
-        "POST",
-        &format!(
-            "/users/{}/attestations/delete-request",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_delete_attestations_bulk",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Deletes artifact attestations associated with a subject digest for a GitHub user account. Use `username` and `subject_digest` to identify the account and the attestation subject; a successful response confirms the deletion.
-///
-/// Delete an artifact attestation by subject digest.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `subject_digest` - Subject Digest
-pub fn users_delete_attestations_by_subject_digest(
-    config: &ClientConfig,
-    username: String,
-    subject_digest: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/users/{}/attestations/digest/{}",
-            crate::client::encode_path_segment(&username),
-            crate::client::encode_path_segment(&subject_digest)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_delete_attestations_by_subject_digest",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Delete an artifact attestation by unique ID that is associated with a repository owned by a user.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `attestation_id` - Attestation ID
-pub fn users_delete_attestations_by_id(
-    config: &ClientConfig,
-    username: String,
-    attestation_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/users/{}/attestations/{}",
-            crate::client::encode_path_segment(&username),
-            crate::client::encode_path_segment(&attestation_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_delete_attestations_by_id",
-            options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct UsersListAttestationsParams {
-    pub username: String,
-    pub subject_digest: String,
-    pub per_page: Option<i64>,
-    pub before: Option<String>,
-    pub after: Option<String>,
-    pub predicate_type: Option<String>,
-}
-
-/// List a collection of artifact attestations with a given subject digest that are associated with repositories owned by a user. The collection of attestations returned by this endpoint is filtered according to the authenticated user's permissions; if the authenticated user cannot read a repository, the attestations associated with that repository will not be included in the response. In addition, when using a fine-grained access token the `attestations:read` permission is required. \*\*Please note:\*\* in order to offer meaningful security benefits, an attestation's signature and timestamps \*\*must\*\* be cryptographically verified, and the identity of the attestation signer \*\*must\*\* be validated. Attestations can be verified using the [GitHub CLI `attestation verify` command](https://cli.github.com/manual/gh_attestation_verify). For more information, see [our guide on how to use artifact attestations to establish a build's provenance](https://docs.github.com/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds).
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `subject_digest` - Subject Digest
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `before` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   before this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `after` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   after this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `predicate_type` - Optional filter for fetching attestations with a given
-///   predicate type. This option accepts `provenance`, `sbom`, `release`, or
-///   freeform text for custom predicate types.
-pub fn users_list_attestations(
-    config: &ClientConfig,
-    params: UsersListAttestationsParams,
-    options: Option<&RequestOptions>,
-) -> Result<UsersListAttestationsResponse, SdkError> {
-    let UsersListAttestationsParams {
-        username,
-        subject_digest,
-        per_page,
-        before,
-        after,
-        predicate_type,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = after {
-        __query.push(("after", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = predicate_type {
-        __query.push(("predicate_type", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<UsersListAttestationsResponse>(
-        "GET",
-        &format!(
-            "/users/{}/attestations/{}",
-            crate::client::encode_path_segment(&username),
-            crate::client::encode_path_segment(&subject_digest)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_attestations",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the people following the specified user. If the specified user has a [private profile](https://docs.github.com/account-and-profile/concepts/personal-profile#private-profiles), this endpoint returns an empty list unless the request is authenticated as that user. A request authenticated as the specified user returns the list even if the token has no OAuth scopes.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_followers_for_user(
-    config: &ClientConfig,
-    username: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<SimpleUser>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<SimpleUser>>(
-        "GET",
-        &format!(
-            "/users/{}/followers",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_followers_for_user",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the people who the specified user follows. If the specified user has a [private profile](https://docs.github.com/account-and-profile/concepts/personal-profile#private-profiles), this endpoint returns an empty list unless the request is authenticated as that user. A request authenticated as the specified user returns the list even if the token has no OAuth scopes.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_following_for_user(
-    config: &ClientConfig,
-    username: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<SimpleUser>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<SimpleUser>>(
-        "GET",
-        &format!(
-            "/users/{}/following",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_following_for_user",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Checks whether one GitHub user follows another user. Use `username` and `target_user` to identify the follower and the account being checked.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_check_following_for_user(
-    config: &ClientConfig,
-    username: String,
-    target_user: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "GET",
-        &format!(
-            "/users/{}/following/{}",
-            crate::client::encode_path_segment(&username),
-            crate::client::encode_path_segment(&target_user)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_check_following_for_user",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the GPG keys for a user. This information is accessible by anyone.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_gpg_keys_for_user(
-    config: &ClientConfig,
-    username: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<GpgKey>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<GpgKey>>(
-        "GET",
-        &format!(
-            "/users/{}/gpg_keys",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_gpg_keys_for_user",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Provides hovercard information. You can find out more about someone in relation to their pull requests, issues, repositories, and organizations. The `subject_type` and `subject_id` parameters provide context for the person's hovercard, which returns more information than without the parameters. For example, if you wanted to find out more about `octocat` who owns the `Spoon-Knife` repository, you would use a `subject_type` value of `repository` and a `subject_id` value of `1300192` (the ID of the `Spoon-Knife` repository). OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `subject_type` - Identifies which additional information you'd like to
-///   receive about the person's hovercard. Can be `organization`, `repository`,
-///   `issue`, `pull_request`. \*\*Required\*\* when using `subject_id`.
-/// * `subject_id` - Uses the ID for the `subject_type` you specified.
-///   \*\*Required\*\* when using `subject_type`.
-pub fn users_get_context_for_user(
-    config: &ClientConfig,
-    username: String,
-    subject_type: Option<UsersGetContextForUserEnum>,
-    subject_id: Option<String>,
-    options: Option<&RequestOptions>,
-) -> Result<Hovercard, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = subject_type {
-        __query.push(("subject_type", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = subject_id {
-        __query.push(("subject_id", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Hovercard>(
-        "GET",
-        &format!(
-            "/users/{}/hovercard",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_get_context_for_user",
-            options,
-            errors: &[("404", "BasicError"), ("422", "ValidationError")],
             ..Default::default()
         },
     )?

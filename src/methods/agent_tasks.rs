@@ -4,6 +4,7 @@
 mod part1;
 mod part10;
 mod part11;
+mod part12;
 mod part2;
 mod part3;
 mod part4;
@@ -16,6 +17,7 @@ mod part9;
 pub use part1::*;
 pub use part10::*;
 pub use part11::*;
+pub use part12::*;
 pub use part2::*;
 pub use part3::*;
 pub use part4::*;

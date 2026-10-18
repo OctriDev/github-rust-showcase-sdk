@@ -307,6 +307,7 @@ pub fn billing_get_budget_org(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -321,7 +322,7 @@ pub struct BillingUpdateBudgetOrgParams {
     pub budget_amount: Option<i64>,
     pub prevent_further_usage: Option<bool>,
     pub budget_alerting: Option<BillingUpdateBudgetOrgBudgetAlerting>,
-    pub expires_at: Option<BillingUpdateBudgetOrgExpiresAt>,
+    pub expires_at: Option<Option<BillingUpdateBudgetOrgExpiresAt>>,
 }
 
 /// Updates an existing budget for an organization. Supply the budget fields you want to change; expiration updates are supported only for existing user-scoped budgets, and setting `expires_at` to `0` removes the expiration date. The authenticated user must be an organization admin or billing manager.
@@ -457,6 +458,7 @@ pub fn billing_delete_budget_org(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -545,6 +547,7 @@ pub fn billing_get_github_billing_premium_request_usage_report_org(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -601,6 +604,7 @@ pub fn billing_get_github_billing_usage_report_org(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

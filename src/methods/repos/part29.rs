@@ -7,7 +7,7 @@ use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{
     CustomPropertyValue, PageBuild, PageBuildStatus, PageDeployment, PagesDeploymentStatus,
-    PagesHealthCheck,
+    PagesHealthCheck, ReposUpdateInformationAboutPagesSiteRequestSource,
 };
 
 #[derive(Debug, Clone, Default)]
@@ -17,7 +17,7 @@ pub struct ReposUpdateInformationAboutPagesSiteParams {
     pub cname: Option<Option<String>>,
     pub https_enforced: Option<bool>,
     pub build_type: Option<ReposUpdateInformationAboutPagesSiteBuildTypeEnum>,
-    pub source: Option<ReposUpdateInformationAboutPagesSiteSource>,
+    pub source: Option<ReposUpdateInformationAboutPagesSiteRequestSource>,
 }
 
 /// Updates GitHub Pages settings for a repository. Provide at least one of `build_type`, `source`, or `cname`; `build_type` accepts `legacy` or `workflow`, and `source` accepts a branch name with an optional `/docs` path or an object containing `branch` and `path`. The authenticated user must be a repository administrator, maintainer, or have the `manage GitHub Pages settings` permission.
@@ -41,6 +41,8 @@ pub struct ReposUpdateInformationAboutPagesSiteParams {
 ///   `workflow` means that the site is built by a custom GitHub Actions workflow.
 ///   `legacy` means that the site is built by GitHub when changes are pushed to a
 ///   specific branch.
+/// * `source` - Typed representation of the
+///   `ReposUpdateInformationAboutPagesSiteRequestSource` API schema.
 pub fn repos_update_information_about_pages_site(
     config: &ClientConfig,
     params: ReposUpdateInformationAboutPagesSiteParams,

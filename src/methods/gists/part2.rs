@@ -7,6 +7,53 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{BaseGist, GistComment, GistCommit, GistSimple};
 use crate::validation::{validate_date_time, validate_length, LengthOpts};
 
+/// Lists the comments on a gist. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown. This is the default if you do not pass any specific media type.
+///
+/// # Arguments
+///
+/// * `gist_id` - The unique identifier of the gist.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn gists_list_comments(
+    config: &ClientConfig,
+    gist_id: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<GistComment>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<GistComment>>(
+        "GET",
+        &format!(
+            "/gists/{}/comments",
+            crate::client::encode_path_segment(&gist_id)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "gists_list_comments",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Creates a comment on a gist. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown. This is the default if you do not pass any specific media type.
 ///
 /// # Arguments
@@ -83,7 +130,7 @@ pub fn gists_get_comment(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "gists_get_comment",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("403", "ForbiddenGist"), ("404", "BasicError")],
             ..Default::default()
         },
     )?

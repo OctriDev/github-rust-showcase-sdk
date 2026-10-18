@@ -88,15 +88,15 @@ impl AgentAutomationsGetAutomationResponse {
     }
 }
 
-/// A GitHub user
+/// The entity who created this task
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentAutomationsListAutomationTasksResponseTasksItemCreatorVariant0 {
+pub struct AgentAutomationsListAutomationTasksResponseTasksItemCreator {
     /// The unique identifier of the user
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<i64>,
 }
 
-impl AgentAutomationsListAutomationTasksResponseTasksItemCreatorVariant0 {
+impl AgentAutomationsListAutomationTasksResponseTasksItemCreator {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self { id: None }

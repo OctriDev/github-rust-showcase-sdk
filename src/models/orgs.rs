@@ -415,11 +415,35 @@ impl std::fmt::Display for CustomPropertyValueTypeEnum {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CustomPropertyDefaultValue {
     String(String),
     StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for CustomPropertyDefaultValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no CustomPropertyDefaultValue branch accepts this payload")
+        })
+    }
 }
 
 /// Who can edit the values of the property
@@ -447,25 +471,5 @@ impl serde::Serialize for CustomPropertyValuesEditableByEnum {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for CustomPropertyValuesEditableByEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "org_actors" => Self::OrgActors,
-            "org_and_repo_actors" => Self::OrgAndRepoActors,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for CustomPropertyValuesEditableByEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

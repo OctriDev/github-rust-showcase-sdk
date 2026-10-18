@@ -2,10 +2,7 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::{
-    ArtifactDeploymentRecord, WebhookConfigContentType, WebhookConfigInsecureSsl,
-    WebhookConfigSecret, WebhookConfigUrl,
-};
+use crate::types::ArtifactDeploymentRecord;
 
 impl OrgsCreateArtifactStorageRecordResponseStorageRecordsItem {
     #[allow(clippy::new_without_default)]
@@ -193,16 +190,17 @@ impl OrgsListAttestationsBulkResponsePageInfo {
     }
 }
 
+pub type OrgsListAttestationsBulkResponseAttestationsSubjectDigests = std::collections::HashMap<
+    String,
+    Option<Vec<OrgsListAttestationsBulkResponseAttestationsSubjectDigestsValueItem>>,
+>;
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct OrgsListAttestationsBulkResponse {
     /// Mapping of subject digest to bundles.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attestations_subject_digests: Option<
-        std::collections::HashMap<
-            String,
-            Vec<OrgsListAttestationsBulkResponseAttestationsSubjectDigestsValueItem>,
-        >,
-    >,
+    pub attestations_subject_digests:
+        Option<OrgsListAttestationsBulkResponseAttestationsSubjectDigests>,
     /// Information about the current page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page_info: Option<OrgsListAttestationsBulkResponsePageInfo>,
@@ -215,6 +213,93 @@ impl OrgsListAttestationsBulkResponse {
             attestations_subject_digests: None,
             page_info: None,
         }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct OrgsDeleteAttestationsBulkVariant0 {
+    /// List of subject digests associated with the artifact attestations to delete.
+    pub subject_digests: Vec<String>,
+}
+
+impl OrgsDeleteAttestationsBulkVariant0 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_items(
+            "subject_digests",
+            self.subject_digests.as_slice(),
+            crate::validation::LengthOpts {
+                min: Some(1),
+                max: Some(1024),
+            },
+        )?;
+        Ok(())
+    }
+
+    pub fn new(subject_digests: Vec<String>) -> Result<Self, crate::errors::SdkError> {
+        let value = Self { subject_digests };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct OrgsDeleteAttestationsBulkVariant1 {
+    /// List of unique IDs associated with the artifact attestations to delete.
+    pub attestation_ids: Vec<i64>,
+}
+
+impl OrgsDeleteAttestationsBulkVariant1 {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_items(
+            "attestation_ids",
+            self.attestation_ids.as_slice(),
+            crate::validation::LengthOpts {
+                min: Some(1),
+                max: Some(1024),
+            },
+        )?;
+        Ok(())
+    }
+
+    pub fn new(attestation_ids: Vec<i64>) -> Result<Self, crate::errors::SdkError> {
+        let value = Self { attestation_ids };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum OrgsDeleteAttestationsBulk {
+    Object(Box<OrgsDeleteAttestationsBulkVariant0>),
+    Object2(Box<OrgsDeleteAttestationsBulkVariant1>),
+}
+
+impl<'de> serde::Deserialize<'de> for OrgsDeleteAttestationsBulk {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<OrgsDeleteAttestationsBulkVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<OrgsDeleteAttestationsBulkVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no OrgsDeleteAttestationsBulk branch accepts this payload")
+        })
     }
 }
 
@@ -249,77 +334,4 @@ pub struct OrgsListAttestationsResponseAttestationsItemBundle {
     pub verification_material: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(rename = "dsseEnvelope", skip_serializing_if = "Option::is_none")]
     pub dsse_envelope: Option<std::collections::HashMap<String, serde_json::Value>>,
-}
-
-impl OrgsListAttestationsResponseAttestationsItemBundle {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            media_type: None,
-            verification_material: None,
-            dsse_envelope: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct OrgsListAttestationsResponseAttestationsItem {
-    /// The attestation's Sigstore Bundle.
-    /// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub bundle: Option<Option<OrgsListAttestationsResponseAttestationsItemBundle>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub repository_id: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bundle_url: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub initiator: Option<String>,
-}
-
-impl OrgsListAttestationsResponseAttestationsItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            bundle: None,
-            repository_id: None,
-            bundle_url: None,
-            initiator: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct OrgsListAttestationsResponse {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attestations: Option<Vec<OrgsListAttestationsResponseAttestationsItem>>,
-}
-
-impl OrgsListAttestationsResponse {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self { attestations: None }
-    }
-}
-
-/// Key/value pairs to provide settings for this webhook.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct OrgsCreateWebhookConfig {
-    /// The URL to which the payloads will be delivered.
-    pub url: WebhookConfigUrl,
-    /// The media type used to serialize the payloads. Supported values include `json` and `form`. The default is `form`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub content_type: Option<WebhookConfigContentType>,
-    /// If provided, the `secret` will be used as the `key` to generate the HMAC hex digest value for [delivery signature headers](https://docs.github.com/webhooks/event-payloads/#delivery-headers).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub secret: Option<WebhookConfigSecret>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub insecure_ssl: Option<WebhookConfigInsecureSsl>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub password: Option<String>,
 }

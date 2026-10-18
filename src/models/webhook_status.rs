@@ -232,14 +232,14 @@ impl WebhookStatusCommitAuthor {
     }
 }
 
-/// Required API value serialized in the `author` wire field.
+/// Required object value serialized in the `author` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookStatusCommitCommitAuthor {
     /// Required `string` value serialized in the `date` wire field.
     pub date: String,
-    /// Optional `string` value serialized in the `email` wire field.
+    /// Required `string` value serialized in the `email` wire field.
     pub email: String,
-    /// Optional `string` value serialized in the `name` wire field.
+    /// Required `string` value serialized in the `name` wire field.
     pub name: String,
     /// Optional `string` value serialized in the `username` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -257,14 +257,14 @@ impl WebhookStatusCommitCommitAuthor {
     }
 }
 
-/// Required API value serialized in the `committer` wire field.
+/// Required object value serialized in the `committer` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookStatusCommitCommitCommitter {
     /// Required `string` value serialized in the `date` wire field.
     pub date: String,
-    /// Optional `string` value serialized in the `email` wire field.
+    /// Required `string` value serialized in the `email` wire field.
     pub email: String,
-    /// Optional `string` value serialized in the `name` wire field.
+    /// Required `string` value serialized in the `name` wire field.
     pub name: String,
     /// Optional `string` value serialized in the `username` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -430,11 +430,11 @@ impl WebhookStatusCommitCommitVerification {
 /// Required object value serialized in the `commit` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookStatusCommitCommit {
-    /// Required API value serialized in the `author` wire field.
+    /// Required object value serialized in the `author` wire field.
     pub author: WebhookStatusCommitCommitAuthor,
     /// Required `integer` value serialized in the `comment_count` wire field.
     pub comment_count: i64,
-    /// Required API value serialized in the `committer` wire field.
+    /// Required object value serialized in the `committer` wire field.
     pub committer: WebhookStatusCommitCommitCommitter,
     /// Required `string` value serialized in the `message` wire field.
     pub message: String,

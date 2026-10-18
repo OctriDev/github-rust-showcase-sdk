@@ -4,8 +4,7 @@
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::SdkError;
-use crate::types::{Event, Feed, Repository, SimpleUser, Stargazer, StarredRepository, Thread};
-use crate::validation::validate_date_time;
+use crate::types::{Event, Feed, Repository, SimpleUser, Stargazer, StarredRepository};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ActivityMarkNotificationsAsReadResponse {
@@ -38,11 +37,37 @@ impl ActivityMarkRepoNotificationsAsReadResponse {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ActivityListStargazersForRepoResponse {
     SimpleUserArray(Vec<SimpleUser>),
     StargazerArray(Vec<Stargazer>),
+}
+
+impl<'de> serde::Deserialize<'de> for ActivityListStargazersForRepoResponse {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Vec<SimpleUser>>(value.clone()) {
+            let candidate = Self::SimpleUserArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<Stargazer>>(value.clone()) {
+            let candidate = Self::StargazerArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no ActivityListStargazersForRepoResponse branch accepts this payload",
+            )
+        })
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -70,11 +95,37 @@ impl ActivityGetStargazerCountForRepoResponse {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ActivityListReposStarredByUserResponse {
     StarredRepositoryArray(Vec<StarredRepository>),
     RepositoryArray(Vec<Repository>),
+}
+
+impl<'de> serde::Deserialize<'de> for ActivityListReposStarredByUserResponse {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Vec<StarredRepository>>(value.clone()) {
+            let candidate = Self::StarredRepositoryArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<Repository>>(value.clone()) {
+            let candidate = Self::RepositoryArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no ActivityListReposStarredByUserResponse branch accepts this payload",
+            )
+        })
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
@@ -206,7 +257,7 @@ pub fn activity_list_public_events(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "activity_list_public_events",
             options,
-            errors: &[("403", "BasicError")],
+            errors: &[("403", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -281,97 +332,6 @@ pub fn activity_list_public_events_for_repo_network(
                 ("301", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActivityListNotificationsForAuthenticatedUserParams {
-    pub all: Option<bool>,
-    pub participating: Option<bool>,
-    pub since: Option<String>,
-    pub before: Option<String>,
-    pub page: Option<i64>,
-    pub per_page: Option<i64>,
-}
-
-/// List all notifications for the current user, sorted by most recently updated.
-///
-/// # Arguments
-///
-/// * `all` - If `true`, show notifications marked as read.
-/// * `participating` - If `true`, only shows notifications in which the user is
-///   directly participating or mentioned.
-/// * `since` - Only show results that were last updated after the given time.
-///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
-///   format: `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `before` - Only show notifications updated before the given time. This is
-///   a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
-///   `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `per_page` - The number of results per page (max 50). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn activity_list_notifications_for_authenticated_user(
-    config: &ClientConfig,
-    params: ActivityListNotificationsForAuthenticatedUserParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Thread>, SdkError> {
-    let ActivityListNotificationsForAuthenticatedUserParams {
-        all,
-        participating,
-        since,
-        before,
-        page,
-        per_page,
-    } = params;
-    if let Some(ref since_v) = since {
-        validate_date_time("since", since_v)?;
-    }
-    if let Some(ref before_v) = before {
-        validate_date_time("before", before_v)?;
-    }
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
-    if let Some(ref v) = all {
-        __query.push(("all", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = participating {
-        __query.push(("participating", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = since {
-        __query.push(("since", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Thread>>(
-        "GET",
-        "/notifications",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "activity_list_notifications_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("422", "ValidationError"),
             ],
             ..Default::default()
         },

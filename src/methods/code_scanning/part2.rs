@@ -136,7 +136,7 @@ pub fn code_scanning_list_alerts_for_org(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_list_alerts_for_org",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("404", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -375,7 +375,11 @@ pub fn code_scanning_list_alerts_for_repo(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_list_alerts_for_repo",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -414,7 +418,11 @@ pub fn code_scanning_get_alert(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_get_alert",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?

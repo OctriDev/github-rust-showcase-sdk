@@ -3,253 +3,6 @@
 
 // actions_actions domain models
 
-/// Typed representation of the `ActionsArtifactAndLogRetention` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsArtifactAndLogRetention {
-    /// The number of days to retain checks, workflow runs, commit statuses, artifacts, and logs
-    pub days: i64,
-}
-
-impl ActionsArtifactAndLogRetention {
-    pub fn new(days: i64) -> Self {
-        Self { days }
-    }
-}
-
-/// Typed representation of the `ActionsArtifactAndLogRetentionResponse` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsArtifactAndLogRetentionResponse {
-    /// The number of days checks, workflow runs, commit statuses, artifacts, and logs are retained
-    pub days: i64,
-    /// The maximum number of days that can be configured
-    pub maximum_allowed_days: i64,
-}
-
-impl ActionsArtifactAndLogRetentionResponse {
-    pub fn new(days: i64, maximum_allowed_days: i64) -> Self {
-        Self {
-            days,
-            maximum_allowed_days,
-        }
-    }
-}
-
-/// Required object value serialized in the `actions_caches[]` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheListActionsCachesItem {
-    /// Optional `integer` value serialized in the `id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-    /// Optional `string` value serialized in the `ref` wire field.
-    #[serde(rename = "ref", skip_serializing_if = "Option::is_none")]
-    pub ref_: Option<String>,
-    /// Optional `string` value serialized in the `key` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    /// Optional `string` value serialized in the `version` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<String>,
-    /// Optional `date-time`-formatted value serialized in the `last_accessed_at` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_accessed_at: Option<String>,
-    /// Optional `date-time`-formatted value serialized in the `created_at` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created_at: Option<String>,
-    /// Optional `integer` value serialized in the `size_in_bytes` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub size_in_bytes: Option<i64>,
-}
-
-impl ActionsCacheListActionsCachesItem {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.last_accessed_at.as_ref() {
-            crate::validation::validate_model_date_time("last_accessed_at", value)?;
-        }
-        if let Some(value) = self.created_at.as_ref() {
-            crate::validation::validate_model_date_time("created_at", value)?;
-        }
-        Ok(())
-    }
-
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            id: None,
-            ref_: None,
-            key: None,
-            version: None,
-            last_accessed_at: None,
-            created_at: None,
-            size_in_bytes: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Repository actions caches
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheList {
-    /// Total number of caches
-    pub total_count: i64,
-    /// Array of caches
-    pub actions_caches: Vec<ActionsCacheListActionsCachesItem>,
-}
-
-impl ActionsCacheList {
-    pub fn new(total_count: i64, actions_caches: Vec<ActionsCacheListActionsCachesItem>) -> Self {
-        Self {
-            total_count,
-            actions_caches,
-        }
-    }
-}
-
-/// GitHub Actions cache retention policy for an enterprise.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheRetentionLimitForEnterprise {
-    /// For repositories & organizations in an enterprise, the maximum duration, in days, for which caches in a repository may be retained.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_cache_retention_days: Option<i64>,
-}
-
-impl ActionsCacheRetentionLimitForEnterprise {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            max_cache_retention_days: None,
-        }
-    }
-}
-
-/// GitHub Actions cache retention policy for an organization.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheRetentionLimitForOrganization {
-    /// For repositories in this organization, the maximum duration, in days, for which caches in a repository may be retained.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_cache_retention_days: Option<i64>,
-}
-
-impl ActionsCacheRetentionLimitForOrganization {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            max_cache_retention_days: None,
-        }
-    }
-}
-
-/// GitHub Actions cache retention policy for a repository.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheRetentionLimitForRepository {
-    /// The maximum number of days to keep caches in this repository.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_cache_retention_days: Option<i64>,
-}
-
-impl ActionsCacheRetentionLimitForRepository {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            max_cache_retention_days: None,
-        }
-    }
-}
-
-/// GitHub Actions cache storage policy for an enterprise.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheStorageLimitForEnterprise {
-    /// For repositories & organizations in an enterprise, the maximum size limit for the sum of all caches in a repository, in gigabytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_cache_size_gb: Option<i64>,
-}
-
-impl ActionsCacheStorageLimitForEnterprise {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            max_cache_size_gb: None,
-        }
-    }
-}
-
-/// GitHub Actions cache storage policy for an organization.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheStorageLimitForOrganization {
-    /// For repositories in the organization, the maximum size limit for the sum of all caches in a repository, in gigabytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_cache_size_gb: Option<i64>,
-}
-
-impl ActionsCacheStorageLimitForOrganization {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            max_cache_size_gb: None,
-        }
-    }
-}
-
-/// GitHub Actions cache storage policy for a repository.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheStorageLimitForRepository {
-    /// The maximum total cache size for this repository, in gigabytes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_cache_size_gb: Option<i64>,
-}
-
-impl ActionsCacheStorageLimitForRepository {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            max_cache_size_gb: None,
-        }
-    }
-}
-
-/// GitHub Actions Cache Usage by repository.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheUsageByRepository {
-    /// The repository owner and name for the cache usage being shown.
-    pub full_name: String,
-    /// The sum of the size in bytes of all the active cache items in the repository.
-    pub active_caches_size_in_bytes: i64,
-    /// The number of active caches in the repository.
-    pub active_caches_count: i64,
-}
-
-impl ActionsCacheUsageByRepository {
-    pub fn new(
-        full_name: String,
-        active_caches_size_in_bytes: i64,
-        active_caches_count: i64,
-    ) -> Self {
-        Self {
-            full_name,
-            active_caches_size_in_bytes,
-            active_caches_count,
-        }
-    }
-}
-
-/// Typed representation of the `ActionsCacheUsageOrgEnterprise` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsCacheUsageOrgEnterprise {
-    /// The count of active caches across all repositories of an enterprise or an organization.
-    pub total_active_caches_count: i64,
-    /// The total size in bytes of all active cache items across all repositories of an enterprise or an organization.
-    pub total_active_caches_size_in_bytes: i64,
-}
-
-impl ActionsCacheUsageOrgEnterprise {
-    pub fn new(total_active_caches_count: i64, total_active_caches_size_in_bytes: i64) -> Self {
-        Self {
-            total_active_caches_count,
-            total_active_caches_size_in_bytes,
-        }
-    }
-}
-
 pub type ActionsCanApprovePullRequestReviews = bool;
 
 /// The default workflow permissions granted to the GITHUB_TOKEN when running workflows.
@@ -302,126 +55,6 @@ impl std::fmt::Display for ActionsDefaultWorkflowPermissions {
 
 pub type ActionsEnabled = bool;
 
-/// The policy that controls when fork PR workflows require approval from a maintainer.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ActionsForkPrContributorApprovalApprovalPolicyEnum {
-    #[default]
-    FirstTimeContributorsNewToGithub,
-    FirstTimeContributors,
-    AllExternalContributors,
-    Unknown(String),
-}
-
-impl ActionsForkPrContributorApprovalApprovalPolicyEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::FirstTimeContributorsNewToGithub => "first_time_contributors_new_to_github",
-            Self::FirstTimeContributors => "first_time_contributors",
-            Self::AllExternalContributors => "all_external_contributors",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ActionsForkPrContributorApprovalApprovalPolicyEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ActionsForkPrContributorApprovalApprovalPolicyEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "first_time_contributors_new_to_github" => Self::FirstTimeContributorsNewToGithub,
-            "first_time_contributors" => Self::FirstTimeContributors,
-            "all_external_contributors" => Self::AllExternalContributors,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ActionsForkPrContributorApprovalApprovalPolicyEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Typed representation of the `ActionsForkPrContributorApproval` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsForkPrContributorApproval {
-    /// The policy that controls when fork PR workflows require approval from a maintainer.
-    pub approval_policy: ActionsForkPrContributorApprovalApprovalPolicyEnum,
-}
-
-impl ActionsForkPrContributorApproval {
-    pub fn new(approval_policy: ActionsForkPrContributorApprovalApprovalPolicyEnum) -> Self {
-        Self { approval_policy }
-    }
-}
-
-/// Typed representation of the `ActionsForkPrWorkflowsPrivateRepos` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsForkPrWorkflowsPrivateRepos {
-    /// Whether workflows triggered by pull requests from forks are allowed to run on private repositories.
-    pub run_workflows_from_fork_pull_requests: bool,
-    /// Whether GitHub Actions can create pull requests or submit approving pull request reviews from a workflow triggered by a fork pull request.
-    pub send_write_tokens_to_workflows: bool,
-    /// Whether to make secrets and variables available to workflows triggered by pull requests from forks.
-    pub send_secrets_and_variables: bool,
-    /// Whether workflows triggered by pull requests from forks require approval from a repository administrator to run.
-    pub require_approval_for_fork_pr_workflows: bool,
-}
-
-impl ActionsForkPrWorkflowsPrivateRepos {
-    pub fn new(
-        run_workflows_from_fork_pull_requests: bool,
-        send_write_tokens_to_workflows: bool,
-        send_secrets_and_variables: bool,
-        require_approval_for_fork_pr_workflows: bool,
-    ) -> Self {
-        Self {
-            run_workflows_from_fork_pull_requests,
-            send_write_tokens_to_workflows,
-            send_secrets_and_variables,
-            require_approval_for_fork_pr_workflows,
-        }
-    }
-}
-
-/// Typed representation of the `ActionsForkPrWorkflowsPrivateReposRequest` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct ActionsForkPrWorkflowsPrivateReposRequest {
-    /// Whether workflows triggered by pull requests from forks are allowed to run on private repositories.
-    pub run_workflows_from_fork_pull_requests: bool,
-    /// Whether GitHub Actions can create pull requests or submit approving pull request reviews from a workflow triggered by a fork pull request.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub send_write_tokens_to_workflows: Option<bool>,
-    /// Whether to make secrets and variables available to workflows triggered by pull requests from forks.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub send_secrets_and_variables: Option<bool>,
-    /// Whether workflows triggered by pull requests from forks require approval from a repository administrator to run.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_approval_for_fork_pr_workflows: Option<bool>,
-}
-
-impl ActionsForkPrWorkflowsPrivateReposRequest {
-    pub fn new(run_workflows_from_fork_pull_requests: bool) -> Self {
-        Self {
-            run_workflows_from_fork_pull_requests,
-            send_write_tokens_to_workflows: None,
-            send_secrets_and_variables: None,
-            require_approval_for_fork_pr_workflows: None,
-        }
-    }
-}
-
 /// Typed representation of the `ActionsGetDefaultWorkflowPermissions` API schema.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ActionsGetDefaultWorkflowPermissions {
@@ -443,32 +76,110 @@ impl ActionsGetDefaultWorkflowPermissions {
     }
 }
 
-/// The status of the runner.
+/// Typed representation of the `ActionsOrganizationPermissions` API schema.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct ActionsOrganizationPermissions {
+    /// The policy that controls the repositories in the organization that are allowed to run GitHub Actions.
+    pub enabled_repositories: EnabledRepositories,
+    /// The API URL to use to get or set the selected repositories that are allowed to run GitHub Actions, when `enabled_repositories` is set to `selected`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_repositories_url: Option<String>,
+    /// The permissions policy that controls the actions and reusable workflows that are allowed to run.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_actions: Option<AllowedActions>,
+    /// The API URL to use to get or set the actions and reusable workflows that are allowed to run, when `allowed_actions` is set to `selected`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_actions_url: Option<SelectedActionsUrl>,
+    /// Whether actions must be pinned to a full-length commit SHA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sha_pinning_required: Option<ShaPinningRequired>,
+}
+
+impl ActionsOrganizationPermissions {
+    pub fn new(enabled_repositories: EnabledRepositories) -> Self {
+        Self {
+            enabled_repositories,
+            selected_repositories_url: None,
+            allowed_actions: None,
+            selected_actions_url: None,
+            sha_pinning_required: None,
+        }
+    }
+}
+
+/// Typed representation of the `ActionsRepositoryPermissions` API schema.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct ActionsRepositoryPermissions {
+    /// Whether GitHub Actions is enabled on the repository.
+    pub enabled: ActionsEnabled,
+    /// The permissions policy that controls the actions and reusable workflows that are allowed to run.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_actions: Option<AllowedActions>,
+    /// The API URL to use to get or set the actions and reusable workflows that are allowed to run, when `allowed_actions` is set to `selected`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_actions_url: Option<SelectedActionsUrl>,
+    /// Whether actions must be pinned to a full-length commit SHA.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sha_pinning_required: Option<ShaPinningRequired>,
+}
+
+impl ActionsRepositoryPermissions {
+    pub fn new(enabled: ActionsEnabled) -> Self {
+        Self {
+            enabled,
+            allowed_actions: None,
+            selected_actions_url: None,
+            sha_pinning_required: None,
+        }
+    }
+}
+
+/// Typed representation of the `ActionsSetDefaultWorkflowPermissions` API schema.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct ActionsSetDefaultWorkflowPermissions {
+    /// The default workflow permissions granted to the GITHUB_TOKEN when running workflows.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_workflow_permissions: Option<ActionsDefaultWorkflowPermissions>,
+    /// Whether GitHub Actions can approve pull requests. Enabling this can be a security risk.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_approve_pull_request_reviews: Option<ActionsCanApprovePullRequestReviews>,
+}
+
+impl ActionsSetDefaultWorkflowPermissions {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            default_workflow_permissions: None,
+            can_approve_pull_request_reviews: None,
+        }
+    }
+}
+
+/// Defines the level of access that workflows outside of the repository have to actions and reusable workflows within the
+/// repository.
+///
+/// `none` means the access is only possible from workflows in this repository. `user` level access allows sharing across user owned private repositories only. `organization` level access allows sharing across the organization.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum ActionsHostedRunnerStatusEnum {
+pub enum ActionsWorkflowAccessToRepositoryAccessLevelEnum {
     #[default]
-    Ready,
-    Provisioning,
-    Shutdown,
-    Deleting,
-    Stuck,
+    None,
+    User,
+    Organization,
     Unknown(String),
 }
 
-impl ActionsHostedRunnerStatusEnum {
+impl ActionsWorkflowAccessToRepositoryAccessLevelEnum {
     pub fn as_str(&self) -> &str {
         match self {
-            Self::Ready => "Ready",
-            Self::Provisioning => "Provisioning",
-            Self::Shutdown => "Shutdown",
-            Self::Deleting => "Deleting",
-            Self::Stuck => "Stuck",
+            Self::None => "none",
+            Self::User => "user",
+            Self::Organization => "organization",
             Self::Unknown(value) => value.as_str(),
         }
     }
 }
 
-impl serde::Serialize for ActionsHostedRunnerStatusEnum {
+impl serde::Serialize for ActionsWorkflowAccessToRepositoryAccessLevelEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -477,19 +188,39 @@ impl serde::Serialize for ActionsHostedRunnerStatusEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for ActionsHostedRunnerStatusEnum {
+impl<'de> serde::Deserialize<'de> for ActionsWorkflowAccessToRepositoryAccessLevelEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         let value = <String as serde::Deserialize>::deserialize(deserializer)?;
         Ok(match value.as_str() {
-            "Ready" => Self::Ready,
-            "Provisioning" => Self::Provisioning,
-            "Shutdown" => Self::Shutdown,
-            "Deleting" => Self::Deleting,
-            "Stuck" => Self::Stuck,
+            "none" => Self::None,
+            "user" => Self::User,
+            "organization" => Self::Organization,
             _ => Self::Unknown(value),
         })
+    }
+}
+
+impl std::fmt::Display for ActionsWorkflowAccessToRepositoryAccessLevelEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Typed representation of the `ActionsWorkflowAccessToRepository` API schema.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct ActionsWorkflowAccessToRepository {
+    /// Defines the level of access that workflows outside of the repository have to actions and reusable workflows within the
+    /// repository.
+    ///
+    /// `none` means the access is only possible from workflows in this repository. `user` level access allows sharing across user owned private repositories only. `organization` level access allows sharing across the organization.
+    pub access_level: ActionsWorkflowAccessToRepositoryAccessLevelEnum,
+}
+
+impl ActionsWorkflowAccessToRepository {
+    pub fn new(access_level: ActionsWorkflowAccessToRepositoryAccessLevelEnum) -> Self {
+        Self { access_level }
     }
 }

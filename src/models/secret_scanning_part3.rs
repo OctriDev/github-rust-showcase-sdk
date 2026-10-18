@@ -3,6 +3,15 @@
 
 // secret_scanning domain models (part 3)
 
+impl serde::Serialize for SecretScanningAlertWebhookSecretCategoryEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
 impl<'de> serde::Deserialize<'de> for SecretScanningAlertWebhookSecretCategoryEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

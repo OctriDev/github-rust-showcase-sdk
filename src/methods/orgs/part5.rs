@@ -3,6 +3,69 @@
 
 use super::*;
 
+impl OrgsUpdateDefaultRepositoryPermissionEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Admin => "admin",
+            Self::None => "none",
+            Self::Read => "read",
+            Self::Write => "write",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for OrgsUpdateDefaultRepositoryPermissionEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for OrgsUpdateDefaultRepositoryPermissionEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "admin" => Self::Admin,
+            "none" => Self::None,
+            "read" => Self::Read,
+            "write" => Self::Write,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for OrgsUpdateDefaultRepositoryPermissionEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum OrgsUpdateMembersAllowedRepositoryCreationTypeEnum {
+    #[default]
+    All,
+    None,
+    Private,
+    Unknown(String),
+}
+
+impl OrgsUpdateMembersAllowedRepositoryCreationTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::None => "none",
+            Self::Private => "private",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for OrgsUpdateMembersAllowedRepositoryCreationTypeEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -215,67 +278,5 @@ impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriesEnum
             "desc" => Self::Desc,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ApiInsightsGetRouteStatsByActorEnum {
-    #[default]
-    ClassicPat,
-    FineGrainedPat,
-    GithubAppUserToServer,
-    Installation,
-    OauthApp,
-    Unknown(String),
-}
-
-impl ApiInsightsGetRouteStatsByActorEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::ClassicPat => "classic_pat",
-            Self::FineGrainedPat => "fine_grained_pat",
-            Self::GithubAppUserToServer => "github_app_user_to_server",
-            Self::Installation => "installation",
-            Self::OauthApp => "oauth_app",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ApiInsightsGetRouteStatsByActorEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ApiInsightsGetRouteStatsByActorEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "classic_pat" => Self::ClassicPat,
-            "fine_grained_pat" => Self::FineGrainedPat,
-            "github_app_user_to_server" => Self::GithubAppUserToServer,
-            "installation" => Self::Installation,
-            "oauth_app" => Self::OauthApp,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ApiInsightsGetRouteStatsByActorEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

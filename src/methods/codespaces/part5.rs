@@ -215,6 +215,7 @@ pub fn codespaces_create_with_repo_for_authenticated_user(
                 ("401", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -457,6 +458,7 @@ pub fn codespaces_check_permissions_for_devcontainer(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("422", "ValidationError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

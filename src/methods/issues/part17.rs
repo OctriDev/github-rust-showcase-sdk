@@ -5,365 +5,7 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{Issue, Label};
-
-/// Removes all labels from an issue in a repository. Use `owner`, `repo`, and `issue_number` to identify the issue whose labels you want to clear.
-///
-/// Removes all labels from an issue.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-pub fn issues_remove_all_labels(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    issue_number: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/repos/{}/{}/issues/{}/labels",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "issues_remove_all_labels",
-            options,
-            errors: &[
-                ("301", "BasicError"),
-                ("404", "BasicError"),
-                ("410", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Removes a specified label from an issue and returns the labels that remain. Use `owner`, `repo`, and `issue_number` to identify the issue, and `name` to select the label to remove.
-///
-/// Removes the specified label from the issue, and returns the remaining labels on the issue. This endpoint returns a `404 Not Found` status if the label does not exist.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-pub fn issues_remove_label(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    issue_number: i64,
-    name: String,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Label>, SdkError> {
-    Ok(sdk_request::<Vec<Label>>(
-        "DELETE",
-        &format!(
-            "/repos/{}/{}/issues/{}/labels/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number),
-            crate::client::encode_path_segment(&name)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_remove_label",
-            options,
-            errors: &[
-                ("301", "BasicError"),
-                ("404", "BasicError"),
-                ("410", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Locks the conversation on an issue or pull request in a repository. Use `owner`, `repo`, and `issue_number` to identify the conversation, and set `lock_reason` to explain the lock. Users with push access can lock conversations; if you omit the request body, send a `Content-Length` header with a value of zero.
-///
-/// Users with push access can lock an issue or pull request's conversation. Note that, if you choose not to pass any parameters, you'll need to set `Content-Length` to zero when calling out to this endpoint. For more information, see "[HTTP method](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#http-method)."
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-/// * `lock_reason` - The reason for locking the issue or pull request
-///   conversation. Lock will fail if you don't use one of these reasons: \*
-///   `off-topic` \* `too heated` \* `resolved` \* `spam`
-pub fn issues_lock(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    issue_number: i64,
-    lock_reason: Option<IssuesLockLockReasonEnum>,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = lock_reason {
-        __body_map.insert(
-            "lock_reason".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/repos/{}/{}/issues/{}/lock",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "issues_lock",
-            options,
-            errors: &[
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("410", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Users with push access can unlock an issue's conversation.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-pub fn issues_unlock(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    issue_number: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/repos/{}/{}/issues/{}/lock",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "issues_unlock",
-            options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Retrieves the parent issue of a sub-issue in a repository. Use `owner`, `repo`, and `issue_number` to identify the sub-issue; the selected media type controls which representation of the parent's Markdown body is included.
-///
-/// You can use the REST API to get the parent issue of a sub-issue. This endpoint supports the following custom media types. For more information, see [Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types). \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-pub fn issues_get_parent(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    issue_number: i64,
-    options: Option<&RequestOptions>,
-) -> Result<Issue, SdkError> {
-    Ok(sdk_request::<Issue>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/issues/{}/parent",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_get_parent",
-            options,
-            errors: &[
-                ("301", "BasicError"),
-                ("404", "BasicError"),
-                ("410", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct IssuesListRelatesToParams {
-    pub owner: String,
-    pub repo: String,
-    pub issue_number: i64,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists issues related to an issue in a repository. Use `owner`, `repo`, and `issue_number` to identify the issue, then use `page` and `per_page` to paginate the results.
-///
-/// You can use the REST API to list the issues that are related to an issue. This endpoint supports the following custom media types. For more information, see [Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types). \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw Markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the Markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's Markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn issues_list_relates_to(
-    config: &ClientConfig,
-    params: IssuesListRelatesToParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Issue>, SdkError> {
-    let IssuesListRelatesToParams {
-        owner,
-        repo,
-        issue_number,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Issue>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/issues/{}/relates_to",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_list_relates_to",
-            options,
-            errors: &[
-                ("301", "BasicError"),
-                ("404", "BasicError"),
-                ("410", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Adds a relationship marking one issue as related to another issue in a repository. Identify the issue with `owner`, `repo`, and `issue_number`, and provide the related issue's `issue_id` in the request body. Creating content too quickly with this operation may result in secondary rate limiting.
-///
-/// You can use the REST API to mark an issue as related to another issue. Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see [Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits) and [Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api). This endpoint supports the following custom media types. For more information, see [Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types). \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw Markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the Markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's Markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `issue_number` - The number that identifies the issue.
-/// * `issue_id` - The id of the issue to mark as related to the current issue
-pub fn issues_add_relates_to(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    issue_number: i64,
-    issue_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<Issue, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "issue_id".to_string(),
-        serde_json::to_value(issue_id).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<Issue>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/issues/{}/relates_to",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&issue_number)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_add_relates_to",
-            options,
-            errors: &[
-                ("301", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("410", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
+use crate::types::{Issue, IssueSuggestion, TimelineIssueEvents};
 
 /// Removes the related-issue relationship between two issues in a repository. Use `owner`, `repo`, `issue_number`, and `issue_id` to identify the issue pair whose relationship you want to remove.
 ///
@@ -614,6 +256,348 @@ pub fn issues_add_sub_issue(
                 ("404", "BasicError"),
                 ("410", "BasicError"),
                 ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesReprioritizeSubIssueParams {
+    pub owner: String,
+    pub repo: String,
+    pub issue_number: i64,
+    pub sub_issue_id: i64,
+    pub after_id: Option<i64>,
+    pub before_id: Option<i64>,
+}
+
+/// You can use the REST API to reprioritize a sub-issue to a different position in the parent list.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `issue_number` - The number that identifies the issue.
+/// * `sub_issue_id` - The id of the sub-issue to reprioritize
+/// * `after_id` - The id of the sub-issue to be prioritized after (either
+///   positional argument after OR before should be specified).
+/// * `before_id` - The id of the sub-issue to be prioritized before (either
+///   positional argument after OR before should be specified).
+pub fn issues_reprioritize_sub_issue(
+    config: &ClientConfig,
+    params: IssuesReprioritizeSubIssueParams,
+    options: Option<&RequestOptions>,
+) -> Result<Issue, SdkError> {
+    let IssuesReprioritizeSubIssueParams {
+        owner,
+        repo,
+        issue_number,
+        sub_issue_id,
+        after_id,
+        before_id,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "sub_issue_id".to_string(),
+        serde_json::to_value(sub_issue_id).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = after_id {
+        __body_map.insert(
+            "after_id".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = before_id {
+        __body_map.insert(
+            "before_id".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Issue>(
+        "PATCH",
+        &format!(
+            "/repos/{}/{}/issues/{}/sub_issues/priority",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&issue_number)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_reprioritize_sub_issue",
+            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationErrorSimple"),
+                ("503", "ServiceUnavailable"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesListSuggestionsParams {
+    pub owner: String,
+    pub repo: String,
+    pub issue_number: i64,
+    pub state: Option<IssuesListSuggestionsEnum>,
+    pub action: Option<IssuesListSuggestionsEnumd58506f8>,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+}
+
+/// Lists the suggestions on an issue. A suggestion is an agent-proposed change to an issue's type, labels, fields, assignees, or closed state that a maintainer can approve or dismiss. By default only pending suggestions are returned. Use `state=all` to return suggestions in every state, or `state=<state\>` to filter to a single state. Use `action=<action\>` to return only suggestions for a specific change. This endpoint is only available while the issue suggestions feature is enabled for the repository, and only supports issues, not pull requests. Requires triage access to the repository.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `issue_number` - The number that identifies the issue.
+/// * `state` - Filter suggestions by their state.
+/// * `action` - Filter suggestions by the change they propose.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn issues_list_suggestions(
+    config: &ClientConfig,
+    params: IssuesListSuggestionsParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<IssueSuggestion>, SdkError> {
+    let IssuesListSuggestionsParams {
+        owner,
+        repo,
+        issue_number,
+        state,
+        action,
+        per_page,
+        page,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
+    if let Some(ref v) = state {
+        __query.push(("state", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = action {
+        __query.push(("action", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<IssueSuggestion>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/issues/{}/suggestions",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&issue_number)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_list_suggestions",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Approves a pending suggestion on an issue. Applies the proposed change (creating the corresponding timeline event), transitions the suggestion to `approved`, and dismisses any competing pending suggestions for the same change. Requires triage access to the repository. Approving a suggestion also requires permission to perform the change it applies (for example, setting the issue type, adding a label or assignee, or closing the issue); this only affects fine-grained access tokens and GitHub Apps whose permissions are narrower than the triage role. This endpoint only supports issues, not pull requests.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `issue_number` - The number that identifies the issue.
+/// * `suggestion_id` - The unique identifier of the suggestion.
+pub fn issues_approve_suggestion(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    issue_number: i64,
+    suggestion_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<IssueSuggestion, SdkError> {
+    Ok(sdk_request::<IssueSuggestion>(
+        "POST",
+        &format!(
+            "/repos/{}/{}/issues/{}/suggestions/{}/approve",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&issue_number),
+            crate::client::encode_path_segment(&suggestion_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_approve_suggestion",
+            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Dismisses a pending suggestion on an issue. Transitions the suggestion to `dismissed` without applying any change or creating a timeline event. Requires triage access to the repository. This endpoint only supports issues, not pull requests.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `issue_number` - The number that identifies the issue.
+/// * `suggestion_id` - The unique identifier of the suggestion.
+pub fn issues_dismiss_suggestion(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    issue_number: i64,
+    suggestion_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<IssueSuggestion, SdkError> {
+    Ok(sdk_request::<IssueSuggestion>(
+        "POST",
+        &format!(
+            "/repos/{}/{}/issues/{}/suggestions/{}/dismiss",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&issue_number),
+            crate::client::encode_path_segment(&suggestion_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_dismiss_suggestion",
+            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesListEventsForTimelineParams {
+    pub owner: String,
+    pub repo: String,
+    pub issue_number: i64,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+    pub exclude: Option<String>,
+}
+
+/// Lists timeline events recorded for a repository issue. Use `exclude` to omit selected event types, and `page` and `per_page` to paginate the results.
+///
+/// List all timeline events for an issue.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `issue_number` - The number that identifies the issue.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `exclude` - A comma-separated list of timeline event names to exclude from
+///   the response.
+pub fn issues_list_events_for_timeline(
+    config: &ClientConfig,
+    params: IssuesListEventsForTimelineParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<TimelineIssueEvents>, SdkError> {
+    let IssuesListEventsForTimelineParams {
+        owner,
+        repo,
+        issue_number,
+        per_page,
+        page,
+        exclude,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = exclude {
+        __query.push(("exclude", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<TimelineIssueEvents>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/issues/{}/timeline",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&issue_number)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_list_events_for_timeline",
+            options,
+            errors: &[
+                ("400", "BasicError"),
+                ("404", "BasicError"),
+                ("410", "BasicError"),
             ],
             ..Default::default()
         },

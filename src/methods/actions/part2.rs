@@ -3,7 +3,8 @@
 
 use crate::types::{
     ActionsPolicy, ActionsSecret, ActionsVariable, Artifact, Job, MinimalRepository,
-    OrganizationActionsSecret, OrganizationActionsVariable, Runner, RunnerLabel, WorkflowRun,
+    OrganizationActionsSecret, OrganizationActionsVariable, ReviewCustomGatesCommentRequired,
+    ReviewCustomGatesStateRequired, Runner, WorkflowRun,
 };
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -60,53 +61,6 @@ impl ActionsGetRunnerVersionDeprecationForOrgResponse {
         };
         value.validate_constraints()?;
         Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ActionsGenerateRunnerJitconfigForOrgResponse {
-    /// A self hosted runner
-    pub runner: Runner,
-    /// The base64 encoded runner configuration.
-    pub encoded_jit_config: String,
-}
-
-impl ActionsGenerateRunnerJitconfigForOrgResponse {
-    pub fn new(runner: Runner, encoded_jit_config: String) -> Self {
-        Self {
-            runner,
-            encoded_jit_config,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ActionsListLabelsForSelfHostedRunnerForOrgResponse {
-    pub total_count: i64,
-    pub labels: Vec<RunnerLabel>,
-}
-
-impl ActionsListLabelsForSelfHostedRunnerForOrgResponse {
-    pub fn new(total_count: i64, labels: Vec<RunnerLabel>) -> Self {
-        Self {
-            total_count,
-            labels,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ActionsRemoveAllCustomLabelsFromSelfHostedRunnerForOrgResponse {
-    pub total_count: i64,
-    pub labels: Vec<RunnerLabel>,
-}
-
-impl ActionsRemoveAllCustomLabelsFromSelfHostedRunnerForOrgResponse {
-    pub fn new(total_count: i64, labels: Vec<RunnerLabel>) -> Self {
-        Self {
-            total_count,
-            labels,
-        }
     }
 }
 
@@ -321,6 +275,55 @@ impl ActionsListWorkflowRunArtifactsResponse {
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ActionsListJobsForWorkflowRunAttemptResponse {
+    pub total_count: i64,
+    pub jobs: Vec<Job>,
+}
+
+impl ActionsListJobsForWorkflowRunAttemptResponse {
+    pub fn new(total_count: i64, jobs: Vec<Job>) -> Self {
+        Self { total_count, jobs }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ActionsReviewCustomGatesForRun {
+    ReviewCustomGatesCommentRequired(Box<ReviewCustomGatesCommentRequired>),
+    ReviewCustomGatesStateRequired(Box<ReviewCustomGatesStateRequired>),
+}
+
+impl<'de> serde::Deserialize<'de> for ActionsReviewCustomGatesForRun {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ReviewCustomGatesCommentRequired>>(value.clone())
+        {
+            let candidate = Self::ReviewCustomGatesCommentRequired(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ReviewCustomGatesStateRequired>>(value.clone())
+        {
+            let candidate = Self::ReviewCustomGatesStateRequired(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no ActionsReviewCustomGatesForRun branch accepts this payload",
+            )
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ActionsListJobsForWorkflowRunResponse {
     pub total_count: i64,
     pub jobs: Vec<Job>,
 }

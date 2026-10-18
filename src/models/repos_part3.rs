@@ -3,19 +3,6 @@
 
 // repos domain models (part 3)
 
-impl ShortBranchCommit {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("url", &self.url)?;
-        Ok(())
-    }
-
-    pub fn new(sha: String, url: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self { sha, url };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
 /// Short Branch
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ShortBranch {

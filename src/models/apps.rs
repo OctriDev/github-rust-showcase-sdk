@@ -269,11 +269,37 @@ impl IntegrationInstallationRequest {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum IntegrationInstallationRequestAccount {
     SimpleUser(Box<SimpleUser>),
     Enterprise(Box<Enterprise>),
+}
+
+impl<'de> serde::Deserialize<'de> for IntegrationInstallationRequestAccount {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<SimpleUser>>(value.clone()) {
+            let candidate = Self::SimpleUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<Enterprise>>(value.clone()) {
+            let candidate = Self::Enterprise(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no IntegrationInstallationRequestAccount branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// Typed representation of the `MarketplaceAccount` API schema.
@@ -500,45 +526,4 @@ impl MarketplacePurchaseMarketplacePendingChange {
             plan: None,
         }
     }
-}
-
-/// Required object value serialized in the `marketplace_purchase` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct MarketplacePurchaseMarketplacePurchase {
-    /// Optional `string` value serialized in the `billing_cycle` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle: Option<String>,
-    /// Optional `string` value serialized in the `next_billing_date` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub next_billing_date: Option<Option<String>>,
-    /// Optional `boolean` value serialized in the `is_installed` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub is_installed: Option<bool>,
-    /// Optional `integer` value serialized in the `unit_count` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub unit_count: Option<Option<i64>>,
-    /// Optional `boolean` value serialized in the `on_free_trial` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_free_trial: Option<bool>,
-    /// Optional `string` value serialized in the `free_trial_ends_on` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub free_trial_ends_on: Option<Option<String>>,
-    /// Optional `string` value serialized in the `updated_at` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub updated_at: Option<String>,
-    /// Marketplace Listing Plan
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<MarketplaceListingPlan>,
 }

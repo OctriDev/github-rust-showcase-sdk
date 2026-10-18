@@ -273,7 +273,7 @@ pub fn secret_scanning_list_alerts_for_org(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_list_alerts_for_org",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("404", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

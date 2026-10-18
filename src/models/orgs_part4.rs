@@ -3,6 +3,32 @@
 
 // orgs domain models (part 4)
 
+impl<'de> serde::Deserialize<'de> for OrganizationCreateIssueTypeColorEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "gray" => Self::Gray,
+            "blue" => Self::Blue,
+            "green" => Self::Green,
+            "yellow" => Self::Yellow,
+            "orange" => Self::Orange,
+            "red" => Self::Red,
+            "pink" => Self::Pink,
+            "purple" => Self::Purple,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for OrganizationCreateIssueTypeColorEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// Typed representation of the `OrganizationCreateIssueType` API schema.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct OrganizationCreateIssueType {
@@ -503,24 +529,4 @@ pub enum OrganizationProgrammaticAccessGrantRepositorySelectionEnum {
     All,
     Subset,
     Unknown(String),
-}
-
-impl OrganizationProgrammaticAccessGrantRepositorySelectionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::None => "none",
-            Self::All => "all",
-            Self::Subset => "subset",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for OrganizationProgrammaticAccessGrantRepositorySelectionEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
 }

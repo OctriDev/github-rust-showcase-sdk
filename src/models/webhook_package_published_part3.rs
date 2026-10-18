@@ -83,7 +83,7 @@ pub struct WebhookPackagePublishedPackagePackageVersion {
     pub author: Option<Option<WebhookPackagePublishedPackagePackageVersionAuthor>>,
     /// Optional API value serialized in the `body` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub body: Option<String>,
+    pub body: Option<WebhookPackagePublishedPackagePackageVersionBody>,
     /// Optional `string` value serialized in the `body_html` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub body_html: Option<String>,

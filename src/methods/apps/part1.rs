@@ -130,7 +130,7 @@ impl AppsCreateFromManifestResponse {
 
 /// Optional object value serialized in the `permissions` wire field.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryPermissions {
+pub struct AppsListReposAccessibleToInstallationResponseRepositoriesItemPermissions {
     /// Required `boolean` value serialized in the `admin` wire field.
     pub admin: bool,
     /// Required `boolean` value serialized in the `pull` wire field.
@@ -145,7 +145,7 @@ pub struct RepositoryPermissions {
     pub maintain: Option<bool>,
 }
 
-impl RepositoryPermissions {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemPermissions {
     pub fn new(admin: bool, pull: bool, push: bool) -> Self {
         Self {
             admin,
@@ -159,14 +159,15 @@ impl RepositoryPermissions {
 
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositoryPullRequestCreationPolicyEnum {
+pub enum AppsListReposAccessibleToInstallationResponseRepositoriesItemPullRequestCreationPolicyEnum
+{
     #[default]
     All,
     CollaboratorsOnly,
     Unknown(String),
 }
 
-impl RepositoryPullRequestCreationPolicyEnum {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemPullRequestCreationPolicyEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::All => "all",
@@ -176,7 +177,9 @@ impl RepositoryPullRequestCreationPolicyEnum {
     }
 }
 
-impl serde::Serialize for RepositoryPullRequestCreationPolicyEnum {
+impl serde::Serialize
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemPullRequestCreationPolicyEnum
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -185,7 +188,9 @@ impl serde::Serialize for RepositoryPullRequestCreationPolicyEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for RepositoryPullRequestCreationPolicyEnum {
+impl<'de> serde::Deserialize<'de>
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemPullRequestCreationPolicyEnum
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -199,7 +204,9 @@ impl<'de> serde::Deserialize<'de> for RepositoryPullRequestCreationPolicyEnum {
     }
 }
 
-impl std::fmt::Display for RepositoryPullRequestCreationPolicyEnum {
+impl std::fmt::Display
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemPullRequestCreationPolicyEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -210,14 +217,14 @@ impl std::fmt::Display for RepositoryPullRequestCreationPolicyEnum {
 /// \- `PR_TITLE` \- default to the pull request's title.
 /// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositorySquashMergeCommitTitleEnum {
+pub enum AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitTitleEnum {
     #[default]
     PrTitle,
     CommitOrPrTitle,
     Unknown(String),
 }
 
-impl RepositorySquashMergeCommitTitleEnum {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitTitleEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::PrTitle => "PR_TITLE",
@@ -227,7 +234,9 @@ impl RepositorySquashMergeCommitTitleEnum {
     }
 }
 
-impl serde::Serialize for RepositorySquashMergeCommitTitleEnum {
+impl serde::Serialize
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitTitleEnum
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -236,7 +245,9 @@ impl serde::Serialize for RepositorySquashMergeCommitTitleEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for RepositorySquashMergeCommitTitleEnum {
+impl<'de> serde::Deserialize<'de>
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitTitleEnum
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -250,7 +261,9 @@ impl<'de> serde::Deserialize<'de> for RepositorySquashMergeCommitTitleEnum {
     }
 }
 
-impl std::fmt::Display for RepositorySquashMergeCommitTitleEnum {
+impl std::fmt::Display
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitTitleEnum
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
@@ -262,7 +275,7 @@ impl std::fmt::Display for RepositorySquashMergeCommitTitleEnum {
 /// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
 /// \- `BLANK` \- default to a blank commit message.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum RepositorySquashMergeCommitMessageEnum {
+pub enum AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitMessageEnum {
     #[default]
     PrBody,
     CommitMessages,
@@ -270,7 +283,7 @@ pub enum RepositorySquashMergeCommitMessageEnum {
     Unknown(String),
 }
 
-impl RepositorySquashMergeCommitMessageEnum {
+impl AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitMessageEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::PrBody => "PR_BODY",
@@ -281,7 +294,9 @@ impl RepositorySquashMergeCommitMessageEnum {
     }
 }
 
-impl serde::Serialize for RepositorySquashMergeCommitMessageEnum {
+impl serde::Serialize
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitMessageEnum
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -290,7 +305,9 @@ impl serde::Serialize for RepositorySquashMergeCommitMessageEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for RepositorySquashMergeCommitMessageEnum {
+impl<'de> serde::Deserialize<'de>
+    for AppsListReposAccessibleToInstallationResponseRepositoriesItemSquashMergeCommitMessageEnum
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,

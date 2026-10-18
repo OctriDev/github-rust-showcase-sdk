@@ -2,7 +2,88 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::TasksItemArtifactsItemData3;
+use crate::types::AgentTasksListTasksResponseTasksItemArtifactsItemData;
+
+impl AgentTasksListTasksResponseTasksItemRepository {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self { id: None }
+    }
+}
+
+/// Current state of the task, derived from its most recent session
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AgentTasksListTasksResponseTasksItemStateEnum {
+    #[default]
+    Queued,
+    InProgress,
+    Completed,
+    Failed,
+    Idle,
+    WaitingForUser,
+    TimedOut,
+    Cancelled,
+    Unknown(String),
+}
+
+impl AgentTasksListTasksResponseTasksItemStateEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Queued => "queued",
+            Self::InProgress => "in_progress",
+            Self::Completed => "completed",
+            Self::Failed => "failed",
+            Self::Idle => "idle",
+            Self::WaitingForUser => "waiting_for_user",
+            Self::TimedOut => "timed_out",
+            Self::Cancelled => "cancelled",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for AgentTasksListTasksResponseTasksItemStateEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AgentTasksListTasksResponseTasksItemStateEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "queued" => Self::Queued,
+            "in_progress" => Self::InProgress,
+            "completed" => Self::Completed,
+            "failed" => Self::Failed,
+            "idle" => Self::Idle,
+            "waiting_for_user" => Self::WaitingForUser,
+            "timed_out" => Self::TimedOut,
+            "cancelled" => Self::Cancelled,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for AgentTasksListTasksResponseTasksItemStateEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Provider namespace
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum AgentTasksListTasksResponseTasksItemArtifactsItemProviderEnum {
+    #[default]
+    Github,
+    Unknown(String),
+}
 
 impl AgentTasksListTasksResponseTasksItemArtifactsItemProviderEnum {
     pub fn as_str(&self) -> &str {
@@ -100,14 +181,14 @@ pub struct AgentTasksListTasksResponseTasksItemArtifactsItem {
     #[serde(rename = "type")]
     pub type_: AgentTasksListTasksResponseTasksItemArtifactsItemTypeEnum,
     /// Resource data (shape depends on type)
-    pub data: TasksItemArtifactsItemData3,
+    pub data: AgentTasksListTasksResponseTasksItemArtifactsItemData,
 }
 
 impl AgentTasksListTasksResponseTasksItemArtifactsItem {
     pub fn new(
         provider: AgentTasksListTasksResponseTasksItemArtifactsItemProviderEnum,
         type_: AgentTasksListTasksResponseTasksItemArtifactsItemTypeEnum,
-        data: TasksItemArtifactsItemData3,
+        data: AgentTasksListTasksResponseTasksItemArtifactsItemData,
     ) -> Self {
         Self {
             provider,
@@ -147,7 +228,7 @@ pub struct AgentTasksListTasksResponseTasksItem {
     pub name: Option<String>,
     /// The entity who created this task
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub creator: Option<AgentTasksListTasksResponseTasksItemCreatorVariant0>,
+    pub creator: Option<AgentTasksListTasksResponseTasksItemCreator>,
     /// Type of the task creator
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creator_type: Option<AgentTasksListTasksResponseTasksItemCreatorTypeEnum>,
@@ -183,123 +264,4 @@ pub struct AgentTasksListTasksResponseTasksItem {
     /// Custom agent metadata associated with this task
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_agent: Option<AgentTasksListTasksResponseTasksItemCustomAgent>,
-}
-
-impl AgentTasksListTasksResponseTasksItem {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(Some(value)) = self.archived_at.as_ref() {
-            crate::validation::validate_model_date_time("archived_at", value)?;
-        }
-        if let Some(value) = self.updated_at.as_ref() {
-            crate::validation::validate_model_date_time("updated_at", value)?;
-        }
-        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
-        Ok(())
-    }
-
-    pub fn new(
-        id: String,
-        state: AgentTasksListTasksResponseTasksItemStateEnum,
-        created_at: String,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            id,
-            url: None,
-            html_url: None,
-            name: None,
-            creator: None,
-            creator_type: None,
-            user_collaborators: None,
-            owner: None,
-            repository: None,
-            state,
-            session_count: None,
-            artifacts: None,
-            archived_at: None,
-            updated_at: None,
-            created_at,
-            custom_agent: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksListTasksResponse {
-    /// List of tasks
-    pub tasks: Vec<AgentTasksListTasksResponseTasksItem>,
-    /// Total count of active (non-archived) tasks
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_active_count: Option<i64>,
-    /// Total count of archived tasks
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_archived_count: Option<i64>,
-}
-
-impl AgentTasksListTasksResponse {
-    pub fn new(tasks: Vec<AgentTasksListTasksResponseTasksItem>) -> Self {
-        Self {
-            tasks,
-            total_active_count: None,
-            total_archived_count: None,
-        }
-    }
-}
-
-/// A GitHub user
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct AgentTasksGetTaskByIdResponseVariant0CreatorVariant0 {
-    /// The unique identifier of the user
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-}
-
-impl AgentTasksGetTaskByIdResponseVariant0CreatorVariant0 {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self { id: None }
-    }
-}
-
-/// Type of the task creator
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
-    #[default]
-    User,
-    Organization,
-    Unknown(String),
-}
-
-impl AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::User => "user",
-            Self::Organization => "organization",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AgentTasksGetTaskByIdResponseVariant0CreatorTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "user" => Self::User,
-            "organization" => Self::Organization,
-            _ => Self::Unknown(value),
-        })
-    }
 }

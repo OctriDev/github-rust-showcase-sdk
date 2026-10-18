@@ -211,7 +211,11 @@ pub fn search_code(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "search_code",
             options,
-            errors: &[("403", "BasicError"), ("422", "ValidationError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("422", "ValidationError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?

@@ -66,90 +66,124 @@ impl WebhooksLabel {
     }
 }
 
-/// Required object value serialized in the `label` wire field.
+/// Typed representation of the `WebhooksLabelArchived` API schema.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksLabelArchivedVariant1 {
+pub struct WebhooksLabelArchived {
+    /// 6-character hex code, without the leading #, identifying the color
+    pub color: String,
+    /// Required `boolean` value serialized in the `default` wire field.
+    pub default: bool,
+    /// Required `string` value serialized in the `description` wire field.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub description: Option<String>,
     /// Timestamp indicating when the label was archived.
     pub archived_at: String,
     /// The user who archived the label.
     pub archived_by: SimpleUser,
+    /// Required `integer` value serialized in the `id` wire field.
+    pub id: i64,
+    /// The name of the label.
+    pub name: String,
+    /// Required `string` value serialized in the `node_id` wire field.
+    pub node_id: String,
+    /// URL for the label
+    pub url: String,
 }
 
-impl WebhooksLabelArchivedVariant1 {
+impl WebhooksLabelArchived {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         crate::validation::validate_model_date_time("archived_at", &self.archived_at)?;
+        crate::validation::validate_uri("url", &self.url)?;
         Ok(())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
+        color: String,
+        default: bool,
+        description: Option<String>,
         archived_at: String,
         archived_by: SimpleUser,
+        id: i64,
+        name: String,
+        node_id: String,
+        url: String,
     ) -> Result<Self, crate::errors::SdkError> {
         let value = Self {
+            color,
+            default,
+            description,
             archived_at,
             archived_by,
+            id,
+            name,
+            node_id,
+            url,
         };
         value.validate_constraints()?;
         Ok(value)
     }
 }
 
+/// Typed representation of the `WebhooksLabelUnarchived` API schema.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksLabelArchived {
-    #[serde(flatten)]
-    pub member_0: WebhooksLabel,
-    #[serde(flatten)]
-    pub member_1: WebhooksLabelArchivedVariant1,
-}
-
-impl WebhooksLabelArchived {
-    pub fn new(member_0: WebhooksLabel, member_1: WebhooksLabelArchivedVariant1) -> Self {
-        Self { member_0, member_1 }
-    }
-}
-
-/// Required object value serialized in the `label` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksLabelUnarchivedVariant1 {
+pub struct WebhooksLabelUnarchived {
+    /// 6-character hex code, without the leading #, identifying the color
+    pub color: String,
+    /// Required `boolean` value serialized in the `default` wire field.
+    pub default: bool,
+    /// Required `string` value serialized in the `description` wire field.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub description: Option<String>,
     /// Timestamp indicating when the label was archived. This is `null` after the label is unarchived.
     #[serde(deserialize_with = "Option::deserialize")]
     pub archived_at: Option<String>,
     /// The user who archived the label. This is `null` after the label is unarchived.
     #[serde(deserialize_with = "Option::deserialize")]
     pub archived_by: Option<SimpleUser>,
+    /// Required `integer` value serialized in the `id` wire field.
+    pub id: i64,
+    /// The name of the label.
+    pub name: String,
+    /// Required `string` value serialized in the `node_id` wire field.
+    pub node_id: String,
+    /// URL for the label
+    pub url: String,
 }
 
-impl WebhooksLabelUnarchivedVariant1 {
+impl WebhooksLabelUnarchived {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.archived_at.as_ref() {
             crate::validation::validate_model_date_time("archived_at", value)?;
         }
+        crate::validation::validate_uri("url", &self.url)?;
         Ok(())
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
+        color: String,
+        default: bool,
+        description: Option<String>,
         archived_at: Option<String>,
         archived_by: Option<SimpleUser>,
+        id: i64,
+        name: String,
+        node_id: String,
+        url: String,
     ) -> Result<Self, crate::errors::SdkError> {
         let value = Self {
+            color,
+            default,
+            description,
             archived_at,
             archived_by,
+            id,
+            name,
+            node_id,
+            url,
         };
         value.validate_constraints()?;
         Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksLabelUnarchived {
-    #[serde(flatten)]
-    pub member_0: WebhooksLabel,
-    #[serde(flatten)]
-    pub member_1: WebhooksLabelUnarchivedVariant1,
-}
-
-impl WebhooksLabelUnarchived {
-    pub fn new(member_0: WebhooksLabel, member_1: WebhooksLabelUnarchivedVariant1) -> Self {
-        Self { member_0, member_1 }
     }
 }

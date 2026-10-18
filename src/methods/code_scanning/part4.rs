@@ -59,6 +59,7 @@ pub fn code_scanning_delete_analysis(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -92,7 +93,11 @@ pub fn code_scanning_list_codeql_databases(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_list_codeql_databases",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -128,7 +133,11 @@ pub fn code_scanning_get_codeql_database(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_get_codeql_database",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -164,7 +173,11 @@ pub fn code_scanning_delete_codeql_database(
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "code_scanning_delete_codeql_database",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -304,7 +317,11 @@ pub fn code_scanning_create_variant_analysis(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_create_variant_analysis",
             options,
-            errors: &[("404", "BasicError"), ("422", "BasicError")],
+            errors: &[
+                ("404", "BasicError"),
+                ("422", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -341,7 +358,7 @@ pub fn code_scanning_get_variant_analysis(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_get_variant_analysis",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("404", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -395,7 +412,7 @@ pub fn code_scanning_get_variant_analysis_repo_task(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_get_variant_analysis_repo_task",
             options,
-            errors: &[("404", "BasicError")],
+            errors: &[("404", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -428,7 +445,11 @@ pub fn code_scanning_get_default_setup(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_get_default_setup",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -566,6 +587,7 @@ pub fn code_scanning_update_default_setup(
                 ("404", "BasicError"),
                 ("409", "BasicError"),
                 ("422", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

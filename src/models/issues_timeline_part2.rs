@@ -30,7 +30,7 @@ impl TimelineDisconnectedEvent {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum TimelineIssueEvents {
     LabeledIssueEvent(Box<LabeledIssueEvent>),
@@ -68,6 +68,288 @@ pub enum TimelineIssueEvents {
     BlockingRemovedIssueEvent(Box<BlockingRemovedIssueEvent>),
     TimelineConnectedEvent(Box<TimelineConnectedEvent>),
     TimelineDisconnectedEvent(Box<TimelineDisconnectedEvent>),
+}
+
+impl<'de> serde::Deserialize<'de> for TimelineIssueEvents {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<LabeledIssueEvent>>(value.clone()) {
+            let candidate = Self::LabeledIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<UnlabeledIssueEvent>>(value.clone()) {
+            let candidate = Self::UnlabeledIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<MilestonedIssueEvent>>(value.clone()) {
+            let candidate = Self::MilestonedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<DemilestonedIssueEvent>>(value.clone()) {
+            let candidate = Self::DemilestonedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<RenamedIssueEvent>>(value.clone()) {
+            let candidate = Self::RenamedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ReviewRequestedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ReviewRequestedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ReviewRequestRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ReviewRequestRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ReviewDismissedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ReviewDismissedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<LockedIssueEvent>>(value.clone()) {
+            let candidate = Self::LockedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<AddedToProjectIssueEvent>>(value.clone()) {
+            let candidate = Self::AddedToProjectIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<MovedColumnInProjectIssueEvent>>(value.clone())
+        {
+            let candidate = Self::MovedColumnInProjectIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RemovedFromProjectIssueEvent>>(value.clone())
+        {
+            let candidate = Self::RemovedFromProjectIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ConvertedNoteToIssueIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ConvertedNoteToIssueIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineCommentEvent>>(value.clone()) {
+            let candidate = Self::TimelineCommentEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<TimelineCrossReferencedEvent>>(value.clone())
+        {
+            let candidate = Self::TimelineCrossReferencedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineCommittedEvent>>(value.clone()) {
+            let candidate = Self::TimelineCommittedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineReviewedEvent>>(value.clone()) {
+            let candidate = Self::TimelineReviewedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineLineCommentedEvent>>(value.clone())
+        {
+            let candidate = Self::TimelineLineCommentedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<TimelineCommitCommentedEvent>>(value.clone())
+        {
+            let candidate = Self::TimelineCommitCommentedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineAssignedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::TimelineAssignedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<TimelineUnassignedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::TimelineUnassignedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<StateChangeIssueEvent>>(value.clone()) {
+            let candidate = Self::StateChangeIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueTypeAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::IssueTypeAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueTypeRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::IssueTypeRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueTypeChangedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::IssueTypeChangedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<SubIssueAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::SubIssueAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<SubIssueRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::SubIssueRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ParentIssueAddedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ParentIssueAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ParentIssueRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::ParentIssueRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockedByAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::BlockedByAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockedByRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::BlockedByRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockingAddedIssueEvent>>(value.clone()) {
+            let candidate = Self::BlockingAddedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<BlockingRemovedIssueEvent>>(value.clone())
+        {
+            let candidate = Self::BlockingRemovedIssueEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineConnectedEvent>>(value.clone()) {
+            let candidate = Self::TimelineConnectedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<TimelineDisconnectedEvent>>(value.clone())
+        {
+            let candidate = Self::TimelineDisconnectedEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no TimelineIssueEvents branch accepts this payload")
+        })
+    }
 }
 
 /// Timeline Line Commented Event
@@ -259,33 +541,4 @@ pub struct TimelineUnassignedIssueEvent {
     pub performed_via_github_app: Option<NullableIntegration>,
     /// A GitHub user.
     pub assignee: SimpleUser,
-}
-
-impl TimelineUnassignedIssueEvent {
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        id: i64,
-        node_id: String,
-        url: String,
-        actor: SimpleUser,
-        event: String,
-        commit_id: Option<String>,
-        commit_url: Option<String>,
-        created_at: String,
-        performed_via_github_app: Option<NullableIntegration>,
-        assignee: SimpleUser,
-    ) -> Self {
-        Self {
-            id,
-            node_id,
-            url,
-            actor,
-            event,
-            commit_id,
-            commit_url,
-            created_at,
-            performed_via_github_app,
-            assignee,
-        }
-    }
 }

@@ -247,7 +247,7 @@ impl RepositoryRuleDetailedVariant24 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum RepositoryRuleDetailed {
     Object(Box<RepositoryRuleDetailedVariant0>),
@@ -277,6 +277,241 @@ pub enum RepositoryRuleDetailed {
     Object25(Box<RepositoryRuleDetailedVariant24>),
 }
 
+impl<'de> serde::Deserialize<'de> for RepositoryRuleDetailed {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant2>>(value.clone())
+        {
+            let candidate = Self::Object3(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant3>>(value.clone())
+        {
+            let candidate = Self::Object4(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant4>>(value.clone())
+        {
+            let candidate = Self::Object5(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant5>>(value.clone())
+        {
+            let candidate = Self::Object6(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant6>>(value.clone())
+        {
+            let candidate = Self::Object7(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant7>>(value.clone())
+        {
+            let candidate = Self::Object8(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant8>>(value.clone())
+        {
+            let candidate = Self::Object9(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant9>>(value.clone())
+        {
+            let candidate = Self::Object10(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant10>>(value.clone())
+        {
+            let candidate = Self::Object11(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant11>>(value.clone())
+        {
+            let candidate = Self::Object12(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant12>>(value.clone())
+        {
+            let candidate = Self::Object13(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant13>>(value.clone())
+        {
+            let candidate = Self::Object14(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant14>>(value.clone())
+        {
+            let candidate = Self::Object15(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant15>>(value.clone())
+        {
+            let candidate = Self::Object16(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant16>>(value.clone())
+        {
+            let candidate = Self::Object17(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant17>>(value.clone())
+        {
+            let candidate = Self::Object18(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant18>>(value.clone())
+        {
+            let candidate = Self::Object19(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant19>>(value.clone())
+        {
+            let candidate = Self::Object20(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant20>>(value.clone())
+        {
+            let candidate = Self::Object21(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant21>>(value.clone())
+        {
+            let candidate = Self::Object22(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant22>>(value.clone())
+        {
+            let candidate = Self::Object23(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant23>>(value.clone())
+        {
+            let candidate = Self::Object24(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<RepositoryRuleDetailedVariant24>>(value.clone())
+        {
+            let candidate = Self::Object25(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no RepositoryRuleDetailed branch accepts this payload")
+        })
+    }
+}
+
 /// Required enumerated value serialized in the `type` wire field.
 #[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
 pub enum RepositoryRuleFileExtensionRestrictionTypeEnum {
@@ -300,197 +535,5 @@ impl std::fmt::Display for RepositoryRuleFileExtensionRestrictionTypeEnum {
                 f.write_str("file_extension_restriction")
             }
         }
-    }
-}
-
-/// Optional object value serialized in the `parameters` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleFileExtensionRestrictionParameters {
-    /// The file extensions that are restricted from being pushed to the commit graph.
-    pub restricted_file_extensions: Vec<String>,
-}
-
-impl RepositoryRuleFileExtensionRestrictionParameters {
-    pub fn new(restricted_file_extensions: Vec<String>) -> Self {
-        Self {
-            restricted_file_extensions,
-        }
-    }
-}
-
-/// Prevent commits that include files with specified file extensions from being pushed to the commit graph.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleFileExtensionRestriction {
-    /// Required enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleFileExtensionRestrictionTypeEnum,
-    /// Optional object value serialized in the `parameters` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parameters: Option<RepositoryRuleFileExtensionRestrictionParameters>,
-}
-
-impl RepositoryRuleFileExtensionRestriction {
-    pub fn new(type_: RepositoryRuleFileExtensionRestrictionTypeEnum) -> Self {
-        Self {
-            type_,
-            parameters: None,
-        }
-    }
-}
-
-/// Required enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum RepositoryRuleFilePathRestrictionTypeEnum {
-    #[serde(rename = "file_path_restriction")]
-    #[default]
-    FilePathRestriction,
-}
-
-impl RepositoryRuleFilePathRestrictionTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::FilePathRestriction => "file_path_restriction",
-        }
-    }
-}
-
-impl std::fmt::Display for RepositoryRuleFilePathRestrictionTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            RepositoryRuleFilePathRestrictionTypeEnum::FilePathRestriction => {
-                f.write_str("file_path_restriction")
-            }
-        }
-    }
-}
-
-/// Optional object value serialized in the `parameters` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleFilePathRestrictionParameters {
-    /// The file paths that are restricted from being pushed to the commit graph.
-    pub restricted_file_paths: Vec<String>,
-}
-
-impl RepositoryRuleFilePathRestrictionParameters {
-    pub fn new(restricted_file_paths: Vec<String>) -> Self {
-        Self {
-            restricted_file_paths,
-        }
-    }
-}
-
-/// Prevent commits that include changes in specified file and folder paths from being pushed to the commit graph. This includes absolute paths that contain file names.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleFilePathRestriction {
-    /// Required enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleFilePathRestrictionTypeEnum,
-    /// Optional object value serialized in the `parameters` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub parameters: Option<RepositoryRuleFilePathRestrictionParameters>,
-}
-
-impl RepositoryRuleFilePathRestriction {
-    pub fn new(type_: RepositoryRuleFilePathRestrictionTypeEnum) -> Self {
-        Self {
-            type_,
-            parameters: None,
-        }
-    }
-}
-
-/// Required enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum RepositoryRuleLicenseComplianceScanningTypeEnum {
-    #[serde(rename = "license_compliance_scanning")]
-    #[default]
-    LicenseComplianceScanning,
-}
-
-impl RepositoryRuleLicenseComplianceScanningTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::LicenseComplianceScanning => "license_compliance_scanning",
-        }
-    }
-}
-
-impl std::fmt::Display for RepositoryRuleLicenseComplianceScanningTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            RepositoryRuleLicenseComplianceScanningTypeEnum::LicenseComplianceScanning => {
-                f.write_str("license_compliance_scanning")
-            }
-        }
-    }
-}
-
-/// Enforce any added or changed dependencies to comply with the organization's license policy.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleLicenseComplianceScanning {
-    /// Required enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: RepositoryRuleLicenseComplianceScanningTypeEnum,
-}
-
-impl RepositoryRuleLicenseComplianceScanning {
-    pub fn new(type_: RepositoryRuleLicenseComplianceScanningTypeEnum) -> Self {
-        Self { type_ }
-    }
-}
-
-/// Required enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-pub enum RepositoryRuleMaxFilePathLengthTypeEnum {
-    #[serde(rename = "max_file_path_length")]
-    #[default]
-    MaxFilePathLength,
-}
-
-impl RepositoryRuleMaxFilePathLengthTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::MaxFilePathLength => "max_file_path_length",
-        }
-    }
-}
-
-impl std::fmt::Display for RepositoryRuleMaxFilePathLengthTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            RepositoryRuleMaxFilePathLengthTypeEnum::MaxFilePathLength => {
-                f.write_str("max_file_path_length")
-            }
-        }
-    }
-}
-
-/// Optional object value serialized in the `parameters` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct RepositoryRuleMaxFilePathLengthParameters {
-    /// The maximum amount of characters allowed in file paths.
-    pub max_file_path_length: i64,
-}
-
-impl RepositoryRuleMaxFilePathLengthParameters {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_range(
-            "max_file_path_length",
-            self.max_file_path_length as f64,
-            crate::validation::RangeOpts {
-                min: Some(1_f64),
-                max: Some(32767_f64),
-                ..Default::default()
-            },
-        )?;
-        Ok(())
-    }
-
-    pub fn new(max_file_path_length: i64) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            max_file_path_length,
-        };
-        value.validate_constraints()?;
-        Ok(value)
     }
 }

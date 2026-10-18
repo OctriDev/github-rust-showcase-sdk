@@ -3,6 +3,62 @@
 
 // webhook_pull_request_review_requested domain models (part 4)
 
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoVisibilityEnum {
+    #[default]
+    Public,
+    Private,
+    Internal,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoVisibilityEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Public => "public",
+            Self::Private => "private",
+            Self::Internal => "internal",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoVisibilityEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoVisibilityEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "public" => Self::Public,
+            "private" => Self::Private,
+            "internal" => Self::Internal,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoVisibilityEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// A git repository
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepo {
@@ -498,93 +554,4 @@ pub struct WebhookPullRequestReviewRequestedVariant0PullRequestBaseUser {
     pub url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_view_type: Option<String>,
-}
-
-impl WebhookPullRequestReviewRequestedVariant0PullRequestBaseUser {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.avatar_url.as_ref() {
-            crate::validation::validate_uri("avatar_url", value)?;
-        }
-        if let Some(value) = self.followers_url.as_ref() {
-            crate::validation::validate_uri("followers_url", value)?;
-        }
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        if let Some(value) = self.organizations_url.as_ref() {
-            crate::validation::validate_uri("organizations_url", value)?;
-        }
-        if let Some(value) = self.received_events_url.as_ref() {
-            crate::validation::validate_uri("received_events_url", value)?;
-        }
-        if let Some(value) = self.repos_url.as_ref() {
-            crate::validation::validate_uri("repos_url", value)?;
-        }
-        if let Some(value) = self.subscriptions_url.as_ref() {
-            crate::validation::validate_uri("subscriptions_url", value)?;
-        }
-        if let Some(value) = self.url.as_ref() {
-            crate::validation::validate_uri("url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(id: i64, login: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            avatar_url: None,
-            deleted: None,
-            email: None,
-            events_url: None,
-            followers_url: None,
-            following_url: None,
-            gists_url: None,
-            gravatar_id: None,
-            html_url: None,
-            id,
-            login,
-            name: None,
-            node_id: None,
-            organizations_url: None,
-            received_events_url: None,
-            repos_url: None,
-            site_admin: None,
-            starred_url: None,
-            subscriptions_url: None,
-            type_: None,
-            url: None,
-            user_view_type: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewRequestedVariant0PullRequestBase {
-    pub label: String,
-    #[serde(rename = "ref")]
-    pub ref_: String,
-    /// A git repository
-    pub repo: WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepo,
-    pub sha: String,
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub user: Option<WebhookPullRequestReviewRequestedVariant0PullRequestBaseUser>,
-}
-
-impl WebhookPullRequestReviewRequestedVariant0PullRequestBase {
-    pub fn new(
-        label: String,
-        ref_: String,
-        repo: WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepo,
-        sha: String,
-        user: Option<WebhookPullRequestReviewRequestedVariant0PullRequestBaseUser>,
-    ) -> Self {
-        Self {
-            label,
-            ref_,
-            repo,
-            sha,
-            user,
-        }
-    }
 }

@@ -89,7 +89,7 @@ impl Event {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum EventPayload {
     CreateEvent(Box<CreateEvent>),
@@ -108,6 +108,128 @@ pub enum EventPayload {
     CommitCommentEvent(Box<CommitCommentEvent>),
     ReleaseEvent(Box<ReleaseEvent>),
     WatchEvent(Box<WatchEvent>),
+}
+
+impl<'de> serde::Deserialize<'de> for EventPayload {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<CreateEvent>>(value.clone()) {
+            let candidate = Self::CreateEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<DeleteEvent>>(value.clone()) {
+            let candidate = Self::DeleteEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<DiscussionEvent>>(value.clone()) {
+            let candidate = Self::DiscussionEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssuesEvent>>(value.clone()) {
+            let candidate = Self::IssuesEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<IssueCommentEvent>>(value.clone()) {
+            let candidate = Self::IssueCommentEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ForkEvent>>(value.clone()) {
+            let candidate = Self::ForkEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<GollumEvent>>(value.clone()) {
+            let candidate = Self::GollumEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<MemberEvent>>(value.clone()) {
+            let candidate = Self::MemberEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PublicEvent>>(value.clone()) {
+            let candidate = Self::PublicEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PushEvent>>(value.clone()) {
+            let candidate = Self::PushEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PullRequestEvent>>(value.clone()) {
+            let candidate = Self::PullRequestEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<PullRequestReviewCommentEvent>>(value.clone())
+        {
+            let candidate = Self::PullRequestReviewCommentEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<PullRequestReviewEvent>>(value.clone()) {
+            let candidate = Self::PullRequestReviewEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<CommitCommentEvent>>(value.clone()) {
+            let candidate = Self::CommitCommentEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<ReleaseEvent>>(value.clone()) {
+            let candidate = Self::ReleaseEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<WatchEvent>>(value.clone()) {
+            let candidate = Self::WatchEvent(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| serde::de::Error::custom("no EventPayload branch accepts this payload"))
+    }
 }
 
 /// Required object value serialized in the `_links` wire field.

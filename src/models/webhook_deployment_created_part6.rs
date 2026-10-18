@@ -256,7 +256,7 @@ pub struct WebhookDeploymentCreatedDeployment {
     /// Required `string` value serialized in the `original_environment` wire field.
     pub original_environment: String,
     /// Required API value serialized in the `payload` wire field.
-    pub payload: String,
+    pub payload: WebhookDeploymentCreatedDeploymentPayload,
     /// GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub.
     #[serde(
         skip_serializing_if = "Option::is_none",
@@ -305,7 +305,7 @@ impl WebhookDeploymentCreatedDeployment {
         id: i64,
         node_id: String,
         original_environment: String,
-        payload: String,
+        payload: WebhookDeploymentCreatedDeploymentPayload,
         ref_: String,
         repository_url: String,
         sha: String,

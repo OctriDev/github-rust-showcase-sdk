@@ -101,11 +101,37 @@ impl CopilotSeatDetails {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CopilotSeatDetailsAssigningTeam {
     Team(Box<Team>),
     EnterpriseTeam(Box<EnterpriseTeam>),
+}
+
+impl<'de> serde::Deserialize<'de> for CopilotSeatDetailsAssigningTeam {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<Team>>(value.clone()) {
+            let candidate = Self::Team(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<EnterpriseTeam>>(value.clone()) {
+            let candidate = Self::EnterpriseTeam(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no CopilotSeatDetailsAssigningTeam branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// Links to download the Copilot usage metrics report for an enterprise/organization for a specific day.

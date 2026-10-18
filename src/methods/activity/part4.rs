@@ -7,6 +7,205 @@ use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::SdkError;
 use crate::types::{Event, MinimalRepository};
 
+/// Whether the authenticated user has starred the repository.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn activity_check_repo_is_starred_by_authenticated_user(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "GET",
+        &format!(
+            "/user/starred/{}/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "activity_check_repo_is_starred_by_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Note that you'll need to set `Content-Length` to zero when calling out to this endpoint. For more information, see "[HTTP method](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#http-method)."
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn activity_star_repo_for_authenticated_user(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/user/starred/{}/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "activity_star_repo_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Unstar a repository that the authenticated user has previously starred.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn activity_unstar_repo_for_authenticated_user(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/user/starred/{}/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "activity_unstar_repo_for_authenticated_user",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Lists repositories the authenticated user is watching.
+///
+/// # Arguments
+///
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn activity_list_watched_repos_for_authenticated_user(
+    config: &ClientConfig,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<MinimalRepository>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<MinimalRepository>>(
+        "GET",
+        "/user/subscriptions",
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "activity_list_watched_repos_for_authenticated_user",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// If you are authenticated as the given user, you will see your private events. Otherwise, you'll only see public events. _Optional_: use the fine-grained token with following permission set to view private events: "Events" user permissions (read). \> [!NOTE] \> This API is not built to serve real-time use cases. Depending on the time of day, event latency can be anywhere from 30s to 6h.
+///
+/// # Arguments
+///
+/// * `username` - The handle for the GitHub user account.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn activity_list_events_for_authenticated_user(
+    config: &ClientConfig,
+    username: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<Event>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<Event>>(
+        "GET",
+        &format!(
+            "/users/{}/events",
+            crate::client::encode_path_segment(&username)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "activity_list_events_for_authenticated_user",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// This is the user's organization dashboard. You must be authenticated as the user to view this. \> [!NOTE] \> This API is not built to serve real-time use cases. Depending on the time of day, event latency can be anywhere from 30s to 6h.
 ///
 /// # Arguments

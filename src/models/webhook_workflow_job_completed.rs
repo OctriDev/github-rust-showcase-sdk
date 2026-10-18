@@ -50,7 +50,7 @@ impl std::fmt::Display for WebhookWorkflowJobCompletedActionEnum {
 
 /// Required enumerated value serialized in the `conclusion` wire field.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
+pub enum WebhookWorkflowJobCompletedWorkflowJobConclusionEnum {
     #[default]
     Success,
     Failure,
@@ -62,7 +62,7 @@ pub enum WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
     Unknown(String),
 }
 
-impl WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
+impl WebhookWorkflowJobCompletedWorkflowJobConclusionEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::Success => "success",
@@ -77,7 +77,7 @@ impl WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
     }
 }
 
-impl serde::Serialize for WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
+impl serde::Serialize for WebhookWorkflowJobCompletedWorkflowJobConclusionEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -86,7 +86,7 @@ impl serde::Serialize for WebhookWorkflowJobCompletedWorkflowJobVariant1Conclusi
     }
 }
 
-impl<'de> serde::Deserialize<'de> for WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
+impl<'de> serde::Deserialize<'de> for WebhookWorkflowJobCompletedWorkflowJobConclusionEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -105,56 +105,56 @@ impl<'de> serde::Deserialize<'de> for WebhookWorkflowJobCompletedWorkflowJobVari
     }
 }
 
-impl std::fmt::Display for WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum {
+impl std::fmt::Display for WebhookWorkflowJobCompletedWorkflowJobConclusionEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-/// Required API value serialized in the `workflow_job` wire field.
+/// Required object value serialized in the `workflow_job` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookWorkflowJobCompletedWorkflowJob {
-    /// Optional `string` value serialized in the `check_run_url` wire field.
+    /// Required `string` value serialized in the `check_run_url` wire field.
     pub check_run_url: String,
-    /// Optional `string` value serialized in the `completed_at` wire field.
+    /// Required `string` value serialized in the `completed_at` wire field.
     pub completed_at: String,
     /// Required enumerated value serialized in the `conclusion` wire field.
-    pub conclusion: WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum,
+    pub conclusion: WebhookWorkflowJobCompletedWorkflowJobConclusionEnum,
     /// The time that the job created.
     pub created_at: String,
-    /// Optional `string` value serialized in the `head_sha` wire field.
+    /// Required `string` value serialized in the `head_sha` wire field.
     pub head_sha: String,
-    /// Optional `string` value serialized in the `html_url` wire field.
+    /// Required `string` value serialized in the `html_url` wire field.
     pub html_url: String,
-    /// Optional `integer` value serialized in the `id` wire field.
+    /// Required `integer` value serialized in the `id` wire field.
     pub id: i64,
-    /// Optional array value serialized in the `labels` wire field.
+    /// Required array value serialized in the `labels` wire field.
     pub labels: Vec<Option<String>>,
-    /// Optional `string` value serialized in the `name` wire field.
+    /// Required `string` value serialized in the `name` wire field.
     pub name: String,
-    /// Optional `string` value serialized in the `node_id` wire field.
+    /// Required `string` value serialized in the `node_id` wire field.
     pub node_id: String,
-    /// Optional `integer` value serialized in the `run_attempt` wire field.
+    /// Required `integer` value serialized in the `run_attempt` wire field.
     pub run_attempt: i64,
-    /// Optional `integer` value serialized in the `run_id` wire field.
+    /// Required `integer` value serialized in the `run_id` wire field.
     pub run_id: i64,
-    /// Optional `string` value serialized in the `run_url` wire field.
+    /// Required `string` value serialized in the `run_url` wire field.
     pub run_url: String,
-    /// Optional `number` value serialized in the `runner_group_id` wire field.
+    /// Required `number` value serialized in the `runner_group_id` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub runner_group_id: Option<f64>,
-    /// Optional `string` value serialized in the `runner_group_name` wire field.
+    /// Required `string` value serialized in the `runner_group_name` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub runner_group_name: Option<String>,
-    /// Optional `number` value serialized in the `runner_id` wire field.
+    /// Required `number` value serialized in the `runner_id` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub runner_id: Option<f64>,
-    /// Optional `string` value serialized in the `runner_name` wire field.
+    /// Required `string` value serialized in the `runner_name` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub runner_name: Option<String>,
-    /// Optional `string` value serialized in the `started_at` wire field.
+    /// Required `string` value serialized in the `started_at` wire field.
     pub started_at: String,
-    /// Optional `string` value serialized in the `status` wire field.
+    /// Required `string` value serialized in the `status` wire field.
     pub status: String,
     /// The name of the current branch.
     #[serde(deserialize_with = "Option::deserialize")]
@@ -162,9 +162,9 @@ pub struct WebhookWorkflowJobCompletedWorkflowJob {
     /// The name of the workflow.
     #[serde(deserialize_with = "Option::deserialize")]
     pub workflow_name: Option<String>,
-    /// Optional array value serialized in the `steps` wire field.
+    /// Required array value serialized in the `steps` wire field.
     pub steps: Vec<Option<serde_json::Value>>,
-    /// Optional `string` value serialized in the `url` wire field.
+    /// Required `string` value serialized in the `url` wire field.
     pub url: String,
 }
 
@@ -173,7 +173,7 @@ impl WebhookWorkflowJobCompletedWorkflowJob {
     pub fn new(
         check_run_url: String,
         completed_at: String,
-        conclusion: WebhookWorkflowJobCompletedWorkflowJobVariant1ConclusionEnum,
+        conclusion: WebhookWorkflowJobCompletedWorkflowJobConclusionEnum,
         created_at: String,
         head_sha: String,
         html_url: String,
@@ -247,7 +247,7 @@ pub struct WebhookWorkflowJobCompleted {
     pub repository: RepositoryWebhooks,
     /// A GitHub user.
     pub sender: SimpleUser,
-    /// Required API value serialized in the `workflow_job` wire field.
+    /// Required object value serialized in the `workflow_job` wire field.
     pub workflow_job: WebhookWorkflowJobCompletedWorkflowJob,
     /// A request for a specific ref(branch,sha,tag) to be deployed
     #[serde(skip_serializing_if = "Option::is_none")]

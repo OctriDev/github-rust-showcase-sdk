@@ -218,7 +218,7 @@ impl ProjectsAddFieldForOrgVariant3 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ProjectsAddFieldForOrg {
     Object(Box<ProjectsAddFieldForOrgVariant0>),
@@ -227,62 +227,79 @@ pub enum ProjectsAddFieldForOrg {
     Iteration(Box<ProjectsAddFieldForOrgVariant3>),
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+impl<'de> serde::Deserialize<'de> for ProjectsAddFieldForOrg {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForOrgVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForOrgVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForOrgVariant2>>(value.clone())
+        {
+            let candidate = Self::SingleSelect(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForOrgVariant3>>(value.clone())
+        {
+            let candidate = Self::Iteration(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsAddFieldForOrg branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ProjectsListItemsForOrg {
     String(String),
     StringArray(Vec<String>),
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum ProjectsGetOrgItem {
-    String(String),
-    StringArray(Vec<String>),
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum ProjectsUpdateItemForOrgFieldsItemValue {
-    String(String),
-    Number(f64),
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ProjectsUpdateItemForOrgFieldsItem {
-    /// The ID of the project field to update.
-    pub id: i64,
-    /// The new value for the field:
-    /// \- For text, number, and date fields, provide the new value directly.
-    /// \- For single select and iteration fields, provide the ID of the option or iteration.
-    /// \- To clear the field, set this to null.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub value: Option<ProjectsUpdateItemForOrgFieldsItemValue>,
-}
-
-impl ProjectsUpdateItemForOrgFieldsItem {
-    pub fn new(id: i64, value: Option<ProjectsUpdateItemForOrgFieldsItemValue>) -> Self {
-        Self { id, value }
+impl<'de> serde::Deserialize<'de> for ProjectsListItemsForOrg {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsListItemsForOrg branch accepts this payload")
+        })
     }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum ProjectsCreateViewForOrgSortByItemItem {
-    Integer(i64),
-    String(String),
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum ProjectsListViewItemsForOrg {
-    String(String),
-    StringArray(Vec<String>),
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-#[serde(untagged)]
-pub enum ProjectsCreateViewForUserSortByItemItem {
-    Integer(i64),
-    String(String),
 }

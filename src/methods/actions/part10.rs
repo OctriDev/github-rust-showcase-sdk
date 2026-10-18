@@ -5,7 +5,10 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{AuthenticationToken, Runner, RunnerApplication};
+use crate::types::{
+    ActionsRunnerJitconfig, ActionsRunnerLabels, ActionsRunnerLabelsReadonly, AuthenticationToken,
+    Runner, RunnerApplication,
+};
 use crate::validation::{validate_items, LengthOpts};
 
 /// Lists self-hosted runners that are in a specific organization group. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
@@ -304,7 +307,7 @@ pub fn actions_generate_runner_jitconfig_for_org(
     config: &ClientConfig,
     params: ActionsGenerateRunnerJitconfigForOrgParams,
     options: Option<&RequestOptions>,
-) -> Result<ActionsGenerateRunnerJitconfigForOrgResponse, SdkError> {
+) -> Result<ActionsRunnerJitconfig, SdkError> {
     let ActionsGenerateRunnerJitconfigForOrgParams {
         org,
         name,
@@ -362,7 +365,7 @@ pub fn actions_generate_runner_jitconfig_for_org(
     }
     let __body = serde_json::Value::Object(__body_map);
 
-    Ok(sdk_request::<ActionsGenerateRunnerJitconfigForOrgResponse>(
+    Ok(sdk_request::<ActionsRunnerJitconfig>(
         "POST",
         &format!(
             "/orgs/{}/actions/runners/generate-jitconfig",
@@ -511,26 +514,24 @@ pub fn actions_list_labels_for_self_hosted_runner_for_org(
     org: String,
     runner_id: i64,
     options: Option<&RequestOptions>,
-) -> Result<ActionsListLabelsForSelfHostedRunnerForOrgResponse, SdkError> {
-    Ok(
-        sdk_request::<ActionsListLabelsForSelfHostedRunnerForOrgResponse>(
-            "GET",
-            &format!(
-                "/orgs/{}/actions/runners/{}/labels",
-                crate::client::encode_path_segment(&org),
-                crate::client::encode_path_segment(&runner_id)
-            ),
-            config,
-            RequestOpts {
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "actions_list_labels_for_self_hosted_runner_for_org",
-                options,
-                errors: &[("404", "BasicError")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
+) -> Result<ActionsRunnerLabels, SdkError> {
+    Ok(sdk_request::<ActionsRunnerLabels>(
+        "GET",
+        &format!(
+            "/orgs/{}/actions/runners/{}/labels",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_list_labels_for_self_hosted_runner_for_org",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
 }
 
 /// Adds custom labels to a self-hosted runner configured in an organization. Authenticated users must have admin access to the organization to use this endpoint. OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
@@ -546,7 +547,7 @@ pub fn actions_add_custom_labels_to_self_hosted_runner_for_org(
     runner_id: i64,
     labels: Vec<String>,
     options: Option<&RequestOptions>,
-) -> Result<ActionsListLabelsForSelfHostedRunnerForOrgResponse, SdkError> {
+) -> Result<ActionsRunnerLabels, SdkError> {
     validate_items(
         "labels",
         &labels,
@@ -568,26 +569,24 @@ pub fn actions_add_custom_labels_to_self_hosted_runner_for_org(
     );
     let __body = serde_json::Value::Object(__body_map);
 
-    Ok(
-        sdk_request::<ActionsListLabelsForSelfHostedRunnerForOrgResponse>(
-            "POST",
-            &format!(
-                "/orgs/{}/actions/runners/{}/labels",
-                crate::client::encode_path_segment(&org),
-                crate::client::encode_path_segment(&runner_id)
-            ),
-            config,
-            RequestOpts {
-                body: Some(__body),
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "actions_add_custom_labels_to_self_hosted_runner_for_org",
-                options,
-                errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
+    Ok(sdk_request::<ActionsRunnerLabels>(
+        "POST",
+        &format!(
+            "/orgs/{}/actions/runners/{}/labels",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_add_custom_labels_to_self_hosted_runner_for_org",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
+            ..Default::default()
+        },
+    )?
+    .data)
 }
 
 /// Remove all previous custom labels and set the new custom labels for a specific self-hosted runner configured in an organization. Authenticated users must have admin access to the organization to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.
@@ -604,7 +603,7 @@ pub fn actions_set_custom_labels_for_self_hosted_runner_for_org(
     runner_id: i64,
     labels: Vec<String>,
     options: Option<&RequestOptions>,
-) -> Result<ActionsListLabelsForSelfHostedRunnerForOrgResponse, SdkError> {
+) -> Result<ActionsRunnerLabels, SdkError> {
     validate_items(
         "labels",
         &labels,
@@ -626,26 +625,24 @@ pub fn actions_set_custom_labels_for_self_hosted_runner_for_org(
     );
     let __body = serde_json::Value::Object(__body_map);
 
-    Ok(
-        sdk_request::<ActionsListLabelsForSelfHostedRunnerForOrgResponse>(
-            "PUT",
-            &format!(
-                "/orgs/{}/actions/runners/{}/labels",
-                crate::client::encode_path_segment(&org),
-                crate::client::encode_path_segment(&runner_id)
-            ),
-            config,
-            RequestOpts {
-                body: Some(__body),
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "actions_set_custom_labels_for_self_hosted_runner_for_org",
-                options,
-                errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
+    Ok(sdk_request::<ActionsRunnerLabels>(
+        "PUT",
+        &format!(
+            "/orgs/{}/actions/runners/{}/labels",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_set_custom_labels_for_self_hosted_runner_for_org",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
+            ..Default::default()
+        },
+    )?
+    .data)
 }
 
 /// Remove all custom labels from a self-hosted runner configured in an organization. Returns the remaining read-only labels from the runner. Authenticated users must have admin access to the organization to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.
@@ -659,26 +656,24 @@ pub fn actions_remove_all_custom_labels_from_self_hosted_runner_for_org(
     org: String,
     runner_id: i64,
     options: Option<&RequestOptions>,
-) -> Result<ActionsRemoveAllCustomLabelsFromSelfHostedRunnerForOrgResponse, SdkError> {
-    Ok(
-        sdk_request::<ActionsRemoveAllCustomLabelsFromSelfHostedRunnerForOrgResponse>(
-            "DELETE",
-            &format!(
-                "/orgs/{}/actions/runners/{}/labels",
-                crate::client::encode_path_segment(&org),
-                crate::client::encode_path_segment(&runner_id)
-            ),
-            config,
-            RequestOpts {
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "actions_remove_all_custom_labels_from_self_hosted_runner_for_org",
-                options,
-                errors: &[("404", "BasicError")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
+) -> Result<ActionsRunnerLabelsReadonly, SdkError> {
+    Ok(sdk_request::<ActionsRunnerLabelsReadonly>(
+        "DELETE",
+        &format!(
+            "/orgs/{}/actions/runners/{}/labels",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_remove_all_custom_labels_from_self_hosted_runner_for_org",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
 }
 
 /// Remove a custom label from a self-hosted runner configured in an organization. Returns the remaining labels from the runner. This endpoint returns a `404 Not Found` status if the custom label is not present on the runner. Authenticated users must have admin access to the organization to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.
@@ -694,27 +689,25 @@ pub fn actions_remove_custom_label_from_self_hosted_runner_for_org(
     runner_id: i64,
     name: String,
     options: Option<&RequestOptions>,
-) -> Result<ActionsListLabelsForSelfHostedRunnerForOrgResponse, SdkError> {
-    Ok(
-        sdk_request::<ActionsListLabelsForSelfHostedRunnerForOrgResponse>(
-            "DELETE",
-            &format!(
-                "/orgs/{}/actions/runners/{}/labels/{}",
-                crate::client::encode_path_segment(&org),
-                crate::client::encode_path_segment(&runner_id),
-                crate::client::encode_path_segment(&name)
-            ),
-            config,
-            RequestOpts {
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "actions_remove_custom_label_from_self_hosted_runner_for_org",
-                options,
-                errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
+) -> Result<ActionsRunnerLabels, SdkError> {
+    Ok(sdk_request::<ActionsRunnerLabels>(
+        "DELETE",
+        &format!(
+            "/orgs/{}/actions/runners/{}/labels/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_id),
+            crate::client::encode_path_segment(&name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_remove_custom_label_from_self_hosted_runner_for_org",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
+            ..Default::default()
+        },
+    )?
+    .data)
 }
 
 /// Lists all secrets available in an organization without revealing their encrypted values. Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.

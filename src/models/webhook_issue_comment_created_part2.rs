@@ -5,7 +5,7 @@
 
 /// Required object value serialized in the `assignee` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssueCommentCreatedIssueVariant1Assignee {
+pub struct WebhookIssueCommentCreatedIssueAssignee {
     /// Optional `uri`-formatted value serialized in the `avatar_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -67,7 +67,7 @@ pub struct WebhookIssueCommentCreatedIssueVariant1Assignee {
     pub subscriptions_url: Option<String>,
     /// Optional enumerated value serialized in the `type` wire field.
     #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<WebhookIssueCommentCreatedIssueVariant1AssigneeTypeEnum>,
+    pub type_: Option<WebhookIssueCommentCreatedIssueAssigneeTypeEnum>,
     /// Optional `uri`-formatted value serialized in the `url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -76,7 +76,7 @@ pub struct WebhookIssueCommentCreatedIssueVariant1Assignee {
     pub user_view_type: Option<String>,
 }
 
-impl WebhookIssueCommentCreatedIssueVariant1Assignee {
+impl WebhookIssueCommentCreatedIssueAssignee {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.avatar_url.as_ref() {
             crate::validation::validate_uri("avatar_url", value)?;
@@ -137,7 +137,7 @@ impl WebhookIssueCommentCreatedIssueVariant1Assignee {
 
 /// Required object value serialized in the `labels[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssueCommentCreatedIssueVariant1LabelsItem {
+pub struct WebhookIssueCommentCreatedIssueLabelsItem {
     /// 6-character hex code, without the leading #, identifying the color
     pub color: String,
     /// Required `boolean` value serialized in the `default` wire field.
@@ -155,7 +155,7 @@ pub struct WebhookIssueCommentCreatedIssueVariant1LabelsItem {
     pub url: String,
 }
 
-impl WebhookIssueCommentCreatedIssueVariant1LabelsItem {
+impl WebhookIssueCommentCreatedIssueLabelsItem {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         crate::validation::validate_uri("url", &self.url)?;
         Ok(())
@@ -186,7 +186,7 @@ impl WebhookIssueCommentCreatedIssueVariant1LabelsItem {
 
 /// Optional object value serialized in the `pull_request` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssueCommentCreatedIssueVariant0PullRequest {
+pub struct WebhookIssueCommentCreatedIssuePullRequest {
     /// Optional `uri`-formatted value serialized in the `diff_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub diff_url: Option<String>,
@@ -208,7 +208,7 @@ pub struct WebhookIssueCommentCreatedIssueVariant0PullRequest {
     pub url: Option<String>,
 }
 
-impl WebhookIssueCommentCreatedIssueVariant0PullRequest {
+impl WebhookIssueCommentCreatedIssuePullRequest {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.diff_url.as_ref() {
             crate::validation::validate_uri("diff_url", value)?;
@@ -242,9 +242,9 @@ impl WebhookIssueCommentCreatedIssueVariant0PullRequest {
     }
 }
 
-/// Optional object value serialized in the `reactions` wire field.
+/// Required object value serialized in the `reactions` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssueCommentCreatedIssueVariant1Reactions {
+pub struct WebhookIssueCommentCreatedIssueReactions {
     /// Optional `integer` value serialized in the `\+1` wire field.
     #[serde(rename = "+1", skip_serializing_if = "Option::is_none")]
     pub plus_1: Option<i64>,
@@ -277,7 +277,7 @@ pub struct WebhookIssueCommentCreatedIssueVariant1Reactions {
     pub url: Option<String>,
 }
 
-impl WebhookIssueCommentCreatedIssueVariant1Reactions {
+impl WebhookIssueCommentCreatedIssueReactions {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -297,14 +297,14 @@ impl WebhookIssueCommentCreatedIssueVariant1Reactions {
 
 /// State of the issue; either 'open' or 'closed'
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookIssueCommentCreatedIssueVariant1StateEnum {
+pub enum WebhookIssueCommentCreatedIssueStateEnum {
     #[default]
     Open,
     Closed,
     Unknown(String),
 }
 
-impl WebhookIssueCommentCreatedIssueVariant1StateEnum {
+impl WebhookIssueCommentCreatedIssueStateEnum {
     pub fn as_str(&self) -> &str {
         match self {
             Self::Open => "open",
@@ -314,7 +314,7 @@ impl WebhookIssueCommentCreatedIssueVariant1StateEnum {
     }
 }
 
-impl serde::Serialize for WebhookIssueCommentCreatedIssueVariant1StateEnum {
+impl serde::Serialize for WebhookIssueCommentCreatedIssueStateEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -323,7 +323,7 @@ impl serde::Serialize for WebhookIssueCommentCreatedIssueVariant1StateEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for WebhookIssueCommentCreatedIssueVariant1StateEnum {
+impl<'de> serde::Deserialize<'de> for WebhookIssueCommentCreatedIssueStateEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -337,15 +337,15 @@ impl<'de> serde::Deserialize<'de> for WebhookIssueCommentCreatedIssueVariant1Sta
     }
 }
 
-impl std::fmt::Display for WebhookIssueCommentCreatedIssueVariant1StateEnum {
+impl std::fmt::Display for WebhookIssueCommentCreatedIssueStateEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-/// Optional object value serialized in the `user` wire field.
+/// Required object value serialized in the `user` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssueCommentCreatedIssueVariant1User {
+pub struct WebhookIssueCommentCreatedIssueUser {
     /// Optional `string` value serialized in the `avatar_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -402,7 +402,7 @@ pub struct WebhookIssueCommentCreatedIssueVariant1User {
     pub url: Option<String>,
 }
 
-impl WebhookIssueCommentCreatedIssueVariant1User {
+impl WebhookIssueCommentCreatedIssueUser {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {

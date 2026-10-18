@@ -134,7 +134,7 @@ pub struct WebhookPullRequestReviewCommentCreatedPullRequest {
     pub patch_url: String,
     /// Required array value serialized in the `requested_reviewers` wire field.
     pub requested_reviewers:
-        Vec<WebhookPullRequestReviewCommentCreatedPullRequestRequestedReviewersItem>,
+        Vec<Option<WebhookPullRequestReviewCommentCreatedPullRequestRequestedReviewersItem>>,
     /// Required array value serialized in the `requested_teams` wire field.
     pub requested_teams: Vec<WebhookPullRequestReviewCommentCreatedPullRequestRequestedTeamsItem>,
     /// Required `uri-template`-formatted value serialized in the `review_comment_url` wire field.
@@ -206,7 +206,7 @@ impl WebhookPullRequestReviewCommentCreatedPullRequest {
         number: i64,
         patch_url: String,
         requested_reviewers: Vec<
-            WebhookPullRequestReviewCommentCreatedPullRequestRequestedReviewersItem,
+            Option<WebhookPullRequestReviewCommentCreatedPullRequestRequestedReviewersItem>,
         >,
         requested_teams: Vec<WebhookPullRequestReviewCommentCreatedPullRequestRequestedTeamsItem>,
         review_comment_url: String,

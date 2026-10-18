@@ -3,6 +3,55 @@
 
 // security_advisories domain models (part 4)
 
+/// Required object value serialized in the `vulnerabilities[]` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryAdvisoryUpdateVulnerabilitiesItem {
+    /// The name of the package affected by the vulnerability.
+    pub package: RepositoryAdvisoryUpdateVulnerabilitiesItemPackage,
+    /// The range of the package versions affected by the vulnerability.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub vulnerable_version_range: Option<Option<String>>,
+    /// The package version(s) that resolve the vulnerability.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub patched_versions: Option<Option<String>>,
+    /// The functions in the package that are affected.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub vulnerable_functions: Option<Option<Vec<String>>>,
+}
+
+impl RepositoryAdvisoryUpdateVulnerabilitiesItem {
+    pub fn new(package: RepositoryAdvisoryUpdateVulnerabilitiesItemPackage) -> Self {
+        Self {
+            package,
+            vulnerable_version_range: None,
+            patched_versions: None,
+            vulnerable_functions: None,
+        }
+    }
+}
+
+/// Required object value serialized in the `credits[]` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct RepositoryAdvisoryUpdateCreditsItem {
+    /// The username of the user credited.
+    pub login: String,
+    /// The type of credit the user is receiving.
+    #[serde(rename = "type")]
+    pub type_: SecurityAdvisoryCreditTypes,
+}
+
 impl RepositoryAdvisoryUpdateCreditsItem {
     pub fn new(login: String, type_: SecurityAdvisoryCreditTypes) -> Self {
         Self { login, type_ }
@@ -440,38 +489,5 @@ pub struct VulnerabilityPackage {
 impl VulnerabilityPackage {
     pub fn new(ecosystem: SecurityAdvisoryEcosystems, name: Option<String>) -> Self {
         Self { ecosystem, name }
-    }
-}
-
-/// A vulnerability describing the product and its affected versions within a GitHub Security Advisory.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct Vulnerability {
-    /// The name of the package affected by the vulnerability.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub package: Option<VulnerabilityPackage>,
-    /// The range of the package versions affected by the vulnerability.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub vulnerable_version_range: Option<String>,
-    /// The package version that resolves the vulnerability.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub first_patched_version: Option<String>,
-    /// The functions in the package that are affected by the vulnerability.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub vulnerable_functions: Option<Vec<String>>,
-}
-
-impl Vulnerability {
-    pub fn new(
-        package: Option<VulnerabilityPackage>,
-        vulnerable_version_range: Option<String>,
-        first_patched_version: Option<String>,
-        vulnerable_functions: Option<Vec<String>>,
-    ) -> Self {
-        Self {
-            package,
-            vulnerable_version_range,
-            first_patched_version,
-            vulnerable_functions,
-        }
     }
 }

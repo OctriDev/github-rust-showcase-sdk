@@ -5,10 +5,163 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{
-    Event, MinimalRepository, Repository, RepositorySubscription, SimpleUser, StargazerHistory,
-};
-use crate::validation::{validate_range, RangeOpts};
+use crate::types::{Repository, RepositorySubscription, SimpleUser, StargazerHistory, Thread};
+use crate::validation::{validate_date_time, validate_range, RangeOpts};
+
+#[derive(Debug, Clone, Default)]
+pub struct ActivityListRepoNotificationsForAuthenticatedUserParams {
+    pub owner: String,
+    pub repo: String,
+    pub all: Option<bool>,
+    pub participating: Option<bool>,
+    pub since: Option<String>,
+    pub before: Option<String>,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+}
+
+/// Lists all notifications for the current user in the specified repository.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `all` - If `true`, show notifications marked as read.
+/// * `participating` - If `true`, only shows notifications in which the user is
+///   directly participating or mentioned.
+/// * `since` - Only show results that were last updated after the given time.
+///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
+///   format: `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `before` - Only show notifications updated before the given time. This is
+///   a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
+///   `YYYY-MM-DDTHH:MM:SSZ`.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn activity_list_repo_notifications_for_authenticated_user(
+    config: &ClientConfig,
+    params: ActivityListRepoNotificationsForAuthenticatedUserParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<Thread>, SdkError> {
+    let ActivityListRepoNotificationsForAuthenticatedUserParams {
+        owner,
+        repo,
+        all,
+        participating,
+        since,
+        before,
+        per_page,
+        page,
+    } = params;
+    if let Some(ref since_v) = since {
+        validate_date_time("since", since_v)?;
+    }
+    if let Some(ref before_v) = before {
+        validate_date_time("before", before_v)?;
+    }
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
+    if let Some(ref v) = all {
+        __query.push(("all", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = participating {
+        __query.push(("participating", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = since {
+        __query.push(("since", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = before {
+        __query.push(("before", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<Thread>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/notifications",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "activity_list_repo_notifications_for_authenticated_user",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Marks all notifications in a repository as "read" for the current user. If the number of notifications is too large to complete in one request, you will receive a `202 Accepted` status and GitHub will run an asynchronous process to mark notifications as "read." To check whether any "unread" notifications remain, you can use the [List repository notifications for the authenticated user](https://docs.github.com/rest/activity/notifications#list-repository-notifications-for-the-authenticated-user) endpoint and pass the query parameter `all=false`.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `last_read_at` - Describes the last point that notifications were checked.
+///   Anything updated since this time will not be marked as read. If you omit
+///   this parameter, all notifications are marked as read. This is a timestamp in
+///   [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format:
+///   `YYYY-MM-DDTHH:MM:SSZ`. Default: The current timestamp.
+pub fn activity_mark_repo_notifications_as_read(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    last_read_at: Option<String>,
+    options: Option<&RequestOptions>,
+) -> Result<ActivityMarkRepoNotificationsAsReadResponse, SdkError> {
+    if let Some(ref last_read_at_v) = last_read_at {
+        validate_date_time("last_read_at", last_read_at_v)?;
+    }
+
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = last_read_at {
+        __body_map.insert(
+            "last_read_at".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<ActivityMarkRepoNotificationsAsReadResponse>(
+        "PUT",
+        &format!(
+            "/repos/{}/{}/notifications",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "activity_mark_repo_notifications_as_read",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Lists the people that have starred the repository. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.star\+json`\*\*: Includes a timestamp of when the star was created.
 ///
@@ -398,205 +551,6 @@ pub fn activity_list_repos_starred_by_authenticated_user(
             operation_id: "activity_list_repos_starred_by_authenticated_user",
             options,
             errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Whether the authenticated user has starred the repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn activity_check_repo_is_starred_by_authenticated_user(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "GET",
-        &format!(
-            "/user/starred/{}/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "activity_check_repo_is_starred_by_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Note that you'll need to set `Content-Length` to zero when calling out to this endpoint. For more information, see "[HTTP method](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#http-method)."
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn activity_star_repo_for_authenticated_user(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/user/starred/{}/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "activity_star_repo_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Unstar a repository that the authenticated user has previously starred.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn activity_unstar_repo_for_authenticated_user(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/user/starred/{}/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "activity_unstar_repo_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists repositories the authenticated user is watching.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn activity_list_watched_repos_for_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<MinimalRepository>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<MinimalRepository>>(
-        "GET",
-        "/user/subscriptions",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "activity_list_watched_repos_for_authenticated_user",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// If you are authenticated as the given user, you will see your private events. Otherwise, you'll only see public events. _Optional_: use the fine-grained token with following permission set to view private events: "Events" user permissions (read). \> [!NOTE] \> This API is not built to serve real-time use cases. Depending on the time of day, event latency can be anywhere from 30s to 6h.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn activity_list_events_for_authenticated_user(
-    config: &ClientConfig,
-    username: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Event>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Event>>(
-        "GET",
-        &format!(
-            "/users/{}/events",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "activity_list_events_for_authenticated_user",
-            options,
             ..Default::default()
         },
     )?

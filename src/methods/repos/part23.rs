@@ -75,6 +75,7 @@ pub fn repos_compare_commits(
                 ("404", "BasicError"),
                 ("422", "ValidationError"),
                 ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -375,6 +376,7 @@ pub fn repos_delete_file(
                 ("404", "BasicError"),
                 ("409", "BasicError"),
                 ("422", "ValidationError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

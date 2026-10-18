@@ -2,7 +2,7 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::FieldsItemSchema;
+use crate::types::AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchema;
 
 impl serde::Serialize
     for AgentAutomationsListAvailableAutomationToolsResponseItemToolsItemScopeEnum
@@ -98,11 +98,16 @@ pub struct AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItem
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// A restricted JSON Schema fragment describing the field value accepted by Automation create and update requests.
-    pub schema: FieldsItemSchema,
+    pub schema: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchema,
 }
 
 impl AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItem {
-    pub fn new(id: String, label: String, required: bool, schema: FieldsItemSchema) -> Self {
+    pub fn new(
+        id: String,
+        label: String,
+        required: bool,
+        schema: AgentAutomationsListAvailableAutomationTriggersResponseItemFieldsItemSchema,
+    ) -> Self {
         Self {
             id,
             label,

@@ -56,7 +56,7 @@ impl WebhookPullRequestAutoMergeEnabledPullRequest {
         number: i64,
         patch_url: String,
         requested_reviewers: Vec<
-            WebhookPullRequestAutoMergeEnabledPullRequestRequestedReviewersItem,
+            Option<WebhookPullRequestAutoMergeEnabledPullRequestRequestedReviewersItem>,
         >,
         requested_teams: Vec<WebhookPullRequestAutoMergeEnabledPullRequestRequestedTeamsItem>,
         review_comment_url: String,

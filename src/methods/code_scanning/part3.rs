@@ -150,6 +150,7 @@ pub fn code_scanning_update_alert(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -328,6 +329,7 @@ pub fn code_scanning_commit_autofix(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -413,7 +415,11 @@ pub fn code_scanning_list_alert_instances(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_list_alert_instances",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -526,7 +532,11 @@ pub fn code_scanning_list_recent_analyses(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_list_recent_analyses",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -567,6 +577,7 @@ pub fn code_scanning_get_analysis(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("422", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

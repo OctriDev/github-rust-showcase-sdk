@@ -185,7 +185,11 @@ pub fn code_scanning_upload_sarif(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_upload_sarif",
             options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
             ..Default::default()
         },
     )?
@@ -221,7 +225,7 @@ pub fn code_scanning_get_sarif(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "code_scanning_get_sarif",
             options,
-            errors: &[("403", "BasicError")],
+            errors: &[("403", "BasicError"), ("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

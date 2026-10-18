@@ -5,10 +5,31 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{
-    CopilotOrganizationDetails, CopilotUsageMetrics1DayReport, CopilotUsageMetrics28DayReport,
-};
+use crate::types::{CopilotUsageMetrics1DayReport, CopilotUsageMetrics28DayReport};
 use crate::validation::validate_date;
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct CopilotGetCopilotCloudAgentConfigurationResponse {
+    /// The user-supplied MCP server configuration for the repository, as a free-form JSON object. This will be set to `null` if no configuration has been set.
+    ///
+    /// The shape of a valid MCP configuration may evolve over time, so this property is intentionally not strictly typed. Clients should not assume a fixed schema.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub mcp_configuration: Option<std::collections::HashMap<String, serde_json::Value>>,
+    /// The enabled review tools for Copilot cloud agent.
+    pub enabled_tools: CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools,
+    /// Whether Actions workflow approval is required for Copilot cloud agent pull requests.
+    pub require_actions_workflow_approval: bool,
+    /// Whether the firewall is enabled.
+    pub is_firewall_enabled: bool,
+    /// Whether the firewall recommended allowlist is enabled.
+    pub is_firewall_recommended_allowlist_enabled: bool,
+    /// A list of custom allowlist entries, as hosts or URLs, that the firewall will allow the Copilot cloud agent to access.
+    pub custom_allowlist: Vec<String>,
+    /// Whether automations are enabled in this repository. When true, users can create automations that automatically run agents on a schedule or in response to events like new issues or updated pull requests.
+    pub is_automations_enabled: bool,
+    /// Whether write access is required for automation triggers. When true, automations will only run if the user triggering the event has write access to the repository. When false, users can create automations that listen for events triggered by users without write access.
+    pub require_write_access_for_automation_triggers: bool,
+}
 
 impl CopilotGetCopilotCloudAgentConfigurationResponse {
     #[allow(clippy::too_many_arguments)]
@@ -472,106 +493,6 @@ pub fn copilot_add_organizations_to_enterprise_coding_agent_policy(
             operation_id: "copilot_add_organizations_to_enterprise_coding_agent_policy",
             options,
             errors: &[("400", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Disables Copilot cloud agent for the specified organizations within the enterprise. The enterprise's coding agent policy must be set to `enabled_for_selected_orgs` before using this endpoint. Organizations can be specified by login or matched via custom properties. Only organizations that have Copilot enabled and belong to the enterprise will be affected. Only enterprise owners can remove organizations from the coding agent policy. OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `admin:enterprise` scopes to use this endpoint.
-///
-/// # Arguments
-///
-/// * `enterprise` - The slug version of the enterprise name.
-/// * `organizations` - List of organization logins within the enterprise to
-///   disable Copilot cloud agent for.
-/// * `custom_properties` - List of custom property filters to match
-///   organizations. Organizations matching any of the specified property
-///   name/value pairs will be included. This is a one-time operation, setting the
-///   property on an organization in the future will not automatically update its
-///   coding agent policy.
-pub fn copilot_remove_organizations_from_enterprise_coding_agent_policy(
-    config: &ClientConfig,
-    enterprise: String,
-    organizations: Option<Vec<String>>,
-    custom_properties: Option<
-        Vec<CopilotRemoveOrganizationsFromEnterpriseCodingAgentPolicyCustomPropertiesItem>,
-    >,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = organizations {
-        __body_map.insert(
-            "organizations".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = custom_properties {
-        __body_map.insert(
-            "custom_properties".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/enterprises/{}/copilot/policies/coding_agent/organizations",
-            crate::client::encode_path_segment(&enterprise)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "copilot_remove_organizations_from_enterprise_coding_agent_policy",
-            options,
-            errors: &[("400", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Retrieves an organization's Copilot subscription details, including its seat breakdown and feature policies. Use `org` to identify the organization; only organization owners can view these details. OAuth app tokens and classic personal access tokens need the `manage_billing:copilot` or `read:org` scope.
-///
-/// \> [!NOTE] \> This endpoint is in public preview and is subject to change. Gets information about an organization's Copilot subscription, including seat breakdown and feature policies. To configure these settings, go to your organization's settings on GitHub.com. For more information, see "[Managing policies for Copilot in your organization](https://docs.github.com/copilot/managing-copilot/managing-policies-for-copilot-business-in-your-organization)." Only organization owners can view details about the organization's Copilot Business or Copilot Enterprise subscription. OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `read:org` scopes to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-pub fn copilot_get_copilot_organization_details(
-    config: &ClientConfig,
-    org: String,
-    options: Option<&RequestOptions>,
-) -> Result<CopilotOrganizationDetails, SdkError> {
-    Ok(sdk_request::<CopilotOrganizationDetails>(
-        "GET",
-        &format!(
-            "/orgs/{}/copilot/billing",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "copilot_get_copilot_organization_details",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("500", "BasicError"),
-            ],
             ..Default::default()
         },
     )?

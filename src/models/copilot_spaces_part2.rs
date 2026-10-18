@@ -275,18 +275,70 @@ impl CopilotSpaceCollaboratorVariant1 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CopilotSpaceCollaborator {
     Object(Box<CopilotSpaceCollaboratorVariant0>),
     Team(Box<CopilotSpaceCollaboratorVariant1>),
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+impl<'de> serde::Deserialize<'de> for CopilotSpaceCollaborator {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<CopilotSpaceCollaboratorVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<CopilotSpaceCollaboratorVariant1>>(value.clone())
+        {
+            let candidate = Self::Team(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no CopilotSpaceCollaborator branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum CopilotSpaceOwner {
     SimpleUser(Box<SimpleUser>),
     OrganizationSimple(Box<OrganizationSimple>),
+}
+
+impl<'de> serde::Deserialize<'de> for CopilotSpaceOwner {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<Box<SimpleUser>>(value.clone()) {
+            let candidate = Self::SimpleUser(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Box<OrganizationSimple>>(value.clone()) {
+            let candidate = Self::OrganizationSimple(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no CopilotSpaceOwner branch accepts this payload")
+        })
+    }
 }
 
 /// The type of the resource.

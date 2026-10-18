@@ -154,13 +154,61 @@ impl PullRequestMergeAsyncResultDetailsVariant3 {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum PullRequestMergeAsyncResultDetails {
     Object(Box<PullRequestMergeAsyncResultDetailsVariant0>),
     Object2(Box<PullRequestMergeAsyncResultDetailsVariant1>),
     Object3(Box<PullRequestMergeAsyncResultDetailsVariant2>),
     Object4(Box<PullRequestMergeAsyncResultDetailsVariant3>),
+}
+
+impl<'de> serde::Deserialize<'de> for PullRequestMergeAsyncResultDetails {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<PullRequestMergeAsyncResultDetailsVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<PullRequestMergeAsyncResultDetailsVariant1>>(value.clone())
+        {
+            let candidate = Self::Object2(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<PullRequestMergeAsyncResultDetailsVariant2>>(value.clone())
+        {
+            let candidate = Self::Object3(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<PullRequestMergeAsyncResultDetailsVariant3>>(value.clone())
+        {
+            let candidate = Self::Object4(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no PullRequestMergeAsyncResultDetails branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// Pull Request Merge Result
@@ -463,55 +511,4 @@ pub struct PullRequestStackMinimal {
     pub created_at: String,
     /// Required array value serialized in the `pull_requests` wire field.
     pub pull_requests: Vec<PullRequestStackMinimalPullRequestsItem>,
-}
-
-impl PullRequestStackMinimal {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("url", &self.url)?;
-        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        id: i64,
-        number: i64,
-        node_id: String,
-        url: String,
-        base: PullRequestStackMinimalBase,
-        open: bool,
-        created_at: String,
-        pull_requests: Vec<PullRequestStackMinimalPullRequestsItem>,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            id,
-            number,
-            node_id,
-            url,
-            base,
-            open,
-            created_at,
-            pull_requests,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum PullRequestStackPullRequestVariant1StateEnum {
-    #[default]
-    Open,
-    Closed,
-    Unknown(String),
-}
-
-impl PullRequestStackPullRequestVariant1StateEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Open => "open",
-            Self::Closed => "closed",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
 }

@@ -271,3 +271,211 @@ impl PersonalAccessTokenRequest {
         }
     }
 }
+
+/// The default value for a merge commit message.
+/// \- `PR_TITLE` \- default to the pull request's title.
+/// \- `PR_BODY` \- default to the pull request's body.
+/// \- `BLANK` \- default to a blank commit message.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum PullRequestWebhookVariant1MergeCommitMessageEnum {
+    #[default]
+    PrBody,
+    PrTitle,
+    Blank,
+    Unknown(String),
+}
+
+impl PullRequestWebhookVariant1MergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrBody => "PR_BODY",
+            Self::PrTitle => "PR_TITLE",
+            Self::Blank => "BLANK",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for PullRequestWebhookVariant1MergeCommitMessageEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for PullRequestWebhookVariant1MergeCommitMessageEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_BODY" => Self::PrBody,
+            "PR_TITLE" => Self::PrTitle,
+            "BLANK" => Self::Blank,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for PullRequestWebhookVariant1MergeCommitMessageEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The default value for a merge commit title.
+/// \- `PR_TITLE` \- default to the pull request's title.
+/// \- `MERGE_MESSAGE` \- default to the classic title for a merge message (e.g., "Merge pull request #123 from branch-name").
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum PullRequestWebhookVariant1MergeCommitTitleEnum {
+    #[default]
+    PrTitle,
+    MergeMessage,
+    Unknown(String),
+}
+
+impl PullRequestWebhookVariant1MergeCommitTitleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrTitle => "PR_TITLE",
+            Self::MergeMessage => "MERGE_MESSAGE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for PullRequestWebhookVariant1MergeCommitTitleEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for PullRequestWebhookVariant1MergeCommitTitleEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_TITLE" => Self::PrTitle,
+            "MERGE_MESSAGE" => Self::MergeMessage,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for PullRequestWebhookVariant1MergeCommitTitleEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The default value for a squash merge commit message:
+/// \- `PR_BODY` \- default to the pull request's body.
+/// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
+/// \- `BLANK` \- default to a blank commit message.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum PullRequestWebhookVariant1SquashMergeCommitMessageEnum {
+    #[default]
+    PrBody,
+    CommitMessages,
+    Blank,
+    Unknown(String),
+}
+
+impl PullRequestWebhookVariant1SquashMergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrBody => "PR_BODY",
+            Self::CommitMessages => "COMMIT_MESSAGES",
+            Self::Blank => "BLANK",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for PullRequestWebhookVariant1SquashMergeCommitMessageEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for PullRequestWebhookVariant1SquashMergeCommitMessageEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_BODY" => Self::PrBody,
+            "COMMIT_MESSAGES" => Self::CommitMessages,
+            "BLANK" => Self::Blank,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for PullRequestWebhookVariant1SquashMergeCommitMessageEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// The default value for a squash merge commit title:
+/// \- `PR_TITLE` \- default to the pull request's title.
+/// \- `COMMIT_OR_PR_TITLE` \- default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum PullRequestWebhookVariant1SquashMergeCommitTitleEnum {
+    #[default]
+    PrTitle,
+    CommitOrPrTitle,
+    Unknown(String),
+}
+
+impl PullRequestWebhookVariant1SquashMergeCommitTitleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrTitle => "PR_TITLE",
+            Self::CommitOrPrTitle => "COMMIT_OR_PR_TITLE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for PullRequestWebhookVariant1SquashMergeCommitTitleEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for PullRequestWebhookVariant1SquashMergeCommitTitleEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_TITLE" => Self::PrTitle,
+            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for PullRequestWebhookVariant1SquashMergeCommitTitleEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}

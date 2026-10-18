@@ -2,10 +2,297 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::client::ClientConfig;
-use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{ProjectsV2, ProjectsV2ItemSimple};
+use crate::types::{ProjectsV2FieldIterationConfiguration, ProjectsV2FieldSingleSelectOption};
+
+impl ProjectsAddFieldForUserVariant1 {
+    pub fn new(
+        name: String,
+        data_type: ProjectsAddFieldForUserVariant1DataTypeEnum,
+        single_select_options: Vec<ProjectsV2FieldSingleSelectOption>,
+    ) -> Self {
+        Self {
+            name,
+            data_type,
+            single_select_options,
+        }
+    }
+}
+
+/// The field's data type.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ProjectsAddFieldForUserVariant2DataTypeEnum {
+    #[default]
+    Iteration,
+    Unknown(String),
+}
+
+impl ProjectsAddFieldForUserVariant2DataTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Iteration => "iteration",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ProjectsAddFieldForUserVariant2DataTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsAddFieldForUserVariant2DataTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "iteration" => Self::Iteration,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ProjectsAddFieldForUserVariant2DataTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ProjectsAddFieldForUserVariant2 {
+    /// The name of the field.
+    pub name: String,
+    /// The field's data type.
+    pub data_type: ProjectsAddFieldForUserVariant2DataTypeEnum,
+    /// The configuration for iteration fields.
+    pub iteration_configuration: ProjectsV2FieldIterationConfiguration,
+}
+
+impl ProjectsAddFieldForUserVariant2 {
+    pub fn new(
+        name: String,
+        data_type: ProjectsAddFieldForUserVariant2DataTypeEnum,
+        iteration_configuration: ProjectsV2FieldIterationConfiguration,
+    ) -> Self {
+        Self {
+            name,
+            data_type,
+            iteration_configuration,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ProjectsAddFieldForUser {
+    Object(Box<ProjectsAddFieldForUserVariant0>),
+    SingleSelect(Box<ProjectsAddFieldForUserVariant1>),
+    Iteration(Box<ProjectsAddFieldForUserVariant2>),
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsAddFieldForUser {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForUserVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForUserVariant1>>(value.clone())
+        {
+            let candidate = Self::SingleSelect(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ProjectsAddFieldForUserVariant2>>(value.clone())
+        {
+            let candidate = Self::Iteration(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsAddFieldForUser branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ProjectsListItemsForUser {
+    String(String),
+    StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsListItemsForUser {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsListItemsForUser branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ProjectsGetUserItem {
+    String(String),
+    StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsGetUserItem {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsGetUserItem branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ProjectsUpdateItemForUserFieldsItemValue {
+    String(String),
+    Number(f64),
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsUpdateItemForUserFieldsItemValue {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
+            let candidate = Self::Number(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no ProjectsUpdateItemForUserFieldsItemValue branch accepts this payload",
+            )
+        })
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ProjectsUpdateItemForUserFieldsItem {
+    /// The ID of the project field to update.
+    pub id: i64,
+    /// The new value for the field:
+    /// \- For text, number, and date fields, provide the new value directly.
+    /// \- For single select and iteration fields, provide the ID of the option or iteration.
+    /// \- To clear the field, set this to null.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub value: Option<ProjectsUpdateItemForUserFieldsItemValue>,
+}
+
+impl ProjectsUpdateItemForUserFieldsItem {
+    pub fn new(id: i64, value: Option<ProjectsUpdateItemForUserFieldsItemValue>) -> Self {
+        Self { id, value }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ProjectsListViewItemsForUser {
+    String(String),
+    StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsListViewItemsForUser {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom("no ProjectsListViewItemsForUser branch accepts this payload")
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ProjectsAddItemForOrgTypeEnum {
+    #[default]
+    Issue,
+    Pullrequest,
+    Unknown(String),
+}
+
+impl ProjectsAddItemForOrgTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Issue => "Issue",
+            Self::Pullrequest => "PullRequest",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
 
 impl serde::Serialize for ProjectsAddItemForOrgTypeEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -28,326 +315,4 @@ impl<'de> serde::Deserialize<'de> for ProjectsAddItemForOrgTypeEnum {
             _ => Self::Unknown(value),
         })
     }
-}
-
-impl std::fmt::Display for ProjectsAddItemForOrgTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ProjectsCreateViewForOrgLayoutEnum {
-    #[default]
-    Board,
-    Roadmap,
-    Table,
-    Unknown(String),
-}
-
-impl ProjectsCreateViewForOrgLayoutEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Board => "board",
-            Self::Roadmap => "roadmap",
-            Self::Table => "table",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ProjectsCreateViewForOrgLayoutEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsCreateViewForOrgLayoutEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "board" => Self::Board,
-            "roadmap" => Self::Roadmap,
-            "table" => Self::Table,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ProjectsCreateViewForOrgLayoutEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ProjectsCreateViewForUserLayoutEnum {
-    #[default]
-    Board,
-    Roadmap,
-    Table,
-    Unknown(String),
-}
-
-impl ProjectsCreateViewForUserLayoutEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Board => "board",
-            Self::Roadmap => "roadmap",
-            Self::Table => "table",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ProjectsCreateViewForUserLayoutEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsCreateViewForUserLayoutEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "board" => Self::Board,
-            "roadmap" => Self::Roadmap,
-            "table" => Self::Table,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ProjectsCreateViewForUserLayoutEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ProjectsAddItemForUserTypeEnum {
-    #[default]
-    Issue,
-    Pullrequest,
-    Unknown(String),
-}
-
-impl ProjectsAddItemForUserTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Issue => "Issue",
-            Self::Pullrequest => "PullRequest",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ProjectsAddItemForUserTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsAddItemForUserTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "Issue" => Self::Issue,
-            "PullRequest" => Self::Pullrequest,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ProjectsAddItemForUserTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ProjectsListForOrgParams {
-    pub org: String,
-    pub q: Option<String>,
-    pub before: Option<String>,
-    pub after: Option<String>,
-    pub per_page: Option<i64>,
-}
-
-/// List all projects owned by a specific organization accessible by the authenticated user.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `q` - Limit results to projects of the specified type.
-/// * `before` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   before this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `after` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   after this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn projects_list_for_org(
-    config: &ClientConfig,
-    params: ProjectsListForOrgParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<ProjectsV2>, SdkError> {
-    let ProjectsListForOrgParams {
-        org,
-        q,
-        before,
-        after,
-        per_page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(4);
-    if let Some(ref v) = q {
-        __query.push(("q", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = after {
-        __query.push(("after", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<ProjectsV2>>(
-        "GET",
-        &format!(
-            "/orgs/{}/projectsV2",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_list_for_org",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Retrieves a specific project owned by an organization. Use `org` and `project_number` to identify the organization and project. The response includes project details such as its title, owner, visibility, and state.
-///
-/// Get a specific organization-owned project.
-///
-/// # Arguments
-///
-/// * `project_number` - The project's number.
-/// * `org` - The organization name. The name is not case sensitive.
-pub fn projects_get_for_org(
-    config: &ClientConfig,
-    project_number: i64,
-    org: String,
-    options: Option<&RequestOptions>,
-) -> Result<ProjectsV2, SdkError> {
-    Ok(sdk_request::<ProjectsV2>(
-        "GET",
-        &format!(
-            "/orgs/{}/projectsV2/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&project_number)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_get_for_org",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Create draft issue item for the specified organization owned project.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `project_number` - The project's number.
-/// * `title` - The title of the draft issue item to create in the project.
-/// * `body` - The body content of the draft issue item to create in the
-///   project.
-pub fn projects_create_draft_item_for_org(
-    config: &ClientConfig,
-    org: String,
-    project_number: i64,
-    title: String,
-    body: Option<String>,
-    options: Option<&RequestOptions>,
-) -> Result<ProjectsV2ItemSimple, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "title".to_string(),
-        serde_json::to_value(title).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = body {
-        __body_map.insert(
-            "body".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<ProjectsV2ItemSimple>(
-        "POST",
-        &format!(
-            "/orgs/{}/projectsV2/{}/drafts",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&project_number)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "projects_create_draft_item_for_org",
-            options,
-            errors: &[("401", "BasicError"), ("403", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
 }

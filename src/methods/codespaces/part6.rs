@@ -327,6 +327,7 @@ pub fn codespaces_create_with_pr_for_authenticated_user(
                 ("401", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },
@@ -414,6 +415,7 @@ pub fn codespaces_create_for_authenticated_user(
                 ("401", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
+                ("503", "ServiceUnavailable"),
             ],
             ..Default::default()
         },

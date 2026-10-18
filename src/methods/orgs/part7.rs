@@ -3,6 +3,65 @@
 
 use super::*;
 
+impl OrgsListMembersEnum38b3e4da {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Admin => "admin",
+            Self::All => "all",
+            Self::Member => "member",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for OrgsListMembersEnum38b3e4da {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for OrgsListMembersEnum38b3e4da {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "admin" => Self::Admin,
+            "all" => Self::All,
+            "member" => Self::Member,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for OrgsListMembersEnum38b3e4da {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum OrgsSetMembershipForUserRoleEnum {
+    #[default]
+    Admin,
+    Member,
+    Unknown(String),
+}
+
+impl OrgsSetMembershipForUserRoleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Admin => "admin",
+            Self::Member => "member",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for OrgsSetMembershipForUserRoleEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -217,65 +276,5 @@ impl<'de> serde::Deserialize<'de> for OrgsReviewPatGrantRequestActionEnum {
 impl std::fmt::Display for OrgsReviewPatGrantRequestActionEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum OrgsUpdatePatAccessesActionEnum {
-    #[default]
-    Revoke,
-    Unknown(String),
-}
-
-impl OrgsUpdatePatAccessesActionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Revoke => "revoke",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for OrgsUpdatePatAccessesActionEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for OrgsUpdatePatAccessesActionEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "revoke" => Self::Revoke,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for OrgsUpdatePatAccessesActionEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum OrgsUpdatePatAccessActionEnum {
-    #[default]
-    Revoke,
-    Unknown(String),
-}
-
-impl OrgsUpdatePatAccessActionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Revoke => "revoke",
-            Self::Unknown(value) => value.as_str(),
-        }
     }
 }

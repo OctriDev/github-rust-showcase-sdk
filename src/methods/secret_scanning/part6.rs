@@ -76,6 +76,7 @@ pub fn secret_scanning_list_locations_for_alert(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_list_locations_for_alert",
             options,
+            errors: &[("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -510,6 +511,7 @@ pub fn secret_scanning_create_push_protection_bypass(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_create_push_protection_bypass",
             options,
+            errors: &[("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?
@@ -542,6 +544,7 @@ pub fn secret_scanning_get_scan_history(
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "secret_scanning_get_scan_history",
             options,
+            errors: &[("503", "ServiceUnavailable")],
             ..Default::default()
         },
     )?

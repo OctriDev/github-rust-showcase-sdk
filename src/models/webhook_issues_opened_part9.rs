@@ -3,6 +3,28 @@
 
 // webhook_issues_opened domain models (part 9)
 
+impl std::fmt::Display for WebhookIssuesOpenedChangesOldRepositoryPullRequestCreationPolicyEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Required object value serialized in the `license` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct WebhookIssuesOpenedChangesOldRepositoryLicense {
+    /// Required `string` value serialized in the `key` wire field.
+    pub key: String,
+    /// Required `string` value serialized in the `name` wire field.
+    pub name: String,
+    /// Required `string` value serialized in the `node_id` wire field.
+    pub node_id: String,
+    /// Required `string` value serialized in the `spdx_id` wire field.
+    pub spdx_id: String,
+    /// Required `uri`-formatted value serialized in the `url` wire field.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub url: Option<String>,
+}
+
 impl WebhookIssuesOpenedChangesOldRepositoryLicense {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.url.as_ref() {
@@ -242,11 +264,37 @@ impl WebhookIssuesOpenedChangesOldRepositoryPermissions {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookIssuesOpenedChangesOldRepositoryPushedAt {
     Integer(i64),
     String(String),
+}
+
+impl<'de> serde::Deserialize<'de> for WebhookIssuesOpenedChangesOldRepositoryPushedAt {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
+            let candidate = Self::Integer(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
+            let candidate = Self::String(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no WebhookIssuesOpenedChangesOldRepositoryPushedAt branch accepts this payload",
+            )
+        })
+    }
 }
 
 /// Required enumerated value serialized in the `visibility` wire field.

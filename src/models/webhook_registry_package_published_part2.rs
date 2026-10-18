@@ -3,38 +3,6 @@
 
 // webhook_registry_package_published domain models (part 2)
 
-/// Required object value serialized in the `nuget_metadata[]` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItem {
-    /// Optional API value serialized in the `id` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub id: Option<
-        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemId>,
-    >,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional API value serialized in the `value` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value:
-        Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItemValue>,
-}
-
-impl WebhookRegistryPackagePublishedRegistryPackagePackageVersionNugetMetadataItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            id: None,
-            name: None,
-            value: None,
-        }
-    }
-}
-
 /// Required object value serialized in the `package_files[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersionPackageFilesItem {
@@ -255,7 +223,7 @@ pub struct WebhookRegistryPackagePublishedRegistryPackagePackageVersion {
     pub author: Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionAuthor>,
     /// Optional API value serialized in the `body` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub body: Option<String>,
+    pub body: Option<WebhookRegistryPackagePublishedRegistryPackagePackageVersionBody>,
     /// Optional `string` value serialized in the `body_html` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub body_html: Option<String>,

@@ -3,9 +3,9 @@
 
 // webhook_issue_comment_deleted domain models (part 2)
 
-/// Optional object value serialized in the `user` wire field.
+/// Required object value serialized in the `user` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssueCommentDeletedIssueVariant1User {
+pub struct WebhookIssueCommentDeletedIssueUser {
     /// Optional `string` value serialized in the `avatar_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avatar_url: Option<String>,
@@ -65,7 +65,7 @@ pub struct WebhookIssueCommentDeletedIssueVariant1User {
     pub user_view_type: Option<String>,
 }
 
-impl WebhookIssueCommentDeletedIssueVariant1User {
+impl WebhookIssueCommentDeletedIssueUser {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -95,49 +95,49 @@ impl WebhookIssueCommentDeletedIssueVariant1User {
 /// The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) the comment belongs to.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookIssueCommentDeletedIssue {
-    /// Optional `string` value serialized in the `active_lock_reason` wire field.
+    /// Required `string` value serialized in the `active_lock_reason` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub active_lock_reason: Option<String>,
     /// Required object value serialized in the `assignee` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
-    pub assignee: Option<WebhookIssueCommentDeletedIssueVariant1Assignee>,
-    /// Optional array value serialized in the `assignees` wire field.
+    pub assignee: Option<WebhookIssueCommentDeletedIssueAssignee>,
+    /// Required array value serialized in the `assignees` wire field.
     pub assignees: Vec<Option<serde_json::Value>>,
-    /// Optional `string` value serialized in the `author_association` wire field.
+    /// Required `string` value serialized in the `author_association` wire field.
     pub author_association: String,
-    /// Optional `string` value serialized in the `body` wire field.
+    /// Required `string` value serialized in the `body` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub body: Option<String>,
-    /// Optional `string` value serialized in the `closed_at` wire field.
+    /// Required `string` value serialized in the `closed_at` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub closed_at: Option<String>,
-    /// Optional `integer` value serialized in the `comments` wire field.
+    /// Required `integer` value serialized in the `comments` wire field.
     pub comments: i64,
-    /// Optional `string` value serialized in the `comments_url` wire field.
+    /// Required `string` value serialized in the `comments_url` wire field.
     pub comments_url: String,
-    /// Optional `string` value serialized in the `created_at` wire field.
+    /// Required `string` value serialized in the `created_at` wire field.
     pub created_at: String,
     /// Optional `boolean` value serialized in the `draft` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub draft: Option<bool>,
-    /// Optional `string` value serialized in the `events_url` wire field.
+    /// Required `string` value serialized in the `events_url` wire field.
     pub events_url: String,
-    /// Optional `string` value serialized in the `html_url` wire field.
+    /// Required `string` value serialized in the `html_url` wire field.
     pub html_url: String,
-    /// Optional `integer` value serialized in the `id` wire field.
+    /// Required `integer` value serialized in the `id` wire field.
     pub id: i64,
     /// Required array value serialized in the `labels` wire field.
-    pub labels: Vec<WebhookIssueCommentDeletedIssueVariant1LabelsItem>,
-    /// Optional `string` value serialized in the `labels_url` wire field.
+    pub labels: Vec<WebhookIssueCommentDeletedIssueLabelsItem>,
+    /// Required `string` value serialized in the `labels_url` wire field.
     pub labels_url: String,
     /// Required `boolean` value serialized in the `locked` wire field.
     pub locked: bool,
-    /// Optional object value serialized in the `milestone` wire field.
+    /// Required object value serialized in the `milestone` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub milestone: Option<serde_json::Value>,
-    /// Optional `string` value serialized in the `node_id` wire field.
+    /// Required `string` value serialized in the `node_id` wire field.
     pub node_id: String,
-    /// Optional `integer` value serialized in the `number` wire field.
+    /// Required `integer` value serialized in the `number` wire field.
     pub number: i64,
     /// Optional object value serialized in the `performed_via_github_app` wire field.
     #[serde(
@@ -148,10 +148,10 @@ pub struct WebhookIssueCommentDeletedIssue {
     pub performed_via_github_app: Option<Option<serde_json::Value>>,
     /// Optional object value serialized in the `pull_request` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pull_request: Option<WebhookIssueCommentDeletedIssueVariant0PullRequest>,
-    /// Optional object value serialized in the `reactions` wire field.
-    pub reactions: WebhookIssueCommentDeletedIssueVariant1Reactions,
-    /// Optional `string` value serialized in the `repository_url` wire field.
+    pub pull_request: Option<WebhookIssueCommentDeletedIssuePullRequest>,
+    /// Required object value serialized in the `reactions` wire field.
+    pub reactions: WebhookIssueCommentDeletedIssueReactions,
+    /// Required `string` value serialized in the `repository_url` wire field.
     pub repository_url: String,
     /// Optional object value serialized in the `sub_issues_summary` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -160,7 +160,7 @@ pub struct WebhookIssueCommentDeletedIssue {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issue_dependencies_summary: Option<IssueDependenciesSummary>,
     /// State of the issue; either 'open' or 'closed'
-    pub state: WebhookIssueCommentDeletedIssueVariant1StateEnum,
+    pub state: WebhookIssueCommentDeletedIssueStateEnum,
     /// Optional `string` value serialized in the `state_reason` wire field.
     #[serde(
         skip_serializing_if = "Option::is_none",
@@ -171,7 +171,7 @@ pub struct WebhookIssueCommentDeletedIssue {
     /// Optional `string` value serialized in the `timeline_url` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timeline_url: Option<String>,
-    /// Optional `string` value serialized in the `title` wire field.
+    /// Required `string` value serialized in the `title` wire field.
     pub title: String,
     /// The type assigned to the issue. This is only present for issues in repositories where issue types are supported.
     #[serde(
@@ -181,19 +181,19 @@ pub struct WebhookIssueCommentDeletedIssue {
         with = "crate::client::double_option"
     )]
     pub type_: Option<Option<IssueType>>,
-    /// Optional `string` value serialized in the `updated_at` wire field.
+    /// Required `string` value serialized in the `updated_at` wire field.
     pub updated_at: String,
-    /// Optional `string` value serialized in the `url` wire field.
+    /// Required `string` value serialized in the `url` wire field.
     pub url: String,
-    /// Optional object value serialized in the `user` wire field.
-    pub user: WebhookIssueCommentDeletedIssueVariant1User,
+    /// Required object value serialized in the `user` wire field.
+    pub user: WebhookIssueCommentDeletedIssueUser,
 }
 
 impl WebhookIssueCommentDeletedIssue {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         active_lock_reason: Option<String>,
-        assignee: Option<WebhookIssueCommentDeletedIssueVariant1Assignee>,
+        assignee: Option<WebhookIssueCommentDeletedIssueAssignee>,
         assignees: Vec<Option<serde_json::Value>>,
         author_association: String,
         body: Option<String>,
@@ -204,19 +204,19 @@ impl WebhookIssueCommentDeletedIssue {
         events_url: String,
         html_url: String,
         id: i64,
-        labels: Vec<WebhookIssueCommentDeletedIssueVariant1LabelsItem>,
+        labels: Vec<WebhookIssueCommentDeletedIssueLabelsItem>,
         labels_url: String,
         locked: bool,
         milestone: Option<serde_json::Value>,
         node_id: String,
         number: i64,
-        reactions: WebhookIssueCommentDeletedIssueVariant1Reactions,
+        reactions: WebhookIssueCommentDeletedIssueReactions,
         repository_url: String,
-        state: WebhookIssueCommentDeletedIssueVariant1StateEnum,
+        state: WebhookIssueCommentDeletedIssueStateEnum,
         title: String,
         updated_at: String,
         url: String,
-        user: WebhookIssueCommentDeletedIssueVariant1User,
+        user: WebhookIssueCommentDeletedIssueUser,
     ) -> Self {
         Self {
             active_lock_reason,
