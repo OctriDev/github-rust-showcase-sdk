@@ -439,6 +439,26 @@ impl<'de> serde::Deserialize<'de> for RepositoryAdvisoryDescriptionValidationErr
     }
 }
 
+impl ::std::convert::From<String> for RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>>
+    for RepositoryAdvisoryDescriptionValidationErrorErrorsItemValue
+{
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 /// Required object value serialized in the `errors[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct RepositoryAdvisoryDescriptionValidationErrorErrorsItem {
@@ -520,13 +540,4 @@ pub struct RepositoryAdvisoryUpdateVulnerabilitiesItemPackage {
         with = "crate::client::double_option"
     )]
     pub name: Option<Option<String>>,
-}
-
-impl RepositoryAdvisoryUpdateVulnerabilitiesItemPackage {
-    pub fn new(ecosystem: SecurityAdvisoryEcosystems) -> Self {
-        Self {
-            ecosystem,
-            name: None,
-        }
-    }
 }

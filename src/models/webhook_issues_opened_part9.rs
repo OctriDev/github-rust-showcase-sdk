@@ -3,6 +3,22 @@
 
 // webhook_issues_opened domain models (part 9)
 
+impl<'de> serde::Deserialize<'de>
+    for WebhookIssuesOpenedChangesOldRepositoryPullRequestCreationPolicyEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "collaborators_only" => Self::CollaboratorsOnly,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for WebhookIssuesOpenedChangesOldRepositoryPullRequestCreationPolicyEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
@@ -294,6 +310,18 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesOpenedChangesOldRepositoryPus
                 "no WebhookIssuesOpenedChangesOldRepositoryPushedAt branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookIssuesOpenedChangesOldRepositoryPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookIssuesOpenedChangesOldRepositoryPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

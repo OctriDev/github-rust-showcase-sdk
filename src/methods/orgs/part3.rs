@@ -303,6 +303,18 @@ impl<'de> serde::Deserialize<'de> for OrgsDeleteAttestationsBulk {
     }
 }
 
+impl ::std::convert::From<Box<OrgsDeleteAttestationsBulkVariant0>> for OrgsDeleteAttestationsBulk {
+    fn from(value: Box<OrgsDeleteAttestationsBulkVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Box<OrgsDeleteAttestationsBulkVariant1>> for OrgsDeleteAttestationsBulk {
+    fn from(value: Box<OrgsDeleteAttestationsBulkVariant1>) -> Self {
+        Self::Object2(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct OrgsListAttestationRepositoriesResponseItem {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -319,19 +331,4 @@ impl OrgsListAttestationRepositoriesResponseItem {
             name: None,
         }
     }
-}
-
-/// The attestation's Sigstore Bundle.
-/// Refer to the [Sigstore Bundle Specification](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto) for more information.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct OrgsListAttestationsResponseAttestationsItemBundle {
-    #[serde(rename = "mediaType", skip_serializing_if = "Option::is_none")]
-    pub media_type: Option<String>,
-    #[serde(
-        rename = "verificationMaterial",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub verification_material: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(rename = "dsseEnvelope", skip_serializing_if = "Option::is_none")]
-    pub dsse_envelope: Option<std::collections::HashMap<String, serde_json::Value>>,
 }

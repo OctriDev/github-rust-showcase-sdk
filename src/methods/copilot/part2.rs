@@ -8,6 +8,35 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{CopilotUsageMetrics1DayReport, CopilotUsageMetrics28DayReport};
 use crate::validation::validate_date;
 
+/// The enabled review tools for Copilot cloud agent.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools {
+    /// Whether the CodeQL tool is enabled for the Copilot cloud agent.
+    pub codeql: bool,
+    /// Whether the Copilot code review tool is enabled for the Copilot cloud agent.
+    pub copilot_code_review: bool,
+    /// Whether the secret scanning tool is enabled for the Copilot cloud agent.
+    pub secret_scanning: bool,
+    /// Whether the dependency vulnerability checks tool is enabled for the Copilot cloud agent.
+    pub dependency_vulnerability_checks: bool,
+}
+
+impl CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools {
+    pub fn new(
+        codeql: bool,
+        copilot_code_review: bool,
+        secret_scanning: bool,
+        dependency_vulnerability_checks: bool,
+    ) -> Self {
+        Self {
+            codeql,
+            copilot_code_review,
+            secret_scanning,
+            dependency_vulnerability_checks,
+        }
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CopilotGetCopilotCloudAgentConfigurationResponse {
     /// The user-supplied MCP server configuration for the repository, as a free-form JSON object. This will be set to `null` if no configuration has been set.

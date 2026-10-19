@@ -81,6 +81,18 @@ impl<'de> serde::Deserialize<'de> for WebhookTeamCreatedRepositoryCreatedAt {
     }
 }
 
+impl ::std::convert::From<i64> for WebhookTeamCreatedRepositoryCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookTeamCreatedRepositoryCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// Required object value serialized in the `license` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookTeamCreatedRepositoryLicense {
@@ -366,6 +378,18 @@ impl<'de> serde::Deserialize<'de> for WebhookTeamCreatedRepositoryPushedAt {
                 "no WebhookTeamCreatedRepositoryPushedAt branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookTeamCreatedRepositoryPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookTeamCreatedRepositoryPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

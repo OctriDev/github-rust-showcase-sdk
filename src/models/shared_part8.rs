@@ -3,6 +3,25 @@
 
 // shared domain models (part 8)
 
+/// Custom property name and associated value
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct CustomPropertyValue {
+    /// The name of the property
+    pub property_name: String,
+    /// The value assigned to the property
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub value: Option<CustomPropertyValueValue>,
+}
+
+impl CustomPropertyValue {
+    pub fn new(property_name: String, value: Option<CustomPropertyValueValue>) -> Self {
+        Self {
+            property_name,
+            value,
+        }
+    }
+}
+
 /// Optional object value serialized in the `cvss_v3` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct CvssSeveritiesCvssV3 {
@@ -494,26 +513,5 @@ impl serde::Serialize for FullRepositorySquashMergeCommitMessageEnum {
         S: serde::Serializer,
     {
         serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for FullRepositorySquashMergeCommitMessageEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_BODY" => Self::PrBody,
-            "COMMIT_MESSAGES" => Self::CommitMessages,
-            "BLANK" => Self::Blank,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for FullRepositorySquashMergeCommitMessageEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

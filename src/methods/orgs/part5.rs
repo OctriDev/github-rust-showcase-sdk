@@ -2,6 +2,26 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
+use crate::types::MinimalRepository;
+
+impl OrgsGetImmutableReleasesSettingsRepositoriesResponse {
+    pub fn new(total_count: i64, repositories: Vec<MinimalRepository>) -> Self {
+        Self {
+            total_count,
+            repositories,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum OrgsUpdateDefaultRepositoryPermissionEnum {
+    #[default]
+    Admin,
+    None,
+    Read,
+    Write,
+    Unknown(String),
+}
 
 impl OrgsUpdateDefaultRepositoryPermissionEnum {
     pub fn as_str(&self) -> &str {
@@ -255,28 +275,5 @@ impl SecurityAdvisoriesListGlobalAdvisoriesEnum {
             Self::Desc => "desc",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
     }
 }

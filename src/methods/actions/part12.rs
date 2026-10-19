@@ -6,9 +6,142 @@ use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{
-    ActionsCacheList, ActionsCacheRetentionLimitForRepository,
-    ActionsCacheStorageLimitForRepository, ActionsCacheUsageByRepository, Artifact,
+    ActionsCacheRetentionLimitForRepository, ActionsCacheStorageLimitForRepository,
+    ActionsCacheUsageByRepository, Artifact,
 };
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsUpdateOrgVariableParams {
+    pub org: String,
+    pub name: String,
+    pub name_2: Option<String>,
+    pub value: Option<String>,
+    pub visibility: Option<ActionsUpdateOrgVariableVisibilityEnum>,
+    pub selected_repository_ids: Option<Vec<i64>>,
+}
+
+/// Updates an organization variable that you can reference in a GitHub Actions workflow. Authenticated users must have collaborator access to a repository to create, update, or read variables. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `name` - The name of the variable.
+/// * `name_2` - The name of the variable.
+/// * `value` - The value of the variable.
+/// * `visibility` - The type of repositories in the organization that can
+///   access the variable. `selected` means only the repositories specified by
+///   `selected_repository_ids` can access the variable.
+/// * `selected_repository_ids` - An array of repository ids that can access the
+///   organization variable. You can only provide a list of repository ids when
+///   the `visibility` is set to `selected`.
+pub fn actions_update_org_variable(
+    config: &ClientConfig,
+    params: ActionsUpdateOrgVariableParams,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let ActionsUpdateOrgVariableParams {
+        org,
+        name,
+        name_2,
+        value,
+        visibility,
+        selected_repository_ids,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = name_2 {
+        __body_map.insert(
+            "name".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = value {
+        __body_map.insert(
+            "value".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = visibility {
+        __body_map.insert(
+            "visibility".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = selected_repository_ids {
+        __body_map.insert(
+            "selected_repository_ids".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "PATCH",
+        &format!(
+            "/orgs/{}/actions/variables/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&name)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_update_org_variable",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Deletes an organization variable using the variable name. Authenticated users must have collaborator access to a repository to create, update, or read variables. OAuth tokens and personal access tokens (classic) need the`admin:org` scope to use this endpoint. If the repository is private, OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `name` - The name of the variable.
+pub fn actions_delete_org_variable(
+    config: &ClientConfig,
+    org: String,
+    name: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/orgs/{}/actions/variables/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_delete_org_variable",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Lists all repositories that can access an organization variable that is available to selected repositories. Authenticated users must have collaborator access to a repository to create, update, or read variables. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.
 ///
@@ -555,96 +688,6 @@ pub fn actions_get_actions_cache_usage(
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "actions_get_actions_cache_usage",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsGetActionsCacheListParams {
-    pub owner: String,
-    pub repo: String,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-    pub ref_: Option<String>,
-    pub key: Option<String>,
-    pub sort: Option<ActionsGetActionsCacheListEnum>,
-    pub direction: Option<SecurityAdvisoriesListGlobalAdvisoriesEnum>,
-}
-
-/// Lists the GitHub Actions caches for a repository. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `ref_` - The full Git reference for narrowing down the cache. The `ref`
-///   for a branch should be formatted as `refs/heads/<branch name\>`. To
-///   reference a pull request use `refs/pull/<number\>/merge`.
-/// * `key` - An explicit key or prefix for identifying the cache
-/// * `sort` - The property to sort the results by. `created_at` means when the
-///   cache was created. `last_accessed_at` means when the cache was last
-///   accessed. `size_in_bytes` is the size of the cache in bytes.
-/// * `direction` - The direction to sort the results by.
-pub fn actions_get_actions_cache_list(
-    config: &ClientConfig,
-    params: ActionsGetActionsCacheListParams,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsCacheList, SdkError> {
-    let ActionsGetActionsCacheListParams {
-        owner,
-        repo,
-        per_page,
-        page,
-        ref_,
-        key,
-        sort,
-        direction,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = ref_ {
-        __query.push(("ref", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = key {
-        __query.push(("key", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = sort {
-        __query.push(("sort", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = direction {
-        __query.push(("direction", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ActionsCacheList>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/actions/caches",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_get_actions_cache_list",
             options,
             ..Default::default()
         },

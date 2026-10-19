@@ -3,6 +3,33 @@
 
 // webhook_issues_transferred domain models (part 9)
 
+impl WebhookIssuesTransferredChangesNewRepositoryLicense {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.url.as_ref() {
+            crate::validation::validate_uri("url", value)?;
+        }
+        Ok(())
+    }
+
+    pub fn new(
+        key: String,
+        name: String,
+        node_id: String,
+        spdx_id: String,
+        url: Option<String>,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            key,
+            name,
+            node_id,
+            spdx_id,
+            url,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 /// Optional enumerated value serialized in the `type` wire field.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookIssuesTransferredChangesNewRepositoryOwnerTypeEnum {
@@ -241,6 +268,18 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesTransferredChangesNewReposito
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookIssuesTransferredChangesNewRepositoryPushedAt branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookIssuesTransferredChangesNewRepositoryPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookIssuesTransferredChangesNewRepositoryPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

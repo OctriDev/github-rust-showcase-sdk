@@ -350,6 +350,18 @@ impl<'de> serde::Deserialize<'de> for ProjectsV2ViewSortByItemItem {
     }
 }
 
+impl ::std::convert::From<i64> for ProjectsV2ViewSortByItemItem {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for ProjectsV2ViewSortByItemItem {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// A view inside a projects v2 project
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ProjectsV2View {

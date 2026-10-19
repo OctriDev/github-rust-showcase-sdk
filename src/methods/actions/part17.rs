@@ -4,8 +4,182 @@
 use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{ConcurrencyGroupRunList, EmptyObject, EnvironmentApprovals, WorkflowRun};
+use crate::errors::SdkError;
+use crate::types::{EmptyObject, EnvironmentApprovals, WorkflowRun};
+use crate::validation::validate_date_time;
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsListWorkflowRunsForRepoParams {
+    pub owner: String,
+    pub repo: String,
+    pub actor: Option<String>,
+    pub branch: Option<String>,
+    pub event: Option<String>,
+    pub status: Option<ActionsListWorkflowRunsForRepoEnum>,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+    pub created: Option<String>,
+    pub exclude_pull_requests: Option<bool>,
+    pub check_suite_id: Option<i64>,
+    pub head_sha: Option<String>,
+}
+
+/// Lists all workflow runs for a repository. You can use parameters to narrow the list of results. For more information about using parameters, see [Parameters](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#parameters). Anyone with read access to the repository can use this endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with a private repository. This endpoint will return up to 1,000 results for each search when using the following parameters: `actor`, `branch`, `check_suite_id`, `created`, `event`, `head_sha`, `status`.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `actor` - Returns someone's workflow runs. Use the login for the user who
+///   created the `push` associated with the check suite or workflow run.
+/// * `branch` - Returns workflow runs associated with a branch. Use the name of
+///   the branch of the `push`.
+/// * `event` - Returns workflow run triggered by the event you specify. For
+///   example, `push`, `pull_request` or `issue`. For more information, see
+///   "[Events that trigger
+///   workflows](https://docs.github.com/actions/automating-your-workflow-with-git
+///   hub-actions/events-that-trigger-workflows)."
+/// * `status` - Returns workflow runs with the check run `status` or
+///   `conclusion` that you specify. For example, a conclusion can be `success` or
+///   a status can be `in_progress`. Only GitHub Actions can set a status of
+///   `waiting`, `pending`, or `requested`.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `created` - Returns workflow runs created within the given date-time
+///   range. For more information on the syntax, see "[Understanding the search
+///   syntax](https://docs.github.com/search-github/getting-started-with-searching
+///   -on-github/understanding-the-search-syntax#query-for-dates)."
+/// * `exclude_pull_requests` - If `true` pull requests are omitted from the
+///   response (empty array).
+/// * `check_suite_id` - Returns workflow runs with the `check_suite_id` that
+///   you specify.
+/// * `head_sha` - Only returns workflow runs that are associated with the
+///   specified `head_sha`.
+pub fn actions_list_workflow_runs_for_repo(
+    config: &ClientConfig,
+    params: ActionsListWorkflowRunsForRepoParams,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsListWorkflowRunsForRepoResponse, SdkError> {
+    let ActionsListWorkflowRunsForRepoParams {
+        owner,
+        repo,
+        actor,
+        branch,
+        event,
+        status,
+        per_page,
+        page,
+        created,
+        exclude_pull_requests,
+        check_suite_id,
+        head_sha,
+    } = params;
+    if let Some(ref created_v) = created {
+        validate_date_time("created", created_v)?;
+    }
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(10);
+    if let Some(ref v) = actor {
+        __query.push(("actor", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = branch {
+        __query.push(("branch", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = event {
+        __query.push(("event", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = status {
+        __query.push(("status", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = created {
+        __query.push(("created", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = exclude_pull_requests {
+        __query.push(("exclude_pull_requests", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = check_suite_id {
+        __query.push(("check_suite_id", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = head_sha {
+        __query.push(("head_sha", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<ActionsListWorkflowRunsForRepoResponse>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/runs",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_list_workflow_runs_for_repo",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets a specific workflow run. Anyone with read access to the repository can use this endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with a private repository.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `run_id` - The unique identifier of the workflow run.
+/// * `exclude_pull_requests` - If `true` pull requests are omitted from the
+///   response (empty array).
+pub fn actions_get_workflow_run(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    run_id: i64,
+    exclude_pull_requests: Option<bool>,
+    options: Option<&RequestOptions>,
+) -> Result<WorkflowRun, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
+    if let Some(ref v) = exclude_pull_requests {
+        __query.push(("exclude_pull_requests", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<WorkflowRun>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/runs/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&run_id)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_workflow_run",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Deletes a specific workflow run. Anyone with write access to the repository can use this endpoint. If the repository is private, OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
 ///
@@ -358,202 +532,4 @@ pub fn actions_download_workflow_run_attempt_logs(
         },
     )?;
     Ok(())
-}
-
-/// Cancels a workflow run using its `id`. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `run_id` - The unique identifier of the workflow run.
-pub fn actions_cancel_workflow_run(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    run_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<EmptyObject, SdkError> {
-    Ok(sdk_request::<EmptyObject>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/actions/runs/{}/cancel",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&run_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_cancel_workflow_run",
-            options,
-            errors: &[("409", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsListConcurrencyGroupsForWorkflowRunParams {
-    pub owner: String,
-    pub repo: String,
-    pub run_id: i64,
-    pub per_page: Option<i64>,
-    pub before: Option<String>,
-    pub after: Option<String>,
-}
-
-/// Lists all concurrency groups associated with a workflow run or its jobs. The set of groups is derived from the run's configuration, so a group is included even when the run no longer has any items currently holding or waiting in it. In that case the `group_members` array will be empty. `total_count` reflects the number of groups the run participates in by configuration, not the number with active items. This differs from `GET /repos/{owner}/{repo}/actions/concurrency_groups/{group_name}`, which returns 404 when a group has no active items. That endpoint reports the live state of a group repo-wide, while this endpoint reports the groups associated with a specific run by configuration. Results are sorted by group name and support cursor-based pagination via `before` and `after`. The `after` cursor paginates forward only and does not emit a `rel="prev"` Link; use `before` to page backward from a forward page's `next` cursor. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with a private repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `run_id` - The unique identifier of the workflow run.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `before` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   before this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `after` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   after this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn actions_list_concurrency_groups_for_workflow_run(
-    config: &ClientConfig,
-    params: ActionsListConcurrencyGroupsForWorkflowRunParams,
-    options: Option<&RequestOptions>,
-) -> Result<ConcurrencyGroupRunList, SdkError> {
-    let ActionsListConcurrencyGroupsForWorkflowRunParams {
-        owner,
-        repo,
-        run_id,
-        per_page,
-        before,
-        after,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = after {
-        __query.push(("after", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ConcurrencyGroupRunList>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/actions/runs/{}/concurrency_groups",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&run_id)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_list_concurrency_groups_for_workflow_run",
-            options,
-            errors: &[("404", "BasicError"), ("422", "ValidationError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Submits an approval or rejection for a custom deployment protection rule on a workflow run. Use this endpoint when your GitHub App owns the rule; to review a deployment waiting on a person or team, use POST /repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments instead. OAuth app tokens and personal access tokens (classic) need the `repo` scope for private repositories.
-///
-/// Approve or reject custom deployment protection rules provided by a GitHub App for a workflow run. For more information, see "[Using environments for deployment](https://docs.github.com/actions/deployment/targeting-different-environments/using-environments-for-deployment)." \> [!NOTE] \> GitHub Apps can only review their own custom deployment protection rules. To approve or reject pending deployments that are waiting for review from a specific person or team, see `POST /repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with a private repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `run_id` - The unique identifier of the workflow run.
-pub fn actions_review_custom_gates_for_run(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    run_id: i64,
-    body: ActionsReviewCustomGatesForRun,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let __body = serde_json::to_value(body).map_err(|e| {
-        SdkError::Network(SdkNetworkError {
-            message: format!("encode body: {}", e),
-            request_id: None,
-        })
-    })?;
-
-    Ok(sdk_request::<serde_json::Value>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/actions/runs/{}/deployment_protection_rule",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&run_id)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_review_custom_gates_for_run",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Cancels a workflow run and bypasses conditions that would otherwise cause a workflow execution to continue, such as an `always()` condition on a job. You should only use this endpoint to cancel a workflow run when the workflow run is not responding to `POST /repos/{owner}/{repo}/actions/runs/{run_id}/cancel`. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `run_id` - The unique identifier of the workflow run.
-pub fn actions_force_cancel_workflow_run(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    run_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<EmptyObject, SdkError> {
-    Ok(sdk_request::<EmptyObject>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/actions/runs/{}/force-cancel",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&run_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_force_cancel_workflow_run",
-            options,
-            errors: &[("409", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
 }

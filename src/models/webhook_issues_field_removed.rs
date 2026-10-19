@@ -171,6 +171,24 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldRemovedIssueFieldValueVa
     }
 }
 
+impl ::std::convert::From<String> for WebhookIssuesFieldRemovedIssueFieldValueValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<f64> for WebhookIssuesFieldRemovedIssueFieldValueValue {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookIssuesFieldRemovedIssueFieldValueValue {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
 /// The selected option details. Present for single_select field types.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookIssuesFieldRemovedIssueFieldValueOption {

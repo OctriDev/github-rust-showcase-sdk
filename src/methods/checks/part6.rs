@@ -5,7 +5,113 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{CheckSuite, CheckSuitePreference, EmptyObject};
+use crate::types::{CheckAnnotation, CheckSuite, CheckSuitePreference, EmptyObject};
+
+#[derive(Debug, Clone, Default)]
+pub struct ChecksListAnnotationsParams {
+    pub owner: String,
+    pub repo: String,
+    pub check_run_id: i64,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+}
+
+/// Lists annotations for a check run using the annotation `id`. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint on a private repository.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `check_run_id` - The unique identifier of the check run.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn checks_list_annotations(
+    config: &ClientConfig,
+    params: ChecksListAnnotationsParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<CheckAnnotation>, SdkError> {
+    let ChecksListAnnotationsParams {
+        owner,
+        repo,
+        check_run_id,
+        per_page,
+        page,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<CheckAnnotation>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/check-runs/{}/annotations",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&check_run_id)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "checks_list_annotations",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Triggers GitHub to rerequest an existing check run, without pushing new code to a repository. This endpoint will trigger the [`check_run` webhook](https://docs.github.com/webhooks/event-payloads/#check_run) event with the action `rerequested`. When a check run is `rerequested`, the `status` of the check suite it belongs to is reset to `queued` and the `conclusion` is cleared. The check run itself is not updated. GitHub apps recieving the [`check_run` webhook](https://docs.github.com/webhooks/event-payloads/#check_run) with the `rerequested` action should then decide if the check run should be reset or updated and call the [update `check_run` endpoint](https://docs.github.com/rest/checks/runs#update-a-check-run) to update the check_run if desired. For more information about how to re-run GitHub Actions jobs, see "[Re-run a job from a workflow run](https://docs.github.com/rest/actions/workflow-runs#re-run-a-job-from-a-workflow-run)".
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `check_run_id` - The unique identifier of the check run.
+pub fn checks_rerequest_run(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    check_run_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<EmptyObject, SdkError> {
+    Ok(sdk_request::<EmptyObject>(
+        "POST",
+        &format!(
+            "/repos/{}/{}/check-runs/{}/rerequest",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&check_run_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "checks_rerequest_run",
+            options,
+            errors: &[
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Creates a check suite manually. By default, check suites are automatically created when you create a [check run](https://docs.github.com/rest/checks/runs). You only need to use this endpoint for manually creating check suites when you've disabled automatic creation using "[Update repository preferences for check suites](https://docs.github.com/rest/checks/suites#update-repository-preferences-for-check-suites)". \> [!NOTE] \> The Checks API only looks for pushes in the repository where the check suite or check run were created. Pushes to a branch in a forked repository are not detected and return an empty `pull_requests` array and a `null` value for `head_branch`. OAuth apps and personal access tokens (classic) cannot use this endpoint.
 ///

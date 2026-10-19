@@ -3,6 +3,41 @@
 
 // webhooks_pull_request5 domain models (part 4)
 
+impl WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrBody => "PR_BODY",
+            Self::CommitMessages => "COMMIT_MESSAGES",
+            Self::Blank => "BLANK",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_BODY" => Self::PrBody,
+            "COMMIT_MESSAGES" => Self::CommitMessages,
+            "BLANK" => Self::Blank,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())

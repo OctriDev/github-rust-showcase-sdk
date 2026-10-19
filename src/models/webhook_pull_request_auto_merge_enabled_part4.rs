@@ -3,6 +3,31 @@
 
 // webhook_pull_request_auto_merge_enabled domain models (part 4)
 
+/// The default value for a squash merge commit message:
+///
+/// \- `PR_BODY` \- default to the pull request's body.
+/// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
+/// \- `BLANK` \- default to a blank commit message.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestAutoMergeEnabledPullRequestBaseRepoSquashMergeCommitMessageEnum {
+    #[default]
+    PrBody,
+    CommitMessages,
+    Blank,
+    Unknown(String),
+}
+
+impl WebhookPullRequestAutoMergeEnabledPullRequestBaseRepoSquashMergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrBody => "PR_BODY",
+            Self::CommitMessages => "COMMIT_MESSAGES",
+            Self::Blank => "BLANK",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize
     for WebhookPullRequestAutoMergeEnabledPullRequestBaseRepoSquashMergeCommitMessageEnum
 {

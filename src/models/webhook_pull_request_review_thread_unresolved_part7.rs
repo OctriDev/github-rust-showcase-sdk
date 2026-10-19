@@ -3,6 +3,79 @@
 
 // webhook_pull_request_review_thread_unresolved domain models (part 7)
 
+/// Required object value serialized in the `user` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct WebhookPullRequestReviewThreadUnresolvedPullRequestHeadUser {
+    /// Optional `uri`-formatted value serialized in the `avatar_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avatar_url: Option<String>,
+    /// Optional `boolean` value serialized in the `deleted` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted: Option<bool>,
+    /// Optional `string` value serialized in the `email` wire field.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub email: Option<Option<String>>,
+    /// Optional `uri-template`-formatted value serialized in the `events_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub events_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `followers_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub followers_url: Option<String>,
+    /// Optional `uri-template`-formatted value serialized in the `following_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub following_url: Option<String>,
+    /// Optional `uri-template`-formatted value serialized in the `gists_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gists_url: Option<String>,
+    /// Optional `string` value serialized in the `gravatar_id` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gravatar_id: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `html_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub html_url: Option<String>,
+    /// Required `int64`-formatted value serialized in the `id` wire field.
+    pub id: i64,
+    /// Required `string` value serialized in the `login` wire field.
+    pub login: String,
+    /// Optional `string` value serialized in the `name` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Optional `string` value serialized in the `node_id` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node_id: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `organizations_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub organizations_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `received_events_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_events_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `repos_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub repos_url: Option<String>,
+    /// Optional `boolean` value serialized in the `site_admin` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub site_admin: Option<bool>,
+    /// Optional `uri-template`-formatted value serialized in the `starred_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starred_url: Option<String>,
+    /// Optional `uri`-formatted value serialized in the `subscriptions_url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscriptions_url: Option<String>,
+    /// Optional enumerated value serialized in the `type` wire field.
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<WebhookPullRequestReviewThreadUnresolvedPullRequestHeadUserTypeEnum>,
+    /// Optional `uri`-formatted value serialized in the `url` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    /// Optional `string` value serialized in the `user_view_type` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_view_type: Option<String>,
+}
+
 impl WebhookPullRequestReviewThreadUnresolvedPullRequestHeadUser {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
         if let Some(value) = self.avatar_url.as_ref() {
@@ -424,111 +497,4 @@ pub struct WebhookPullRequestReviewThreadUnresolvedPullRequestMilestone {
     pub updated_at: String,
     /// Required `uri`-formatted value serialized in the `url` wire field.
     pub url: String,
-}
-
-impl WebhookPullRequestReviewThreadUnresolvedPullRequestMilestone {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.closed_at.as_ref() {
-            crate::validation::validate_model_date_time("closed_at", value)?;
-        }
-        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
-        if let Some(value) = self.due_on.as_ref() {
-            crate::validation::validate_model_date_time("due_on", value)?;
-        }
-        crate::validation::validate_uri("html_url", &self.html_url)?;
-        crate::validation::validate_uri("labels_url", &self.labels_url)?;
-        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
-        crate::validation::validate_uri("url", &self.url)?;
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        closed_at: Option<String>,
-        closed_issues: i64,
-        created_at: String,
-        creator: Option<WebhookPullRequestReviewThreadUnresolvedPullRequestMilestoneCreator>,
-        description: Option<String>,
-        due_on: Option<String>,
-        html_url: String,
-        id: i64,
-        labels_url: String,
-        node_id: String,
-        number: i64,
-        open_issues: i64,
-        state: WebhookPullRequestReviewThreadUnresolvedPullRequestMilestoneStateEnum,
-        title: String,
-        updated_at: String,
-        url: String,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            closed_at,
-            closed_issues,
-            created_at,
-            creator,
-            description,
-            due_on,
-            html_url,
-            id,
-            labels_url,
-            node_id,
-            number,
-            open_issues,
-            state,
-            title,
-            updated_at,
-            url,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Required enumerated value serialized in the `privacy` wire field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedTeamsItemParentPrivacyEnum {
-    #[default]
-    Open,
-    Closed,
-    Secret,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedTeamsItemParentPrivacyEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Open => "open",
-            Self::Closed => "closed",
-            Self::Secret => "secret",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedTeamsItemParentPrivacyEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewThreadUnresolvedPullRequestRequestedTeamsItemParentPrivacyEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "open" => Self::Open,
-            "closed" => Self::Closed,
-            "secret" => Self::Secret,
-            _ => Self::Unknown(value),
-        })
-    }
 }

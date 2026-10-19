@@ -3,6 +3,12 @@
 
 // security_advisories domain models (part 5)
 
+impl VulnerabilityPackage {
+    pub fn new(ecosystem: SecurityAdvisoryEcosystems, name: Option<String>) -> Self {
+        Self { ecosystem, name }
+    }
+}
+
 /// A vulnerability describing the product and its affected versions within a GitHub Security Advisory.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct Vulnerability {

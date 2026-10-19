@@ -34,6 +34,18 @@ impl<'de> serde::Deserialize<'de> for UsersGetAuthenticatedResponse {
     }
 }
 
+impl ::std::convert::From<Box<PrivateUser>> for UsersGetAuthenticatedResponse {
+    fn from(value: Box<PrivateUser>) -> Self {
+        Self::PrivateUser(value)
+    }
+}
+
+impl ::std::convert::From<Box<PublicUser>> for UsersGetAuthenticatedResponse {
+    fn from(value: Box<PublicUser>) -> Self {
+        Self::PublicUser(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct UsersAddEmailForAuthenticatedUserVariant0 {
     /// Adds one or more email addresses to your GitHub account. Must contain at least one email address. \*\*Note:\*\* Alternatively, you can pass a single email address or an `array` of emails addresses directly, but we recommend that you pass an object using the `emails` key.
@@ -100,6 +112,26 @@ impl<'de> serde::Deserialize<'de> for UsersAddEmailForAuthenticatedUser {
                 "no UsersAddEmailForAuthenticatedUser branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<Box<UsersAddEmailForAuthenticatedUserVariant0>>
+    for UsersAddEmailForAuthenticatedUser
+{
+    fn from(value: Box<UsersAddEmailForAuthenticatedUserVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for UsersAddEmailForAuthenticatedUser {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
+impl ::std::convert::From<String> for UsersAddEmailForAuthenticatedUser {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
@@ -174,6 +206,26 @@ impl<'de> serde::Deserialize<'de> for UsersDeleteEmailForAuthenticatedUser {
     }
 }
 
+impl ::std::convert::From<Box<UsersDeleteEmailForAuthenticatedUserVariant0>>
+    for UsersDeleteEmailForAuthenticatedUser
+{
+    fn from(value: Box<UsersDeleteEmailForAuthenticatedUserVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for UsersDeleteEmailForAuthenticatedUser {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
+impl ::std::convert::From<String> for UsersDeleteEmailForAuthenticatedUser {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum UsersGetByIdResponse {
@@ -202,6 +254,18 @@ impl<'de> serde::Deserialize<'de> for UsersGetByIdResponse {
         lossy.ok_or_else(|| {
             serde::de::Error::custom("no UsersGetByIdResponse branch accepts this payload")
         })
+    }
+}
+
+impl ::std::convert::From<Box<PrivateUser>> for UsersGetByIdResponse {
+    fn from(value: Box<PrivateUser>) -> Self {
+        Self::PrivateUser(value)
+    }
+}
+
+impl ::std::convert::From<Box<PublicUser>> for UsersGetByIdResponse {
+    fn from(value: Box<PublicUser>) -> Self {
+        Self::PublicUser(value)
     }
 }
 
@@ -236,104 +300,14 @@ impl<'de> serde::Deserialize<'de> for UsersGetByUsernameResponse {
     }
 }
 
-/// The bundle of the attestation.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItemBundle {
-    #[serde(rename = "mediaType", skip_serializing_if = "Option::is_none")]
-    pub media_type: Option<String>,
-    #[serde(
-        rename = "verificationMaterial",
-        skip_serializing_if = "Option::is_none"
-    )]
-    pub verification_material: Option<std::collections::HashMap<String, serde_json::Value>>,
-    #[serde(rename = "dsseEnvelope", skip_serializing_if = "Option::is_none")]
-    pub dsse_envelope: Option<std::collections::HashMap<String, serde_json::Value>>,
-}
-
-impl UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItemBundle {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            media_type: None,
-            verification_material: None,
-            dsse_envelope: None,
-        }
+impl ::std::convert::From<Box<PrivateUser>> for UsersGetByUsernameResponse {
+    fn from(value: Box<PrivateUser>) -> Self {
+        Self::PrivateUser(value)
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItem {
-    /// The bundle of the attestation.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bundle: Option<UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItemBundle>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub repository_id: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bundle_url: Option<String>,
-}
-
-impl UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            bundle: None,
-            repository_id: None,
-            bundle_url: None,
-        }
-    }
-}
-
-/// Information about the current page.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsBulkResponsePageInfo {
-    /// Indicates whether there is a next page.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub has_next: Option<bool>,
-    /// Indicates whether there is a previous page.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub has_previous: Option<bool>,
-    /// The cursor to the next page.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub next: Option<String>,
-    /// The cursor to the previous page.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub previous: Option<String>,
-}
-
-impl UsersListAttestationsBulkResponsePageInfo {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            has_next: None,
-            has_previous: None,
-            next: None,
-            previous: None,
-        }
-    }
-}
-
-pub type UsersListAttestationsBulkResponseAttestationsSubjectDigests = std::collections::HashMap<
-    String,
-    Option<Vec<UsersListAttestationsBulkResponseAttestationsSubjectDigestsValueItem>>,
->;
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct UsersListAttestationsBulkResponse {
-    /// Mapping of subject digest to bundles.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attestations_subject_digests:
-        Option<UsersListAttestationsBulkResponseAttestationsSubjectDigests>,
-    /// Information about the current page.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page_info: Option<UsersListAttestationsBulkResponsePageInfo>,
-}
-
-impl UsersListAttestationsBulkResponse {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            attestations_subject_digests: None,
-            page_info: None,
-        }
+impl ::std::convert::From<Box<PublicUser>> for UsersGetByUsernameResponse {
+    fn from(value: Box<PublicUser>) -> Self {
+        Self::PublicUser(value)
     }
 }

@@ -5,8 +5,111 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{DependabotAlert, EmptyObject};
+use crate::types::{DependabotPublicKey, EmptyObject, OrganizationDependabotSecret};
 use crate::validation::validate_pattern;
+
+/// Lists all secrets available in an organization without revealing their encrypted values. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn dependabot_list_org_secrets(
+    config: &ClientConfig,
+    org: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<DependabotListOrgSecretsResponse, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<DependabotListOrgSecretsResponse>(
+        "GET",
+        &format!(
+            "/orgs/{}/dependabot/secrets",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "dependabot_list_org_secrets",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets your public key, which you need to encrypt secrets. You need to encrypt a secret before you can create or update secrets. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+pub fn dependabot_get_org_public_key(
+    config: &ClientConfig,
+    org: String,
+    options: Option<&RequestOptions>,
+) -> Result<DependabotPublicKey, SdkError> {
+    Ok(sdk_request::<DependabotPublicKey>(
+        "GET",
+        &format!(
+            "/orgs/{}/dependabot/secrets/public-key",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "dependabot_get_org_public_key",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets a single organization secret without revealing its encrypted value. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `secret_name` - The name of the secret.
+pub fn dependabot_get_org_secret(
+    config: &ClientConfig,
+    org: String,
+    secret_name: String,
+    options: Option<&RequestOptions>,
+) -> Result<OrganizationDependabotSecret, SdkError> {
+    Ok(sdk_request::<OrganizationDependabotSecret>(
+        "GET",
+        &format!(
+            "/orgs/{}/dependabot/secrets/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&secret_name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "dependabot_get_org_secret",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 #[derive(Debug, Clone)]
 pub struct DependabotCreateOrUpdateOrgSecretParams {
@@ -327,194 +430,6 @@ pub fn dependabot_remove_selected_repo_from_org_secret(
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "dependabot_remove_selected_repo_from_org_secret",
             options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct DependabotListAlertsForRepoParams {
-    pub owner: String,
-    pub repo: String,
-    pub classification: Option<String>,
-    pub state: Option<String>,
-    pub severity: Option<String>,
-    pub ecosystem: Option<String>,
-    pub package: Option<String>,
-    pub manifest: Option<String>,
-    pub epss_percentage: Option<String>,
-    pub has: Option<DependabotListAlertsForEnterprise>,
-    pub assignee: Option<String>,
-    pub scope: Option<DependabotListAlertsForEnterpriseEnum>,
-    pub relationship: Option<String>,
-    pub sort: Option<DependabotListAlertsForEnterpriseEnumfc4ff8f9>,
-    pub direction: Option<SecurityAdvisoriesListGlobalAdvisoriesEnum>,
-    pub before: Option<String>,
-    pub after: Option<String>,
-    pub per_page: Option<i64>,
-}
-
-/// OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `classification` - A comma-separated list of vulnerability
-///   classifications. If specified, only alerts for vulnerabilities with these
-///   classifications will be returned. Can be: `malware`, `general`
-/// * `state` - A comma-separated list of states. If specified, only alerts with
-///   these states will be returned. Can be: `auto_dismissed`, `dismissed`,
-///   `fixed`, `open`
-/// * `severity` - A comma-separated list of severities. If specified, only
-///   alerts with these severities will be returned. Can be: `low`, `medium`,
-///   `high`, `critical`
-/// * `ecosystem` - A comma-separated list of ecosystems. If specified, only
-///   alerts for these ecosystems will be returned. Can be: `composer`, `go`,
-///   `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust`
-/// * `package` - A comma-separated list of package names. If specified, only
-///   alerts for these packages will be returned.
-/// * `manifest` - A comma-separated list of full manifest paths. If specified,
-///   only alerts for these manifests will be returned.
-/// * `epss_percentage` - CVE Exploit Prediction Scoring System (EPSS)
-///   percentage. Can be specified as: \- An exact number (`n`) \- Comparators
-///   such as `\>n`, `<n`, `\>=n`, `<=n` \- A range like `n..n`, where `n` is a
-///   number from 0.0 to 1.0 Filters the list of alerts based on EPSS percentages.
-///   If specified, only alerts with the provided EPSS percentages will be
-///   returned.
-/// * `has` - Filters the list of alerts based on whether the alert has the
-///   given value. If specified, only alerts meeting this criterion will be
-///   returned. Multiple `has` filters can be passed to filter for alerts that
-///   have all of the values. Currently, only `patch` is supported.
-/// * `assignee` - Filter alerts by assignees. Provide a comma-separated list of
-///   user handles (e.g., `octocat` or `octocat,hubot`) to return alerts assigned
-///   to any of the specified users. Use `\*` to list alerts with at least one
-///   assignee or `none` to list alerts with no assignees.
-/// * `scope` - The scope of the vulnerable dependency. If specified, only
-///   alerts with this scope will be returned.
-/// * `relationship` - A comma-separated list of relationships of the vulnerable
-///   dependency to your project. If specified, only alerts with these
-///   relationships will be returned. \> [!NOTE] \> We are rolling out support for
-///   dependency relationship across ecosystems. This value will be "unknown" for
-///   all dependencies in unsupported ecosystems.
-/// * `sort` - The property by which to sort the results. `created` means when
-///   the alert was created. `updated` means when the alert's state last changed.
-///   `epss_percentage` sorts alerts by the Exploit Prediction Scoring System
-///   (EPSS) percentage.
-/// * `direction` - The direction to sort the results by.
-/// * `before` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   before this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `after` - A cursor, as given in the [Link
-///   header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api
-///   #using-link-headers). If specified, the query only searches for results
-///   after this cursor. For more information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn dependabot_list_alerts_for_repo(
-    config: &ClientConfig,
-    params: DependabotListAlertsForRepoParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<DependabotAlert>, SdkError> {
-    let DependabotListAlertsForRepoParams {
-        owner,
-        repo,
-        classification,
-        state,
-        severity,
-        ecosystem,
-        package,
-        manifest,
-        epss_percentage,
-        has,
-        assignee,
-        scope,
-        relationship,
-        sort,
-        direction,
-        before,
-        after,
-        per_page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(16);
-    if let Some(ref v) = classification {
-        __query.push(("classification", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = state {
-        __query.push(("state", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = severity {
-        __query.push(("severity", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = ecosystem {
-        __query.push(("ecosystem", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = package {
-        __query.push(("package", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = manifest {
-        __query.push(("manifest", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = epss_percentage {
-        __query.push(("epss_percentage", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = has {
-        __query.push(("has", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = assignee {
-        __query.push(("assignee", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = scope {
-        __query.push(("scope", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = relationship {
-        __query.push(("relationship", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = sort {
-        __query.push(("sort", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = direction {
-        __query.push(("direction", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = before {
-        __query.push(("before", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = after {
-        __query.push(("after", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<DependabotAlert>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/dependabot/alerts",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "dependabot_list_alerts_for_repo",
-            options,
-            errors: &[
-                ("400", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationErrorSimple"),
-            ],
             ..Default::default()
         },
     )?

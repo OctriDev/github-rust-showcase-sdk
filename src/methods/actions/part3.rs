@@ -2,7 +2,21 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::types::{ActionsSecret, ActionsVariable, Job, Workflow, WorkflowRun};
+use crate::types::{
+    ActionsSecret, ActionsVariable, Job, ReviewCustomGatesStateRequired, Workflow, WorkflowRun,
+};
+
+impl ::std::convert::From<Box<ReviewCustomGatesStateRequired>> for ActionsReviewCustomGatesForRun {
+    fn from(value: Box<ReviewCustomGatesStateRequired>) -> Self {
+        Self::ReviewCustomGatesStateRequired(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ActionsListJobsForWorkflowRunResponse {
+    pub total_count: i64,
+    pub jobs: Vec<Job>,
+}
 
 impl ActionsListJobsForWorkflowRunResponse {
     pub fn new(total_count: i64, jobs: Vec<Job>) -> Self {
@@ -83,6 +97,18 @@ impl<'de> serde::Deserialize<'de> for ActionsGetWorkflow {
         lossy.ok_or_else(|| {
             serde::de::Error::custom("no ActionsGetWorkflow branch accepts this payload")
         })
+    }
+}
+
+impl ::std::convert::From<i64> for ActionsGetWorkflow {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for ActionsGetWorkflow {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
@@ -255,43 +281,4 @@ impl ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
             Self::Unknown(value) => value.as_str(),
         }
     }
-}
-
-impl serde::Serialize for ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "all" => Self::All,
-            "private" => Self::Private,
-            "selected" => Self::Selected,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ActionsUpdateSelfHostedRunnerGroupForOrgVisibilityEnum {
-    #[default]
-    All,
-    Private,
-    Selected,
-    Unknown(String),
 }

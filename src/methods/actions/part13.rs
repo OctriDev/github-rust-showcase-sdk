@@ -10,6 +10,96 @@ use crate::types::{
 };
 use crate::validation::{validate_range, RangeOpts};
 
+#[derive(Debug, Clone, Default)]
+pub struct ActionsGetActionsCacheListParams {
+    pub owner: String,
+    pub repo: String,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+    pub ref_: Option<String>,
+    pub key: Option<String>,
+    pub sort: Option<ActionsGetActionsCacheListEnum>,
+    pub direction: Option<SecurityAdvisoriesListGlobalAdvisoriesEnum>,
+}
+
+/// Lists the GitHub Actions caches for a repository. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `ref_` - The full Git reference for narrowing down the cache. The `ref`
+///   for a branch should be formatted as `refs/heads/<branch name\>`. To
+///   reference a pull request use `refs/pull/<number\>/merge`.
+/// * `key` - An explicit key or prefix for identifying the cache
+/// * `sort` - The property to sort the results by. `created_at` means when the
+///   cache was created. `last_accessed_at` means when the cache was last
+///   accessed. `size_in_bytes` is the size of the cache in bytes.
+/// * `direction` - The direction to sort the results by.
+pub fn actions_get_actions_cache_list(
+    config: &ClientConfig,
+    params: ActionsGetActionsCacheListParams,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsCacheList, SdkError> {
+    let ActionsGetActionsCacheListParams {
+        owner,
+        repo,
+        per_page,
+        page,
+        ref_,
+        key,
+        sort,
+        direction,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = ref_ {
+        __query.push(("ref", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = key {
+        __query.push(("key", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = sort {
+        __query.push(("sort", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = direction {
+        __query.push(("direction", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<ActionsCacheList>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/caches",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_actions_cache_list",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Deletes one or more GitHub Actions caches for a repository, using a complete cache key. By default, all caches that match the provided key are deleted, but you can optionally provide a Git ref to restrict deletions to caches that match both the provided key and the Git ref. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
 ///
 /// # Arguments
@@ -454,151 +544,6 @@ pub fn actions_get_custom_oidc_sub_claim_for_repo(
             operation_id: "actions_get_custom_oidc_sub_claim_for_repo",
             options,
             errors: &[("400", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsSetCustomOidcSubClaimForRepoParams {
-    pub owner: String,
-    pub repo: String,
-    pub use_default: bool,
-    pub include_claim_keys: Option<Vec<String>>,
-    pub use_immutable_subject: Option<bool>,
-}
-
-/// Sets the customization template and `opt-in` or `opt-out` flag for an OpenID Connect (OIDC) subject claim for a repository. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `use_default` - Whether to use the default template or not. If `true`, the
-///   `include_claim_keys` field is ignored.
-/// * `include_claim_keys` - Array of unique strings. Each claim key can only
-///   contain alphanumeric characters and underscores.
-/// * `use_immutable_subject` - Whether to opt in to the immutable OIDC subject
-///   claim format for this repository. When `true`, OIDC tokens will use a
-///   stable, repository-ID-based `sub` claim.
-pub fn actions_set_custom_oidc_sub_claim_for_repo(
-    config: &ClientConfig,
-    params: ActionsSetCustomOidcSubClaimForRepoParams,
-    options: Option<&RequestOptions>,
-) -> Result<EmptyObject, SdkError> {
-    let ActionsSetCustomOidcSubClaimForRepoParams {
-        owner,
-        repo,
-        use_default,
-        include_claim_keys,
-        use_immutable_subject,
-    } = params;
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "use_default".to_string(),
-        serde_json::to_value(use_default).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = include_claim_keys {
-        __body_map.insert(
-            "include_claim_keys".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = use_immutable_subject {
-        __body_map.insert(
-            "use_immutable_subject".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<EmptyObject>(
-        "PUT",
-        &format!(
-            "/repos/{}/{}/actions/oidc/customization/sub",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_set_custom_oidc_sub_claim_for_repo",
-            options,
-            errors: &[
-                ("400", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationErrorSimple"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists all organization secrets shared with a repository without revealing their encrypted values. Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn actions_list_repo_organization_secrets(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsListRepoOrganizationSecretsResponse, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ActionsListRepoOrganizationSecretsResponse>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/actions/organization-secrets",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_list_repo_organization_secrets",
-            options,
             ..Default::default()
         },
     )?

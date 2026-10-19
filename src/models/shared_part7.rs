@@ -488,21 +488,14 @@ impl<'de> serde::Deserialize<'de> for CustomPropertyValueValue {
     }
 }
 
-/// Custom property name and associated value
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct CustomPropertyValue {
-    /// The name of the property
-    pub property_name: String,
-    /// The value assigned to the property
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub value: Option<CustomPropertyValueValue>,
+impl ::std::convert::From<String> for CustomPropertyValueValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
 }
 
-impl CustomPropertyValue {
-    pub fn new(property_name: String, value: Option<CustomPropertyValueValue>) -> Self {
-        Self {
-            property_name,
-            value,
-        }
+impl ::std::convert::From<Vec<String>> for CustomPropertyValueValue {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }

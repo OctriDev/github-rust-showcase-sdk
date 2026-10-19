@@ -9,9 +9,154 @@ use crate::types::{
     ActionsArtifactAndLogRetentionResponse, ActionsEnabled, ActionsForkPrContributorApproval,
     ActionsForkPrContributorApprovalApprovalPolicyEnum, ActionsForkPrWorkflowsPrivateRepos,
     ActionsRepositoryPermissions, ActionsWorkflowAccessToRepository,
-    ActionsWorkflowAccessToRepositoryAccessLevelEnum, AllowedActions, SelectedActions,
+    ActionsWorkflowAccessToRepositoryAccessLevelEnum, AllowedActions, EmptyObject,
     ShaPinningRequired,
 };
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsSetCustomOidcSubClaimForRepoParams {
+    pub owner: String,
+    pub repo: String,
+    pub use_default: bool,
+    pub include_claim_keys: Option<Vec<String>>,
+    pub use_immutable_subject: Option<bool>,
+}
+
+/// Sets the customization template and `opt-in` or `opt-out` flag for an OpenID Connect (OIDC) subject claim for a repository. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `use_default` - Whether to use the default template or not. If `true`, the
+///   `include_claim_keys` field is ignored.
+/// * `include_claim_keys` - Array of unique strings. Each claim key can only
+///   contain alphanumeric characters and underscores.
+/// * `use_immutable_subject` - Whether to opt in to the immutable OIDC subject
+///   claim format for this repository. When `true`, OIDC tokens will use a
+///   stable, repository-ID-based `sub` claim.
+pub fn actions_set_custom_oidc_sub_claim_for_repo(
+    config: &ClientConfig,
+    params: ActionsSetCustomOidcSubClaimForRepoParams,
+    options: Option<&RequestOptions>,
+) -> Result<EmptyObject, SdkError> {
+    let ActionsSetCustomOidcSubClaimForRepoParams {
+        owner,
+        repo,
+        use_default,
+        include_claim_keys,
+        use_immutable_subject,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "use_default".to_string(),
+        serde_json::to_value(use_default).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = include_claim_keys {
+        __body_map.insert(
+            "include_claim_keys".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = use_immutable_subject {
+        __body_map.insert(
+            "use_immutable_subject".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<EmptyObject>(
+        "PUT",
+        &format!(
+            "/repos/{}/{}/actions/oidc/customization/sub",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_set_custom_oidc_sub_claim_for_repo",
+            options,
+            errors: &[
+                ("400", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationErrorSimple"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Lists all organization secrets shared with a repository without revealing their encrypted values. Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn actions_list_repo_organization_secrets(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsListRepoOrganizationSecretsResponse, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<ActionsListRepoOrganizationSecretsResponse>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/organization-secrets",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_list_repo_organization_secrets",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Lists all organization variables shared with a repository. Authenticated users must have collaborator access to a repository to create, update, or read variables. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
 ///
@@ -457,238 +602,6 @@ pub fn actions_get_private_repo_fork_pr_workflows_settings_repository(
             operation_id: "actions_get_private_repo_fork_pr_workflows_settings_repository",
             options,
             errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsSetPrivateRepoForkPrWorkflowsSettingsRepositoryParams {
-    pub owner: String,
-    pub repo: String,
-    pub run_workflows_from_fork_pull_requests: bool,
-    pub send_write_tokens_to_workflows: Option<bool>,
-    pub send_secrets_and_variables: Option<bool>,
-    pub require_approval_for_fork_pr_workflows: Option<bool>,
-}
-
-/// Sets the settings for whether workflows from fork pull requests can run on a private repository. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `run_workflows_from_fork_pull_requests` - Whether workflows triggered by
-///   pull requests from forks are allowed to run on private repositories.
-/// * `send_write_tokens_to_workflows` - Whether GitHub Actions can create pull
-///   requests or submit approving pull request reviews from a workflow triggered
-///   by a fork pull request.
-/// * `send_secrets_and_variables` - Whether to make secrets and variables
-///   available to workflows triggered by pull requests from forks.
-/// * `require_approval_for_fork_pr_workflows` - Whether workflows triggered by
-///   pull requests from forks require approval from a repository administrator to
-///   run.
-pub fn actions_set_private_repo_fork_pr_workflows_settings_repository(
-    config: &ClientConfig,
-    params: ActionsSetPrivateRepoForkPrWorkflowsSettingsRepositoryParams,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let ActionsSetPrivateRepoForkPrWorkflowsSettingsRepositoryParams {
-        owner,
-        repo,
-        run_workflows_from_fork_pull_requests,
-        send_write_tokens_to_workflows,
-        send_secrets_and_variables,
-        require_approval_for_fork_pr_workflows,
-    } = params;
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "run_workflows_from_fork_pull_requests".to_string(),
-        serde_json::to_value(run_workflows_from_fork_pull_requests).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = send_write_tokens_to_workflows {
-        __body_map.insert(
-            "send_write_tokens_to_workflows".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = send_secrets_and_variables {
-        __body_map.insert(
-            "send_secrets_and_variables".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = require_approval_for_fork_pr_workflows {
-        __body_map.insert(
-            "require_approval_for_fork_pr_workflows".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/repos/{}/{}/actions/permissions/fork-pr-workflows-private-repos",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_set_private_repo_fork_pr_workflows_settings_repository",
-            options,
-            errors: &[("404", "BasicError"), ("422", "ValidationError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets the settings for selected actions and reusable workflows that are allowed in a repository. To use this endpoint, the repository policy for `allowed_actions` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for a repository." OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn actions_get_allowed_actions_repository(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    options: Option<&RequestOptions>,
-) -> Result<SelectedActions, SdkError> {
-    Ok(sdk_request::<SelectedActions>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/actions/permissions/selected-actions",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_get_allowed_actions_repository",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsSetAllowedActionsRepositoryParams {
-    pub owner: String,
-    pub repo: String,
-    pub github_owned_allowed: Option<bool>,
-    pub verified_allowed: Option<bool>,
-    pub patterns_allowed: Option<Vec<String>>,
-}
-
-/// Sets the actions and reusable workflows that are allowed in a repository. To use this endpoint, the repository permission policy for `allowed_actions` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for a repository." OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `github_owned_allowed` - Whether GitHub-owned actions are allowed. For
-///   example, this includes the actions in the `actions` organization.
-/// * `verified_allowed` - Whether actions from GitHub Marketplace verified
-///   creators are allowed. Set to `true` to allow all actions by GitHub
-///   Marketplace verified creators.
-/// * `patterns_allowed` - Specifies a list of string-matching patterns to allow
-///   specific action(s) and reusable workflow(s). Wildcards, tags, and SHAs are
-///   allowed. For example, `monalisa/octocat@\*`, `monalisa/octocat@v2`,
-///   `monalisa/\*`. \> [!NOTE] \> The `patterns_allowed` setting only applies to
-///   public repositories.
-pub fn actions_set_allowed_actions_repository(
-    config: &ClientConfig,
-    params: ActionsSetAllowedActionsRepositoryParams,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    let ActionsSetAllowedActionsRepositoryParams {
-        owner,
-        repo,
-        github_owned_allowed,
-        verified_allowed,
-        patterns_allowed,
-    } = params;
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = github_owned_allowed {
-        __body_map.insert(
-            "github_owned_allowed".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = verified_allowed {
-        __body_map.insert(
-            "verified_allowed".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = patterns_allowed {
-        __body_map.insert(
-            "patterns_allowed".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/repos/{}/{}/actions/permissions/selected-actions",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_set_allowed_actions_repository",
-            options,
             ..Default::default()
         },
     )?

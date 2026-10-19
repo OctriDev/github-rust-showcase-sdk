@@ -8,6 +8,7 @@ mod part4;
 mod part5;
 mod part6;
 mod part7;
+mod part8;
 
 pub use part1::*;
 pub use part2::*;
@@ -16,3 +17,4 @@ pub use part4::*;
 pub use part5::*;
 pub use part6::*;
 pub use part7::*;
+pub use part8::*;

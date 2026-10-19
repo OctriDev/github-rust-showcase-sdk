@@ -5,8 +5,140 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{ActionsPublicKey, ActionsSecret, EmptyObject, WorkflowUsage};
+use crate::types::{
+    ActionsPublicKey, ActionsSecret, EmptyObject, WorkflowDispatchResponse, WorkflowUsage,
+};
 use crate::validation::{validate_date_time, validate_pattern};
+
+#[derive(Debug, Clone)]
+pub struct ActionsCreateWorkflowDispatchParams {
+    pub owner: String,
+    pub repo: String,
+    pub workflow_id: ActionsGetWorkflow,
+    pub ref_: String,
+    pub inputs: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub return_run_details: Option<bool>,
+}
+
+/// You can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`. You must configure your GitHub Actions workflow to run when the `workflow_dispatch` webhook event occurs. The `inputs` are configured in the workflow file. For more information about how to configure the `workflow_dispatch` event in the workflow file, see "Events that trigger workflows." OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `workflow_id` - The ID of the workflow. You can also pass the workflow
+///   file name as a string.
+/// * `ref_` - The git reference for the workflow. The reference can be a branch
+///   or tag name.
+/// * `inputs` - Input keys and values configured in the workflow file. The
+///   maximum number of properties is 25\. Any default properties configured in
+///   the workflow file will be used when `inputs` are omitted.
+/// * `return_run_details` - Whether the response should include the workflow
+///   run ID and URLs.
+pub fn actions_create_workflow_dispatch(
+    config: &ClientConfig,
+    params: ActionsCreateWorkflowDispatchParams,
+    options: Option<&RequestOptions>,
+) -> Result<WorkflowDispatchResponse, SdkError> {
+    let ActionsCreateWorkflowDispatchParams {
+        owner,
+        repo,
+        workflow_id,
+        ref_,
+        inputs,
+        return_run_details,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "ref".to_string(),
+        serde_json::to_value(ref_).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = inputs {
+        __body_map.insert(
+            "inputs".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = return_run_details {
+        __body_map.insert(
+            "return_run_details".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<WorkflowDispatchResponse>(
+        "POST",
+        &format!(
+            "/repos/{}/{}/actions/workflows/{}/dispatches",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&workflow_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_create_workflow_dispatch",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Enables a workflow and sets the `state` of the workflow to `active`. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `workflow_id` - The ID of the workflow. You can also pass the workflow
+///   file name as a string.
+pub fn actions_enable_workflow(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    workflow_id: ActionsGetWorkflow,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/repos/{}/{}/actions/workflows/{}/enable",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&workflow_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_enable_workflow",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 #[derive(Debug, Clone)]
 pub struct ActionsListWorkflowRunsParams {
@@ -440,73 +572,6 @@ pub fn actions_delete_environment_secret(
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "actions_delete_environment_secret",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsListEnvironmentVariablesParams {
-    pub owner: String,
-    pub repo: String,
-    pub environment_name: String,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists all environment variables. Authenticated users must have collaborator access to a repository to create, update, or read variables. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `environment_name` - The name of the environment. The name must be URL
-///   encoded. For example, any slashes in the name must be replaced with `%2F`.
-/// * `per_page` - The number of results per page (max 30). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn actions_list_environment_variables(
-    config: &ClientConfig,
-    params: ActionsListEnvironmentVariablesParams,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsListEnvironmentVariablesResponse, SdkError> {
-    let ActionsListEnvironmentVariablesParams {
-        owner,
-        repo,
-        environment_name,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ActionsListEnvironmentVariablesResponse>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/environments/{}/variables",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&environment_name)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_list_environment_variables",
             options,
             ..Default::default()
         },

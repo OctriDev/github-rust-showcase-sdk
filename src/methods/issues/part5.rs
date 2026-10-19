@@ -8,6 +8,131 @@ use crate::types::{
     ReactionRollup, Repository, SimpleUser, SubIssuesSummary,
 };
 
+impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    #[default]
+    AlreadyApplied,
+    IssueAlreadyClosed,
+    Unknown(String),
+}
+
+impl IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::AlreadyApplied => "already_applied",
+            Self::IssueAlreadyClosed => "issue_already_closed",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "already_applied" => Self::AlreadyApplied,
+            "issue_already_closed" => Self::IssueAlreadyClosed,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct IssuesUpdateResponseVariant1SuggestionsStateItem {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state_reason: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duplicate_issue_id: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rationale: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggest: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence: Option<IssuesUpdateResponseVariant1SuggestionsStateItemConfidenceEnum>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignored: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignored_reason: Option<IssuesUpdateResponseVariant1SuggestionsStateItemIgnoredReasonEnum>,
+}
+
+impl IssuesUpdateResponseVariant1SuggestionsStateItem {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            value: None,
+            state_reason: None,
+            duplicate_issue_id: None,
+            rationale: None,
+            suggest: None,
+            confidence: None,
+            ignored: None,
+            ignored_reason: None,
+        }
+    }
+}
+
+/// Pending suggestions for each suggestible field (`type`,
+/// `issue_field_values`, `labels`, `assignees`, `state`) the
+/// request touched. Omitted for fields not in the request or
+/// with no pending or ignored suggestions. Items tagged
+/// `ignored` are echoes of the current request's inputs that
+/// were not persisted as pending suggestions.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct IssuesUpdateResponseVariant1Suggestions {
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<Vec<IssuesUpdateResponseVariant1SuggestionsTypeItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issue_field_values:
+        Option<Vec<IssuesUpdateResponseVariant1SuggestionsIssueFieldValuesItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<IssuesUpdateResponseVariant1SuggestionsLabelsItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub assignees: Option<Vec<IssuesUpdateResponseVariant1SuggestionsAssigneesItem>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<Vec<IssuesUpdateResponseVariant1SuggestionsStateItem>>,
+}
+
+impl IssuesUpdateResponseVariant1Suggestions {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            type_: None,
+            issue_field_values: None,
+            labels: None,
+            assignees: None,
+            state: None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct IssuesUpdateResponse {
     /// Required `int64`-formatted value serialized in the `id` wire field.
@@ -155,156 +280,4 @@ pub struct IssuesUpdateResponse {
     /// were not persisted as pending suggestions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub suggestions: Option<IssuesUpdateResponseVariant1Suggestions>,
-}
-
-impl IssuesUpdateResponse {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("url", &self.url)?;
-        crate::validation::validate_uri("repository_url", &self.repository_url)?;
-        crate::validation::validate_uri("comments_url", &self.comments_url)?;
-        crate::validation::validate_uri("events_url", &self.events_url)?;
-        crate::validation::validate_uri("html_url", &self.html_url)?;
-        if let Some(value) = self.closed_at.as_ref() {
-            crate::validation::validate_model_date_time("closed_at", value)?;
-        }
-        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
-        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
-        if let Some(value) = self.timeline_url.as_ref() {
-            crate::validation::validate_uri("timeline_url", value)?;
-        }
-        if let Some(Some(value)) = self.parent_issue_url.as_ref() {
-            crate::validation::validate_uri("parent_issue_url", value)?;
-        }
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        id: i64,
-        node_id: String,
-        url: String,
-        repository_url: String,
-        labels_url: String,
-        comments_url: String,
-        events_url: String,
-        html_url: String,
-        number: i64,
-        state: String,
-        title: String,
-        user: Option<NullableSimpleUser>,
-        labels: Vec<IssueLabelsItem>,
-        assignee: Option<NullableSimpleUser>,
-        milestone: Option<NullableMilestone>,
-        locked: bool,
-        comments: i64,
-        closed_at: Option<String>,
-        created_at: String,
-        updated_at: String,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            id,
-            node_id,
-            url,
-            repository_url,
-            labels_url,
-            comments_url,
-            events_url,
-            html_url,
-            number,
-            state,
-            state_reason: None,
-            title,
-            body: None,
-            user,
-            labels,
-            assignee,
-            assignees: None,
-            milestone,
-            locked,
-            active_lock_reason: None,
-            comments,
-            pull_request: None,
-            closed_at,
-            created_at,
-            updated_at,
-            draft: None,
-            closed_by: None,
-            body_html: None,
-            body_text: None,
-            timeline_url: None,
-            type_: None,
-            repository: None,
-            performed_via_github_app: None,
-            author_association: None,
-            reactions: None,
-            sub_issues_summary: None,
-            parent_issue_url: None,
-            pinned_comment: None,
-            issue_dependencies_summary: None,
-            issue_field_values: None,
-            suggestions: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum IssuesAddIssueFieldValuesIssueFieldValuesItemValue {
-    String(String),
-    Number(f64),
-    StringArray(Vec<String>),
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesAddIssueFieldValuesIssueFieldValuesItemValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
-            let candidate = Self::String(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
-            let candidate = Self::Number(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
-            let candidate = Self::StringArray(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| {
-            serde::de::Error::custom(
-                "no IssuesAddIssueFieldValuesIssueFieldValuesItemValue branch accepts this payload",
-            )
-        })
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesAddIssueFieldValuesIssueFieldValuesItem {
-    /// The ID of the issue field to set
-    pub field_id: i64,
-    /// The value to set for the field. The type depends on the field's data type:
-    /// \- For text fields: provide a string value
-    /// \- For single_select fields: provide the option name as a string (must match an existing option)
-    /// \- For number fields: provide a numeric value
-    /// \- For multi_select fields: provide an array of option names (must match existing options)
-    /// \- For date fields: provide an ISO 8601 date string
-    pub value: IssuesAddIssueFieldValuesIssueFieldValuesItemValue,
-}
-
-impl IssuesAddIssueFieldValuesIssueFieldValuesItem {
-    pub fn new(field_id: i64, value: IssuesAddIssueFieldValuesIssueFieldValuesItemValue) -> Self {
-        Self { field_id, value }
-    }
 }

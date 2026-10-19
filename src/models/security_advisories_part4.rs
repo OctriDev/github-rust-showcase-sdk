@@ -3,6 +3,15 @@
 
 // security_advisories domain models (part 4)
 
+impl RepositoryAdvisoryUpdateVulnerabilitiesItemPackage {
+    pub fn new(ecosystem: SecurityAdvisoryEcosystems) -> Self {
+        Self {
+            ecosystem,
+            name: None,
+        }
+    }
+}
+
 /// Required object value serialized in the `vulnerabilities[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct RepositoryAdvisoryUpdateVulnerabilitiesItem {
@@ -484,10 +493,4 @@ pub struct VulnerabilityPackage {
     /// The unique package name within its ecosystem.
     #[serde(deserialize_with = "Option::deserialize")]
     pub name: Option<String>,
-}
-
-impl VulnerabilityPackage {
-    pub fn new(ecosystem: SecurityAdvisoryEcosystems, name: Option<String>) -> Self {
-        Self { ecosystem, name }
-    }
 }

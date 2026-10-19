@@ -3,6 +3,15 @@
 
 // webhook_pull_request_review_request_removed domain models (part 3)
 
+impl serde::Serialize for WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoPullRequestCreationPolicyEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
 impl<'de> serde::Deserialize<'de> for WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoPullRequestCreationPolicyEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -398,6 +407,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoPushedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoPushedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The default value for a squash merge commit message.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoSquashMergeCommitMessageEnum
@@ -479,37 +504,4 @@ impl serde::Serialize
     {
         serializer.serialize_str(self.as_str())
     }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoSquashMergeCommitTitleEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_TITLE" => Self::PrTitle,
-            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoSquashMergeCommitTitleEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestBaseRepoVisibilityEnum {
-    #[default]
-    Public,
-    Private,
-    Internal,
-    Unknown(String),
 }

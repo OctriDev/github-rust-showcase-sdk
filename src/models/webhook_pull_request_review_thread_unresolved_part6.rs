@@ -3,6 +3,34 @@
 
 // webhook_pull_request_review_thread_unresolved domain models (part 6)
 
+impl serde::Serialize
+    for WebhookPullRequestReviewThreadUnresolvedPullRequestHeadRepoVisibilityEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewThreadUnresolvedPullRequestHeadRepoVisibilityEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "public" => Self::Public,
+            "private" => Self::Private,
+            "internal" => Self::Internal,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display
     for WebhookPullRequestReviewThreadUnresolvedPullRequestHeadRepoVisibilityEnum
 {
@@ -489,77 +517,4 @@ impl std::fmt::Display for WebhookPullRequestReviewThreadUnresolvedPullRequestHe
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
-}
-
-/// Required object value serialized in the `user` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookPullRequestReviewThreadUnresolvedPullRequestHeadUser {
-    /// Optional `uri`-formatted value serialized in the `avatar_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub avatar_url: Option<String>,
-    /// Optional `boolean` value serialized in the `deleted` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-    /// Optional `string` value serialized in the `email` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub email: Option<Option<String>>,
-    /// Optional `uri-template`-formatted value serialized in the `events_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub events_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `followers_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub followers_url: Option<String>,
-    /// Optional `uri-template`-formatted value serialized in the `following_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub following_url: Option<String>,
-    /// Optional `uri-template`-formatted value serialized in the `gists_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gists_url: Option<String>,
-    /// Optional `string` value serialized in the `gravatar_id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gravatar_id: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `html_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-    /// Required `int64`-formatted value serialized in the `id` wire field.
-    pub id: i64,
-    /// Required `string` value serialized in the `login` wire field.
-    pub login: String,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional `string` value serialized in the `node_id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub node_id: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `organizations_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub organizations_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `received_events_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_events_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `repos_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub repos_url: Option<String>,
-    /// Optional `boolean` value serialized in the `site_admin` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub site_admin: Option<bool>,
-    /// Optional `uri-template`-formatted value serialized in the `starred_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starred_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `subscriptions_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscriptions_url: Option<String>,
-    /// Optional enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<WebhookPullRequestReviewThreadUnresolvedPullRequestHeadUserTypeEnum>,
-    /// Optional `uri`-formatted value serialized in the `url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
-    /// Optional `string` value serialized in the `user_view_type` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_view_type: Option<String>,
 }
