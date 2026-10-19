@@ -3,6 +3,113 @@
 
 // webhook_pull_request_review_thread_resolved domain models (part 8)
 
+impl WebhookPullRequestReviewThreadResolvedPullRequestMilestone {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.closed_at.as_ref() {
+            crate::validation::validate_model_date_time("closed_at", value)?;
+        }
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        if let Some(value) = self.due_on.as_ref() {
+            crate::validation::validate_model_date_time("due_on", value)?;
+        }
+        crate::validation::validate_uri("html_url", &self.html_url)?;
+        crate::validation::validate_uri("labels_url", &self.labels_url)?;
+        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
+        crate::validation::validate_uri("url", &self.url)?;
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        closed_at: Option<String>,
+        closed_issues: i64,
+        created_at: String,
+        creator: Option<WebhookPullRequestReviewThreadResolvedPullRequestMilestoneCreator>,
+        description: Option<String>,
+        due_on: Option<String>,
+        html_url: String,
+        id: i64,
+        labels_url: String,
+        node_id: String,
+        number: i64,
+        open_issues: i64,
+        state: WebhookPullRequestReviewThreadResolvedPullRequestMilestoneStateEnum,
+        title: String,
+        updated_at: String,
+        url: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            closed_at,
+            closed_issues,
+            created_at,
+            creator,
+            description,
+            due_on,
+            html_url,
+            id,
+            labels_url,
+            node_id,
+            number,
+            open_issues,
+            state,
+            title,
+            updated_at,
+            url,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+/// Required enumerated value serialized in the `privacy` wire field.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewThreadResolvedPullRequestRequestedTeamsItemParentPrivacyEnum {
+    #[default]
+    Open,
+    Closed,
+    Secret,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewThreadResolvedPullRequestRequestedTeamsItemParentPrivacyEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Open => "open",
+            Self::Closed => "closed",
+            Self::Secret => "secret",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewThreadResolvedPullRequestRequestedTeamsItemParentPrivacyEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewThreadResolvedPullRequestRequestedTeamsItemParentPrivacyEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "open" => Self::Open,
+            "closed" => Self::Closed,
+            "secret" => Self::Secret,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display
     for WebhookPullRequestReviewThreadResolvedPullRequestRequestedTeamsItemParentPrivacyEnum
 {
@@ -399,63 +506,4 @@ pub struct WebhookPullRequestReviewThreadResolvedPullRequestUser {
     /// Optional `string` value serialized in the `user_view_type` wire field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_view_type: Option<String>,
-}
-
-impl WebhookPullRequestReviewThreadResolvedPullRequestUser {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.avatar_url.as_ref() {
-            crate::validation::validate_uri("avatar_url", value)?;
-        }
-        if let Some(value) = self.followers_url.as_ref() {
-            crate::validation::validate_uri("followers_url", value)?;
-        }
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        if let Some(value) = self.organizations_url.as_ref() {
-            crate::validation::validate_uri("organizations_url", value)?;
-        }
-        if let Some(value) = self.received_events_url.as_ref() {
-            crate::validation::validate_uri("received_events_url", value)?;
-        }
-        if let Some(value) = self.repos_url.as_ref() {
-            crate::validation::validate_uri("repos_url", value)?;
-        }
-        if let Some(value) = self.subscriptions_url.as_ref() {
-            crate::validation::validate_uri("subscriptions_url", value)?;
-        }
-        if let Some(value) = self.url.as_ref() {
-            crate::validation::validate_uri("url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(id: i64, login: String) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            avatar_url: None,
-            deleted: None,
-            email: None,
-            events_url: None,
-            followers_url: None,
-            following_url: None,
-            gists_url: None,
-            gravatar_id: None,
-            html_url: None,
-            id,
-            login,
-            name: None,
-            node_id: None,
-            organizations_url: None,
-            received_events_url: None,
-            repos_url: None,
-            site_admin: None,
-            starred_url: None,
-            subscriptions_url: None,
-            type_: None,
-            url: None,
-            user_view_type: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
 }

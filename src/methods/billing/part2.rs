@@ -6,10 +6,99 @@ use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{
-    BillingPremiumRequestUsageReportOrg, BillingUsageReport, CreateBudget, DeleteBudget,
-    GetAllBudgets, GetBudget, UpdateBudget,
+    BillingAiCreditUsageReportOrg, CreateBudget, DeleteBudget, GetAllBudgets, GetBudget,
+    UpdateBudget,
 };
 use crate::validation::validate_date;
+
+#[derive(Debug, Clone, Default)]
+pub struct BillingGetGithubBillingAiCreditUsageReportOrgParams {
+    pub org: String,
+    pub year: Option<i64>,
+    pub month: Option<i64>,
+    pub day: Option<i64>,
+    pub user: Option<String>,
+    pub model: Option<String>,
+    pub product: Option<String>,
+}
+
+/// Gets a report of AI credit usage for an organization. To use this endpoint, you must be an administrator of an organization within an enterprise or an organization account. \*\*Note:\*\* Only data from the past 24 months is accessible via this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `year` - If specified, only return results for a single year. The value of
+///   `year` is an integer with four digits representing a year. For example,
+///   `2025`. Default value is the current year.
+/// * `month` - If specified, only return results for a single month. The value
+///   of `month` is an integer between `1` and `12`. Default value is the current
+///   month. If no year is specified the default `year` is used.
+/// * `day` - If specified, only return results for a single day. The value of
+///   `day` is an integer between `1` and `31`. If no `year` or `month` is
+///   specified, the default `year` and `month` are used.
+/// * `user` - The user name to query usage for. The name is not case sensitive.
+/// * `model` - The model name to query usage for. The name is not case
+///   sensitive.
+/// * `product` - The product name to query usage for. The name is not case
+///   sensitive.
+pub fn billing_get_github_billing_ai_credit_usage_report_org(
+    config: &ClientConfig,
+    params: BillingGetGithubBillingAiCreditUsageReportOrgParams,
+    options: Option<&RequestOptions>,
+) -> Result<BillingAiCreditUsageReportOrg, SdkError> {
+    let BillingGetGithubBillingAiCreditUsageReportOrgParams {
+        org,
+        year,
+        month,
+        day,
+        user,
+        model,
+        product,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
+    if let Some(ref v) = year {
+        __query.push(("year", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = month {
+        __query.push(("month", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = day {
+        __query.push(("day", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = user {
+        __query.push(("user", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = model {
+        __query.push(("model", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = product {
+        __query.push(("product", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<BillingAiCreditUsageReportOrg>(
+        "GET",
+        &format!(
+            "/organizations/{}/settings/billing/ai_credit/usage",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "billing_get_github_billing_ai_credit_usage_report_org",
+            options,
+            errors: &[
+                ("400", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("500", "BasicError"),
+                ("503", "ServiceUnavailable"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct BillingGetAllBudgetsOrgParams {
@@ -457,152 +546,6 @@ pub fn billing_delete_budget_org(
                 ("400", "BasicError"),
                 ("403", "BasicError"),
                 ("404", "BasicError"),
-                ("500", "BasicError"),
-                ("503", "ServiceUnavailable"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct BillingGetGithubBillingPremiumRequestUsageReportOrgParams {
-    pub org: String,
-    pub year: Option<i64>,
-    pub month: Option<i64>,
-    pub day: Option<i64>,
-    pub user: Option<String>,
-    pub model: Option<String>,
-    pub product: Option<String>,
-}
-
-/// Gets a report of premium request usage for an organization. To use this endpoint, you must be an administrator of an organization within an enterprise or an organization account. \*\*Note:\*\* Only data from the past 24 months is accessible via this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `year` - If specified, only return results for a single year. The value of
-///   `year` is an integer with four digits representing a year. For example,
-///   `2025`. Default value is the current year.
-/// * `month` - If specified, only return results for a single month. The value
-///   of `month` is an integer between `1` and `12`. Default value is the current
-///   month. If no year is specified the default `year` is used.
-/// * `day` - If specified, only return results for a single day. The value of
-///   `day` is an integer between `1` and `31`. If no `year` or `month` is
-///   specified, the default `year` and `month` are used.
-/// * `user` - The user name to query usage for. The name is not case sensitive.
-/// * `model` - The model name to query usage for. The name is not case
-///   sensitive.
-/// * `product` - The product name to query usage for. The name is not case
-///   sensitive.
-pub fn billing_get_github_billing_premium_request_usage_report_org(
-    config: &ClientConfig,
-    params: BillingGetGithubBillingPremiumRequestUsageReportOrgParams,
-    options: Option<&RequestOptions>,
-) -> Result<BillingPremiumRequestUsageReportOrg, SdkError> {
-    let BillingGetGithubBillingPremiumRequestUsageReportOrgParams {
-        org,
-        year,
-        month,
-        day,
-        user,
-        model,
-        product,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(6);
-    if let Some(ref v) = year {
-        __query.push(("year", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = month {
-        __query.push(("month", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = day {
-        __query.push(("day", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = user {
-        __query.push(("user", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = model {
-        __query.push(("model", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = product {
-        __query.push(("product", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<BillingPremiumRequestUsageReportOrg>(
-        "GET",
-        &format!(
-            "/organizations/{}/settings/billing/premium_request/usage",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "billing_get_github_billing_premium_request_usage_report_org",
-            options,
-            errors: &[
-                ("400", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("500", "BasicError"),
-                ("503", "ServiceUnavailable"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets a report of the total usage for an organization. To use this endpoint, you must be an administrator of an organization within an enterprise or an organization account. \*\*Note:\*\* This endpoint is only available to organizations with access to the enhanced billing platform. For more information, see "[About the enhanced billing platform](https://docs.github.com/billing/using-the-new-billing-platform)."
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `year` - If specified, only return results for a single year. The value of
-///   `year` is an integer with four digits representing a year. For example,
-///   `2025`. Default value is the current year.
-/// * `month` - If specified, only return results for a single month. The value
-///   of `month` is an integer between `1` and `12`. If no year is specified the
-///   default `year` is used.
-/// * `day` - If specified, only return results for a single day. The value of
-///   `day` is an integer between `1` and `31`. If no `year` or `month` is
-///   specified, the default `year` and `month` are used.
-pub fn billing_get_github_billing_usage_report_org(
-    config: &ClientConfig,
-    org: String,
-    year: Option<i64>,
-    month: Option<i64>,
-    day: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<BillingUsageReport, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
-    if let Some(ref v) = year {
-        __query.push(("year", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = month {
-        __query.push(("month", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = day {
-        __query.push(("day", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<BillingUsageReport>(
-        "GET",
-        &format!(
-            "/organizations/{}/settings/billing/usage",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "billing_get_github_billing_usage_report_org",
-            options,
-            errors: &[
-                ("400", "BasicError"),
-                ("403", "BasicError"),
                 ("500", "BasicError"),
                 ("503", "ServiceUnavailable"),
             ],

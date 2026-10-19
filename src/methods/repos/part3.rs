@@ -114,6 +114,20 @@ impl<'de> serde::Deserialize<'de> for ReposAddStatusCheckContexts {
     }
 }
 
+impl ::std::convert::From<Box<ReposAddStatusCheckContextsVariant0>>
+    for ReposAddStatusCheckContexts
+{
+    fn from(value: Box<ReposAddStatusCheckContextsVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ReposAddStatusCheckContexts {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ReposSetStatusCheckContextsVariant0 {
     /// The name of the status checks
@@ -156,6 +170,20 @@ impl<'de> serde::Deserialize<'de> for ReposSetStatusCheckContexts {
         lossy.ok_or_else(|| {
             serde::de::Error::custom("no ReposSetStatusCheckContexts branch accepts this payload")
         })
+    }
+}
+
+impl ::std::convert::From<Box<ReposSetStatusCheckContextsVariant0>>
+    for ReposSetStatusCheckContexts
+{
+    fn from(value: Box<ReposSetStatusCheckContextsVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ReposSetStatusCheckContexts {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }
 
@@ -206,6 +234,20 @@ impl<'de> serde::Deserialize<'de> for ReposRemoveStatusCheckContexts {
     }
 }
 
+impl ::std::convert::From<Box<ReposRemoveStatusCheckContextsVariant0>>
+    for ReposRemoveStatusCheckContexts
+{
+    fn from(value: Box<ReposRemoveStatusCheckContextsVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ReposRemoveStatusCheckContexts {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ReposAddTeamAccessRestrictionsVariant0 {
     /// The slug values for teams
@@ -253,61 +295,22 @@ impl<'de> serde::Deserialize<'de> for ReposAddTeamAccessRestrictions {
     }
 }
 
+impl ::std::convert::From<Box<ReposAddTeamAccessRestrictionsVariant0>>
+    for ReposAddTeamAccessRestrictions
+{
+    fn from(value: Box<ReposAddTeamAccessRestrictionsVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ReposAddTeamAccessRestrictions {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ReposSetTeamAccessRestrictionsVariant0 {
     /// The slug values for teams
     pub teams: Vec<String>,
-}
-
-impl ReposSetTeamAccessRestrictionsVariant0 {
-    pub fn new(teams: Vec<String>) -> Self {
-        Self { teams }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum ReposSetTeamAccessRestrictions {
-    Object(Box<ReposSetTeamAccessRestrictionsVariant0>),
-    StringArray(Vec<String>),
-}
-
-impl<'de> serde::Deserialize<'de> for ReposSetTeamAccessRestrictions {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) =
-            serde_json::from_value::<Box<ReposSetTeamAccessRestrictionsVariant0>>(value.clone())
-        {
-            let candidate = Self::Object(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
-            let candidate = Self::StringArray(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| {
-            serde::de::Error::custom(
-                "no ReposSetTeamAccessRestrictions branch accepts this payload",
-            )
-        })
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ReposRemoveTeamAccessRestrictionsVariant0 {
-    /// The slug values for teams
-    pub teams: Vec<String>,
-}
-
-impl ReposRemoveTeamAccessRestrictionsVariant0 {
-    pub fn new(teams: Vec<String>) -> Self {
-        Self { teams }
-    }
 }

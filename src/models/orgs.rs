@@ -446,6 +446,18 @@ impl<'de> serde::Deserialize<'de> for CustomPropertyDefaultValue {
     }
 }
 
+impl ::std::convert::From<String> for CustomPropertyDefaultValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for CustomPropertyDefaultValue {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 /// Who can edit the values of the property
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum CustomPropertyValuesEditableByEnum {
@@ -462,14 +474,5 @@ impl CustomPropertyValuesEditableByEnum {
             Self::OrgAndRepoActors => "org_and_repo_actors",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for CustomPropertyValuesEditableByEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

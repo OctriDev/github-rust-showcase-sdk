@@ -5,7 +5,244 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{ActionsVariable, EmptyObject, Workflow, WorkflowDispatchResponse};
+use crate::types::{ActionsPublicKey, ActionsSecret, ActionsVariable, EmptyObject, Workflow};
+use crate::validation::validate_pattern;
+
+/// Lists all secrets available in a repository without revealing their encrypted values. Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn actions_list_repo_secrets(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsListRepoSecretsResponse, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<ActionsListRepoSecretsResponse>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/secrets",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_list_repo_secrets",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets your public key, which you need to encrypt secrets. You need to encrypt a secret before you can create or update secrets. Anyone with read access to the repository can use this endpoint. If the repository is private, OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn actions_get_repo_public_key(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsPublicKey, SdkError> {
+    Ok(sdk_request::<ActionsPublicKey>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/secrets/public-key",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_repo_public_key",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets a single repository secret without revealing its encrypted value. The authenticated user must have collaborator access to the repository to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `secret_name` - The name of the secret.
+pub fn actions_get_repo_secret(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    secret_name: String,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsSecret, SdkError> {
+    Ok(sdk_request::<ActionsSecret>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/secrets/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&secret_name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_repo_secret",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsCreateOrUpdateRepoSecretParams {
+    pub owner: String,
+    pub repo: String,
+    pub secret_name: String,
+    pub encrypted_value: String,
+    pub key_id: String,
+}
+
+/// Creates or updates a repository secret with an encrypted value. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)." Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `secret_name` - The name of the secret.
+/// * `encrypted_value` - Value for your secret, encrypted with
+///   [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages)
+///   using the public key retrieved from the [Get a repository public
+///   key](https://docs.github.com/rest/actions/secrets#get-a-repository-public-ke
+///   y) endpoint.
+/// * `key_id` - ID of the key you used to encrypt the secret.
+pub fn actions_create_or_update_repo_secret(
+    config: &ClientConfig,
+    params: ActionsCreateOrUpdateRepoSecretParams,
+    options: Option<&RequestOptions>,
+) -> Result<EmptyObject, SdkError> {
+    let ActionsCreateOrUpdateRepoSecretParams {
+        owner,
+        repo,
+        secret_name,
+        encrypted_value,
+        key_id,
+    } = params;
+    validate_pattern(
+        "encrypted_value",
+        &encrypted_value,
+        "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$",
+    )?;
+
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "encrypted_value".to_string(),
+        serde_json::to_value(encrypted_value).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    __body_map.insert(
+        "key_id".to_string(),
+        serde_json::to_value(key_id).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<EmptyObject>(
+        "PUT",
+        &format!(
+            "/repos/{}/{}/actions/secrets/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&secret_name)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_create_or_update_repo_secret",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Deletes a secret in a repository using the secret name. Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `secret_name` - The name of the secret.
+pub fn actions_delete_repo_secret(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    secret_name: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/repos/{}/{}/actions/secrets/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&secret_name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_delete_repo_secret",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Lists all repository variables. Authenticated users must have collaborator access to a repository to create, update, or read variables. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
 ///
@@ -379,136 +616,6 @@ pub fn actions_disable_workflow(
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "actions_disable_workflow",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone)]
-pub struct ActionsCreateWorkflowDispatchParams {
-    pub owner: String,
-    pub repo: String,
-    pub workflow_id: ActionsGetWorkflow,
-    pub ref_: String,
-    pub inputs: Option<std::collections::HashMap<String, serde_json::Value>>,
-    pub return_run_details: Option<bool>,
-}
-
-/// You can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`. You must configure your GitHub Actions workflow to run when the `workflow_dispatch` webhook event occurs. The `inputs` are configured in the workflow file. For more information about how to configure the `workflow_dispatch` event in the workflow file, see "Events that trigger workflows." OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `workflow_id` - The ID of the workflow. You can also pass the workflow
-///   file name as a string.
-/// * `ref_` - The git reference for the workflow. The reference can be a branch
-///   or tag name.
-/// * `inputs` - Input keys and values configured in the workflow file. The
-///   maximum number of properties is 25\. Any default properties configured in
-///   the workflow file will be used when `inputs` are omitted.
-/// * `return_run_details` - Whether the response should include the workflow
-///   run ID and URLs.
-pub fn actions_create_workflow_dispatch(
-    config: &ClientConfig,
-    params: ActionsCreateWorkflowDispatchParams,
-    options: Option<&RequestOptions>,
-) -> Result<WorkflowDispatchResponse, SdkError> {
-    let ActionsCreateWorkflowDispatchParams {
-        owner,
-        repo,
-        workflow_id,
-        ref_,
-        inputs,
-        return_run_details,
-    } = params;
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "ref".to_string(),
-        serde_json::to_value(ref_).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = inputs {
-        __body_map.insert(
-            "inputs".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = return_run_details {
-        __body_map.insert(
-            "return_run_details".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<WorkflowDispatchResponse>(
-        "POST",
-        &format!(
-            "/repos/{}/{}/actions/workflows/{}/dispatches",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&workflow_id)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_create_workflow_dispatch",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Enables a workflow and sets the `state` of the workflow to `active`. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`. OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `workflow_id` - The ID of the workflow. You can also pass the workflow
-///   file name as a string.
-pub fn actions_enable_workflow(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    workflow_id: ActionsGetWorkflow,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/repos/{}/{}/actions/workflows/{}/enable",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&workflow_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_enable_workflow",
             options,
             ..Default::default()
         },

@@ -5,11 +5,173 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{
-    DependabotAlertWithRepository, DependabotPublicKey, DependabotRepositoryAccessDetails,
-    OrganizationDependabotSecret,
-};
+use crate::types::{DependabotAlertWithRepository, DependabotRepositoryAccessDetails};
 use crate::validation::{validate_range, RangeOpts};
+
+/// Lists repositories that enterprise admins have allowed Dependabot to access when updating dependencies across organizations in the enterprise. The authenticated user must be an enterprise owner to use this endpoint. \> [!NOTE] \> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
+///
+/// # Arguments
+///
+/// * `enterprise` - The slug version of the enterprise name.
+/// * `page` - The page number of results to fetch.
+/// * `per_page` - Number of results per page.
+pub fn dependabot_repository_access_for_enterprise(
+    config: &ClientConfig,
+    enterprise: String,
+    page: Option<i64>,
+    per_page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<DependabotRepositoryAccessDetails, SdkError> {
+    if let Some(ref page_v) = page {
+        validate_range(
+            "page",
+            *page_v as f64,
+            RangeOpts {
+                min: Some(1_f64),
+                ..Default::default()
+            },
+        )?;
+    }
+    if let Some(ref per_page_v) = per_page {
+        validate_range(
+            "per_page",
+            *per_page_v as f64,
+            RangeOpts {
+                min: Some(1_f64),
+                max: Some(100_f64),
+                ..Default::default()
+            },
+        )?;
+    }
+
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<DependabotRepositoryAccessDetails>(
+        "GET",
+        &format!(
+            "/enterprises/{}/dependabot/repository-access",
+            crate::client::encode_path_segment(&enterprise)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "dependabot_repository_access_for_enterprise",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Updates repositories according to the list of repositories that enterprise admins have given Dependabot access to when they've updated dependencies across organizations in the enterprise. The authenticated user must be an enterprise owner to use this endpoint. \*\*Example request body:\*\* ```json { "repository_ids_to_add": [123, 456], "repository_ids_to_remove": [789] } ``` \> [!NOTE] \> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
+///
+/// # Arguments
+///
+/// * `enterprise` - The slug version of the enterprise name.
+/// * `repository_ids_to_add` - List of repository IDs to add.
+/// * `repository_ids_to_remove` - List of repository IDs to remove.
+pub fn dependabot_update_repository_access_for_enterprise(
+    config: &ClientConfig,
+    enterprise: String,
+    repository_ids_to_add: Option<Vec<i64>>,
+    repository_ids_to_remove: Option<Vec<i64>>,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = repository_ids_to_add {
+        __body_map.insert(
+            "repository_ids_to_add".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = repository_ids_to_remove {
+        __body_map.insert(
+            "repository_ids_to_remove".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "PATCH",
+        &format!(
+            "/enterprises/{}/dependabot/repository-access",
+            crate::client::encode_path_segment(&enterprise)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "dependabot_update_repository_access_for_enterprise",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Sets the default level of repository access Dependabot will have while performing an update across organizations in the enterprise. Available values are: \- 'public' \- Dependabot will only have access to public repositories, unless access is explicitly granted to non-public repositories. \- 'internal' \- Dependabot will only have access to public and internal repositories, unless access is explicitly granted to private repositories. The authenticated user must be an enterprise owner to use this endpoint. \> [!NOTE] \> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
+///
+/// # Arguments
+///
+/// * `enterprise` - The slug version of the enterprise name.
+/// * `default_level` - The default repository access level for Dependabot
+///   updates.
+pub fn dependabot_set_repository_access_default_level_for_enterprise(
+    config: &ClientConfig,
+    enterprise: String,
+    default_level: DependabotSetRepositoryAccessDefaultLevelForEnterpriseDefaultLevelEnum,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "default_level".to_string(),
+        serde_json::to_value(default_level).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/enterprises/{}/dependabot/repository-access/default-level",
+            crate::client::encode_path_segment(&enterprise)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "dependabot_set_repository_access_default_level_for_enterprise",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct DependabotListAlertsForOrgParams {
@@ -370,109 +532,6 @@ pub fn dependabot_set_repository_access_default_level(
             operation_id: "dependabot_set_repository_access_default_level",
             options,
             errors: &[("403", "BasicError"), ("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists all secrets available in an organization without revealing their encrypted values. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn dependabot_list_org_secrets(
-    config: &ClientConfig,
-    org: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<DependabotListOrgSecretsResponse, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<DependabotListOrgSecretsResponse>(
-        "GET",
-        &format!(
-            "/orgs/{}/dependabot/secrets",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "dependabot_list_org_secrets",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets your public key, which you need to encrypt secrets. You need to encrypt a secret before you can create or update secrets. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-pub fn dependabot_get_org_public_key(
-    config: &ClientConfig,
-    org: String,
-    options: Option<&RequestOptions>,
-) -> Result<DependabotPublicKey, SdkError> {
-    Ok(sdk_request::<DependabotPublicKey>(
-        "GET",
-        &format!(
-            "/orgs/{}/dependabot/secrets/public-key",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "dependabot_get_org_public_key",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets a single organization secret without revealing its encrypted value. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `secret_name` - The name of the secret.
-pub fn dependabot_get_org_secret(
-    config: &ClientConfig,
-    org: String,
-    secret_name: String,
-    options: Option<&RequestOptions>,
-) -> Result<OrganizationDependabotSecret, SdkError> {
-    Ok(sdk_request::<OrganizationDependabotSecret>(
-        "GET",
-        &format!(
-            "/orgs/{}/dependabot/secrets/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&secret_name)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "dependabot_get_org_secret",
-            options,
             ..Default::default()
         },
     )?

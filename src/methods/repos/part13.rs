@@ -2,10 +2,103 @@
 // This file is machine-generated from your OpenAPI spec.
 
 use super::*;
-use crate::client::ClientConfig;
-use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::SdkError;
-use crate::types::MinimalRepository;
+
+impl serde::Serialize for ReposCreateForAuthenticatedUserSquashMergeCommitTitleEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposCreateForAuthenticatedUserSquashMergeCommitTitleEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
+            "PR_TITLE" => Self::PrTitle,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposCreateForAuthenticatedUserSquashMergeCommitTitleEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposCreateForAuthenticatedUserSquashMergeCommitMessageEnum {
+    #[default]
+    Blank,
+    CommitMessages,
+    PrBody,
+    Unknown(String),
+}
+
+impl ReposCreateForAuthenticatedUserSquashMergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Blank => "BLANK",
+            Self::CommitMessages => "COMMIT_MESSAGES",
+            Self::PrBody => "PR_BODY",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ReposCreateForAuthenticatedUserSquashMergeCommitMessageEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposCreateForAuthenticatedUserSquashMergeCommitMessageEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "BLANK" => Self::Blank,
+            "COMMIT_MESSAGES" => Self::CommitMessages,
+            "PR_BODY" => Self::PrBody,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposCreateForAuthenticatedUserSquashMergeCommitMessageEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposCreateForAuthenticatedUserMergeCommitTitleEnum {
+    #[default]
+    MergeMessage,
+    PrTitle,
+    Unknown(String),
+}
+
+impl ReposCreateForAuthenticatedUserMergeCommitTitleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::MergeMessage => "MERGE_MESSAGE",
+            Self::PrTitle => "PR_TITLE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
 
 impl serde::Serialize for ReposCreateForAuthenticatedUserMergeCommitTitleEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -187,123 +280,4 @@ impl std::fmt::Display for ReposListForUserEnum089fad86 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposListForUserEnum6f083e9f {
-    #[default]
-    Asc,
-    Desc,
-    Unknown(String),
-}
-
-impl ReposListForUserEnum6f083e9f {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposListForUserEnum6f083e9f {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposListForUserEnum6f083e9f {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposListForUserEnum6f083e9f {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ReposListForOrgParams {
-    pub org: String,
-    pub type_: Option<ReposListForOrgEnum>,
-    pub sort: Option<ReposListForOrgEnum0727468a>,
-    pub direction: Option<ReposListForOrgEnum03d095bc>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists repositories for the specified organization. \> [!NOTE] \> In order to see the `security_and_analysis` block for a repository you must have admin permissions for the repository or be an owner or security manager for the organization that owns the repository. For more information, see "[Managing security managers in your organization](https://docs.github.com/organizations/managing-peoples-access-to-your-organization-with-roles/managing-security-managers-in-your-organization)."
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `type_` - Specifies the types of repositories you want returned.
-/// * `sort` - The property to sort the results by.
-/// * `direction` - The order to sort by. Default: `asc` when using `full_name`,
-///   otherwise `desc`.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn repos_list_for_org(
-    config: &ClientConfig,
-    params: ReposListForOrgParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<MinimalRepository>, SdkError> {
-    let ReposListForOrgParams {
-        org,
-        type_,
-        sort,
-        direction,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(5);
-    if let Some(ref v) = type_ {
-        __query.push(("type", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = sort {
-        __query.push(("sort", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = direction {
-        __query.push(("direction", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<MinimalRepository>>(
-        "GET",
-        &format!("/orgs/{}/repos", crate::client::encode_path_segment(&org)),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "repos_list_for_org",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
 }

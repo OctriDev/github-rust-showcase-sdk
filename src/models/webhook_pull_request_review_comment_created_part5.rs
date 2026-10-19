@@ -3,6 +3,23 @@
 
 // webhook_pull_request_review_comment_created domain models (part 5)
 
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewCommentCreatedPullRequestBaseRepoOwnerTypeEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "Bot" => Self::Bot,
+            "User" => Self::User,
+            "Organization" => Self::Organization,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for WebhookPullRequestReviewCommentCreatedPullRequestBaseRepoOwnerTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
@@ -198,6 +215,22 @@ impl<'de> serde::Deserialize<'de>
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewCommentCreatedPullRequestBaseRepoPushedAt branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewCommentCreatedPullRequestBaseRepoPushedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewCommentCreatedPullRequestBaseRepoPushedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

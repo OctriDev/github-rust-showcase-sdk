@@ -3,6 +3,31 @@
 
 // orgs domain models (part 4)
 
+impl OrganizationCreateIssueTypeColorEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Gray => "gray",
+            Self::Blue => "blue",
+            Self::Green => "green",
+            Self::Yellow => "yellow",
+            Self::Orange => "orange",
+            Self::Red => "red",
+            Self::Pink => "pink",
+            Self::Purple => "purple",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for OrganizationCreateIssueTypeColorEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
 impl<'de> serde::Deserialize<'de> for OrganizationCreateIssueTypeColorEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -396,137 +421,4 @@ pub struct OrganizationFull {
     /// Controls whether or not deploy keys may be added and used for repositories in the organization.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deploy_keys_enabled_for_repositories: Option<bool>,
-}
-
-impl OrganizationFull {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("url", &self.url)?;
-        crate::validation::validate_uri("repos_url", &self.repos_url)?;
-        crate::validation::validate_uri("events_url", &self.events_url)?;
-        if let Some(Some(value)) = self.blog.as_ref() {
-            crate::validation::validate_uri("blog", value)?;
-        }
-        if let Some(Some(value)) = self.email.as_ref() {
-            crate::validation::validate_email("email", value)?;
-        }
-        crate::validation::validate_uri("html_url", &self.html_url)?;
-        if let Some(Some(value)) = self.billing_email.as_ref() {
-            crate::validation::validate_email("billing_email", value)?;
-        }
-        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
-        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
-        if let Some(value) = self.archived_at.as_ref() {
-            crate::validation::validate_model_date_time("archived_at", value)?;
-        }
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        login: String,
-        id: i64,
-        node_id: String,
-        url: String,
-        repos_url: String,
-        events_url: String,
-        hooks_url: String,
-        issues_url: String,
-        members_url: String,
-        public_members_url: String,
-        avatar_url: String,
-        description: Option<String>,
-        has_organization_projects: bool,
-        has_repository_projects: bool,
-        public_repos: i64,
-        public_gists: i64,
-        followers: i64,
-        following: i64,
-        html_url: String,
-        type_: String,
-        created_at: String,
-        updated_at: String,
-        archived_at: Option<String>,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            login,
-            id,
-            node_id,
-            url,
-            repos_url,
-            events_url,
-            hooks_url,
-            issues_url,
-            members_url,
-            public_members_url,
-            avatar_url,
-            description,
-            name: None,
-            company: None,
-            blog: None,
-            location: None,
-            email: None,
-            twitter_username: None,
-            is_verified: None,
-            has_organization_projects,
-            has_repository_projects,
-            public_repos,
-            public_gists,
-            followers,
-            following,
-            html_url,
-            type_,
-            total_private_repos: None,
-            owned_private_repos: None,
-            private_gists: None,
-            disk_usage: None,
-            collaborators: None,
-            billing_email: None,
-            plan: None,
-            default_repository_permission: None,
-            default_repository_branch: None,
-            members_can_create_repositories: None,
-            two_factor_requirement_enabled: None,
-            members_allowed_repository_creation_type: None,
-            members_can_create_public_repositories: None,
-            members_can_create_private_repositories: None,
-            members_can_create_internal_repositories: None,
-            members_can_create_pages: None,
-            members_can_create_public_pages: None,
-            members_can_create_private_pages: None,
-            members_can_delete_repositories: None,
-            members_can_change_repo_visibility: None,
-            members_can_invite_outside_collaborators: None,
-            members_can_delete_issues: None,
-            display_commenter_full_name_setting_enabled: None,
-            readers_can_create_discussions: None,
-            members_can_create_teams: None,
-            members_can_view_dependency_insights: None,
-            members_can_fork_private_repositories: None,
-            web_commit_signoff_required: None,
-            advanced_security_enabled_for_new_repositories: None,
-            dependabot_alerts_enabled_for_new_repositories: None,
-            dependabot_security_updates_enabled_for_new_repositories: None,
-            dependency_graph_enabled_for_new_repositories: None,
-            secret_scanning_enabled_for_new_repositories: None,
-            secret_scanning_push_protection_enabled_for_new_repositories: None,
-            secret_scanning_push_protection_custom_link_enabled: None,
-            secret_scanning_push_protection_custom_link: None,
-            created_at,
-            updated_at,
-            archived_at,
-            deploy_keys_enabled_for_repositories: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// Type of repository selection requested.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum OrganizationProgrammaticAccessGrantRepositorySelectionEnum {
-    #[default]
-    None,
-    All,
-    Subset,
-    Unknown(String),
 }

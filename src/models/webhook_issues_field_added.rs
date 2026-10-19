@@ -171,6 +171,24 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldAddedIssueFieldValueValu
     }
 }
 
+impl ::std::convert::From<String> for WebhookIssuesFieldAddedIssueFieldValueValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<f64> for WebhookIssuesFieldAddedIssueFieldValueValue {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookIssuesFieldAddedIssueFieldValueValue {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
 /// The selected option details. Present for single_select field types.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookIssuesFieldAddedIssueFieldValueOption {
@@ -313,6 +331,24 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldAddedChangesIssueFieldVa
     }
 }
 
+impl ::std::convert::From<String> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<f64> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
 /// The previously selected option details. Present for single_select field types.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookIssuesFieldAddedChangesIssueFieldValueFromOption {
@@ -444,65 +480,6 @@ impl WebhookIssuesFieldAddedChanges {
     pub fn new() -> Self {
         Self {
             issue_field_value: None,
-        }
-    }
-}
-
-/// Typed representation of the `WebhookIssuesFieldAdded` API schema.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAdded {
-    /// Required enumerated value serialized in the `action` wire field.
-    pub action: WebhookIssuesFieldAddedActionEnum,
-    /// An enterprise on GitHub. Webhook payloads contain the `enterprise` property when the webhook is configured
-    /// on an enterprise account or an organization that's part of an enterprise account. For more information,
-    /// see "[About enterprise accounts](https://docs.github.com/admin/overview/about-enterprise-accounts)."
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enterprise: Option<EnterpriseWebhooks>,
-    /// The GitHub App installation. Webhook payloads contain the `installation` property when the event is configured
-    /// for and sent to a GitHub App. For more information,
-    /// see "[Using webhooks with GitHub Apps](https://docs.github.com/apps/creating-github-apps/registering-a-github-app/using-webhooks-with-github-apps)."
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub installation: Option<SimpleInstallation>,
-    /// The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.
-    pub issue: WebhooksIssue,
-    /// The issue field whose value was set or updated on the issue.
-    pub issue_field: WebhookIssuesFieldAddedIssueField,
-    /// The value that was set or updated for the issue field. When updating an existing value, the previous value is available in `changes`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub issue_field_value: Option<WebhookIssuesFieldAddedIssueFieldValue>,
-    /// The previous field value, present when an existing value was updated.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub changes: Option<WebhookIssuesFieldAddedChanges>,
-    /// A GitHub organization. Webhook payloads contain the `organization` property when the webhook is configured for an
-    /// organization, or when the event occurs from activity in a repository owned by an organization.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub organization: Option<OrganizationSimpleWebhooks>,
-    /// The repository on GitHub where the event occurred. Webhook payloads contain the `repository` property
-    /// when the event occurs from activity in a repository.
-    pub repository: RepositoryWebhooks,
-    /// A GitHub user.
-    pub sender: SimpleUser,
-}
-
-impl WebhookIssuesFieldAdded {
-    pub fn new(
-        action: WebhookIssuesFieldAddedActionEnum,
-        issue: WebhooksIssue,
-        issue_field: WebhookIssuesFieldAddedIssueField,
-        repository: RepositoryWebhooks,
-        sender: SimpleUser,
-    ) -> Self {
-        Self {
-            action,
-            enterprise: None,
-            installation: None,
-            issue,
-            issue_field,
-            issue_field_value: None,
-            changes: None,
-            organization: None,
-            repository,
-            sender,
         }
     }
 }

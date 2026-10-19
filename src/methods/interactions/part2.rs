@@ -8,6 +8,128 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{InteractionExpiry, InteractionGroup, InteractionLimitResponse, SimpleUser};
 use crate::validation::{validate_range, RangeOpts};
 
+/// Updates the pull request creation cap for an organization. The cap limits the total number of open pull requests a user can have across all public repositories in the organization at one time. Only users with admin access to the organization can configure the cap.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `enabled` - Whether the pull request creation cap is enabled
+/// * `max_open_pull_requests` - The maximum number of open pull requests a user
+///   can have at one time
+/// * `include_drafts` - Whether draft pull requests count toward the pull
+///   request creation cap
+pub fn interactions_update_pull_request_creation_cap_for_org(
+    config: &ClientConfig,
+    org: String,
+    enabled: bool,
+    max_open_pull_requests: Option<i64>,
+    include_drafts: Option<bool>,
+    options: Option<&RequestOptions>,
+) -> Result<InteractionsUpdatePullRequestCreationCapForOrgResponse, SdkError> {
+    if let Some(ref max_open_pull_requests_v) = max_open_pull_requests {
+        validate_range(
+            "max_open_pull_requests",
+            *max_open_pull_requests_v as f64,
+            RangeOpts {
+                min: Some(1_f64),
+                max: Some(1000_f64),
+                ..Default::default()
+            },
+        )?;
+    }
+
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "enabled".to_string(),
+        serde_json::to_value(enabled).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = max_open_pull_requests {
+        __body_map.insert(
+            "max_open_pull_requests".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = include_drafts {
+        __body_map.insert(
+            "include_drafts".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(
+        sdk_request::<InteractionsUpdatePullRequestCreationCapForOrgResponse>(
+            "PATCH",
+            &format!(
+                "/orgs/{}/interaction-limits/pulls/creation-cap",
+                crate::client::encode_path_segment(&org)
+            ),
+            config,
+            RequestOpts {
+                body: Some(__body),
+                decoder: crate::client::ResponseDecoder::Json,
+                operation_id: "interactions_update_pull_request_creation_cap_for_org",
+                options,
+                errors: &[
+                    ("403", "BasicError"),
+                    ("404", "BasicError"),
+                    ("405", "BasicError"),
+                    ("422", "ValidationError"),
+                ],
+                ..Default::default()
+            },
+        )?
+        .data,
+    )
+}
+
+/// Shows which type of GitHub user can interact with this repository and when the restriction expires. If there are no restrictions, you will see an empty response.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn interactions_get_restrictions_for_repo(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    options: Option<&RequestOptions>,
+) -> Result<InteractionsGetRestrictionsForRepoResponse, SdkError> {
+    Ok(sdk_request::<InteractionsGetRestrictionsForRepoResponse>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/interaction-limits",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "interactions_get_restrictions_for_repo",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Temporarily restricts interactions to a certain type of GitHub user within the given repository. You must have owner or admin access to set these restrictions. If an interaction limit is set for the user or organization that owns this repository, you will receive a `409 Conflict` response and will not be able to use this endpoint to change the interaction limit for a single repository.
 ///
 /// # Arguments

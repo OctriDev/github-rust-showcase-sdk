@@ -3,6 +3,100 @@
 
 use super::*;
 
+impl serde::Serialize for ReposListForOrgEnum03d095bc {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposListForOrgEnum03d095bc {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "asc" => Self::Asc,
+            "desc" => Self::Desc,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposListForOrgEnum03d095bc {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposCreateInOrgVisibilityEnum {
+    #[default]
+    Private,
+    Public,
+    Unknown(String),
+}
+
+impl ReposCreateInOrgVisibilityEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Private => "private",
+            Self::Public => "public",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ReposCreateInOrgVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposCreateInOrgVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "private" => Self::Private,
+            "public" => Self::Public,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposCreateInOrgVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposCreateInOrgSquashMergeCommitTitleEnum {
+    #[default]
+    CommitOrPrTitle,
+    PrTitle,
+    Unknown(String),
+}
+
+impl ReposCreateInOrgSquashMergeCommitTitleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::CommitOrPrTitle => "COMMIT_OR_PR_TITLE",
+            Self::PrTitle => "PR_TITLE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for ReposCreateInOrgSquashMergeCommitTitleEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -176,105 +270,5 @@ impl<'de> serde::Deserialize<'de> for ReposCreateInOrgMergeCommitMessageEnum {
 impl std::fmt::Display for ReposCreateInOrgMergeCommitMessageEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposCreateOrgRulesetTargetEnum {
-    #[default]
-    Branch,
-    Push,
-    Repository,
-    Tag,
-    Unknown(String),
-}
-
-impl ReposCreateOrgRulesetTargetEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Branch => "branch",
-            Self::Push => "push",
-            Self::Repository => "repository",
-            Self::Tag => "tag",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposCreateOrgRulesetTargetEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposCreateOrgRulesetTargetEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "branch" => Self::Branch,
-            "push" => Self::Push,
-            "repository" => Self::Repository,
-            "tag" => Self::Tag,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposCreateOrgRulesetTargetEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposGetOrgRuleSuitesEnum7b29ef42 {
-    #[default]
-    Day,
-    Hour,
-    Month,
-    Week,
-    Unknown(String),
-}
-
-impl ReposGetOrgRuleSuitesEnum7b29ef42 {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Day => "day",
-            Self::Hour => "hour",
-            Self::Month => "month",
-            Self::Week => "week",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposGetOrgRuleSuitesEnum7b29ef42 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposGetOrgRuleSuitesEnum7b29ef42 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "day" => Self::Day,
-            "hour" => Self::Hour,
-            "month" => Self::Month,
-            "week" => Self::Week,
-            _ => Self::Unknown(value),
-        })
     }
 }

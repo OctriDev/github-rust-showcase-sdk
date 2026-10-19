@@ -3,6 +3,18 @@
 
 // webhooks_pull_request5 domain models (part 3)
 
+impl ::std::convert::From<i64> for WebhooksPullRequest5BaseRepoCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhooksPullRequest5BaseRepoCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhooksPullRequest5BaseRepoPullRequestCreationPolicyEnum {
@@ -445,6 +457,18 @@ impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5BaseRepoPushedAt {
     }
 }
 
+impl ::std::convert::From<i64> for WebhooksPullRequest5BaseRepoPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhooksPullRequest5BaseRepoPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The default value for a squash merge commit message:
 ///
 /// \- `PR_BODY` \- default to the pull request's body.
@@ -457,39 +481,4 @@ pub enum WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
     CommitMessages,
     Blank,
     Unknown(String),
-}
-
-impl WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrBody => "PR_BODY",
-            Self::CommitMessages => "COMMIT_MESSAGES",
-            Self::Blank => "BLANK",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5BaseRepoSquashMergeCommitMessageEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "PR_BODY" => Self::PrBody,
-            "COMMIT_MESSAGES" => Self::CommitMessages,
-            "BLANK" => Self::Blank,
-            _ => Self::Unknown(value),
-        })
-    }
 }

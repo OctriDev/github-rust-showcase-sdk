@@ -48,6 +48,24 @@ impl<'de> serde::Deserialize<'de> for IssueFieldValueValue {
     }
 }
 
+impl ::std::convert::From<String> for IssueFieldValueValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<f64> for IssueFieldValueValue {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl ::std::convert::From<i64> for IssueFieldValueValue {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
 /// Details about the selected option (only present for single_select fields)
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct IssueFieldValueSingleSelectOption {

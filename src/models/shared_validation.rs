@@ -44,6 +44,24 @@ impl<'de> serde::Deserialize<'de> for ValidationErrorErrorsItemValue {
     }
 }
 
+impl ::std::convert::From<String> for ValidationErrorErrorsItemValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for ValidationErrorErrorsItemValue {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ValidationErrorErrorsItemValue {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 /// Required object value serialized in the `errors[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ValidationErrorErrorsItem {

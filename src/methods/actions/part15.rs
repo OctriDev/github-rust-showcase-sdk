@@ -8,8 +8,240 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{
     ActionsCanApprovePullRequestReviews, ActionsDefaultWorkflowPermissions,
     ActionsGetDefaultWorkflowPermissions, ActionsPolicy, ActionsPolicyRepoConditions, ActionsRule,
-    RepositoryRuleEnforcement, RunnerApplication,
+    RepositoryRuleEnforcement, SelectedActions,
 };
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsSetPrivateRepoForkPrWorkflowsSettingsRepositoryParams {
+    pub owner: String,
+    pub repo: String,
+    pub run_workflows_from_fork_pull_requests: bool,
+    pub send_write_tokens_to_workflows: Option<bool>,
+    pub send_secrets_and_variables: Option<bool>,
+    pub require_approval_for_fork_pr_workflows: Option<bool>,
+}
+
+/// Sets the settings for whether workflows from fork pull requests can run on a private repository. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `run_workflows_from_fork_pull_requests` - Whether workflows triggered by
+///   pull requests from forks are allowed to run on private repositories.
+/// * `send_write_tokens_to_workflows` - Whether GitHub Actions can create pull
+///   requests or submit approving pull request reviews from a workflow triggered
+///   by a fork pull request.
+/// * `send_secrets_and_variables` - Whether to make secrets and variables
+///   available to workflows triggered by pull requests from forks.
+/// * `require_approval_for_fork_pr_workflows` - Whether workflows triggered by
+///   pull requests from forks require approval from a repository administrator to
+///   run.
+pub fn actions_set_private_repo_fork_pr_workflows_settings_repository(
+    config: &ClientConfig,
+    params: ActionsSetPrivateRepoForkPrWorkflowsSettingsRepositoryParams,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let ActionsSetPrivateRepoForkPrWorkflowsSettingsRepositoryParams {
+        owner,
+        repo,
+        run_workflows_from_fork_pull_requests,
+        send_write_tokens_to_workflows,
+        send_secrets_and_variables,
+        require_approval_for_fork_pr_workflows,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "run_workflows_from_fork_pull_requests".to_string(),
+        serde_json::to_value(run_workflows_from_fork_pull_requests).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = send_write_tokens_to_workflows {
+        __body_map.insert(
+            "send_write_tokens_to_workflows".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = send_secrets_and_variables {
+        __body_map.insert(
+            "send_secrets_and_variables".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = require_approval_for_fork_pr_workflows {
+        __body_map.insert(
+            "require_approval_for_fork_pr_workflows".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/repos/{}/{}/actions/permissions/fork-pr-workflows-private-repos",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_set_private_repo_fork_pr_workflows_settings_repository",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Gets the settings for selected actions and reusable workflows that are allowed in a repository. To use this endpoint, the repository policy for `allowed_actions` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for a repository." OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn actions_get_allowed_actions_repository(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    options: Option<&RequestOptions>,
+) -> Result<SelectedActions, SdkError> {
+    Ok(sdk_request::<SelectedActions>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/actions/permissions/selected-actions",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_allowed_actions_repository",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsSetAllowedActionsRepositoryParams {
+    pub owner: String,
+    pub repo: String,
+    pub github_owned_allowed: Option<bool>,
+    pub verified_allowed: Option<bool>,
+    pub patterns_allowed: Option<Vec<String>>,
+}
+
+/// Sets the actions and reusable workflows that are allowed in a repository. To use this endpoint, the repository permission policy for `allowed_actions` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for a repository." OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `github_owned_allowed` - Whether GitHub-owned actions are allowed. For
+///   example, this includes the actions in the `actions` organization.
+/// * `verified_allowed` - Whether actions from GitHub Marketplace verified
+///   creators are allowed. Set to `true` to allow all actions by GitHub
+///   Marketplace verified creators.
+/// * `patterns_allowed` - Specifies a list of string-matching patterns to allow
+///   specific action(s) and reusable workflow(s). Wildcards, tags, and SHAs are
+///   allowed. For example, `monalisa/octocat@\*`, `monalisa/octocat@v2`,
+///   `monalisa/\*`. \> [!NOTE] \> The `patterns_allowed` setting only applies to
+///   public repositories.
+pub fn actions_set_allowed_actions_repository(
+    config: &ClientConfig,
+    params: ActionsSetAllowedActionsRepositoryParams,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    let ActionsSetAllowedActionsRepositoryParams {
+        owner,
+        repo,
+        github_owned_allowed,
+        verified_allowed,
+        patterns_allowed,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = github_owned_allowed {
+        __body_map.insert(
+            "github_owned_allowed".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = verified_allowed {
+        __body_map.insert(
+            "verified_allowed".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = patterns_allowed {
+        __body_map.insert(
+            "patterns_allowed".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/repos/{}/{}/actions/permissions/selected-actions",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_set_allowed_actions_repository",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Gets the default workflow permissions granted to the `GITHUB_TOKEN` when running workflows in a repository, as well as if GitHub Actions can submit approving pull request reviews. For more information, see "[Setting the permissions of the GITHUB_TOKEN for your repository](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#setting-the-permissions-of-the-github_token-for-your-repository)." OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
 ///
@@ -431,181 +663,6 @@ pub fn actions_update_repo_actions_policy(
                 ("422", "ValidationError"),
                 ("500", "BasicError"),
             ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Deletes an Actions policy from a repository. Use `policy_id` to identify the policy you want to remove; this operation does not return a response body when successful.
-///
-/// Delete an Actions policy for a repository.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `policy_id` - The ID of the policy.
-pub fn actions_delete_repo_actions_policy(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    policy_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/repos/{}/{}/actions/policies/{}",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&policy_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_delete_repo_actions_policy",
-            options,
-            errors: &[("404", "BasicError"), ("500", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsListSelfHostedRunnersForRepoParams {
-    pub owner: String,
-    pub repo: String,
-    pub name: Option<String>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists all self-hosted runners configured in a repository. Authenticated users must have admin access to the repository to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `name` - The name of a self-hosted runner.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn actions_list_self_hosted_runners_for_repo(
-    config: &ClientConfig,
-    params: ActionsListSelfHostedRunnersForRepoParams,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsListSelfHostedRunnersForRepoResponse, SdkError> {
-    let ActionsListSelfHostedRunnersForRepoParams {
-        owner,
-        repo,
-        name,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
-    if let Some(ref v) = name {
-        __query.push(("name", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ActionsListSelfHostedRunnersForRepoResponse>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/actions/runners",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_list_self_hosted_runners_for_repo",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets the end-of-life schedule for a specific runner version in a repository. Returns the runner version and the dates when registration and runtime support will end. Authenticated users must have admin access to the repository to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `version` - The runner version to look up.
-pub fn actions_get_runner_version_deprecation_for_repo(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    version: String,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsGetRunnerVersionDeprecationForRepoResponse, SdkError> {
-    Ok(
-        sdk_request::<ActionsGetRunnerVersionDeprecationForRepoResponse>(
-            "GET",
-            &format!(
-                "/repos/{}/{}/actions/runners/deprecations/{}",
-                crate::client::encode_path_segment(&owner),
-                crate::client::encode_path_segment(&repo),
-                crate::client::encode_path_segment(&version)
-            ),
-            config,
-            RequestOpts {
-                decoder: crate::client::ResponseDecoder::Json,
-                operation_id: "actions_get_runner_version_deprecation_for_repo",
-                options,
-                ..Default::default()
-            },
-        )?
-        .data,
-    )
-}
-
-/// Lists binaries for the runner application that you can download and run. Authenticated users must have admin access to the repository to use this endpoint. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-pub fn actions_list_runner_applications_for_repo(
-    config: &ClientConfig,
-    owner: String,
-    repo: String,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<RunnerApplication>, SdkError> {
-    Ok(sdk_request::<Vec<RunnerApplication>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/actions/runners/downloads",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_list_runner_applications_for_repo",
-            options,
             ..Default::default()
         },
     )?

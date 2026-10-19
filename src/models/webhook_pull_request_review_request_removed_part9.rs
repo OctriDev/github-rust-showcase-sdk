@@ -336,6 +336,38 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl
+    ::std::convert::From<
+        Box<
+            WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0,
+        >,
+    > for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItem
+{
+    fn from(
+        value: Box<
+            WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant0,
+        >,
+    ) -> Self {
+        Self::User(value)
+    }
+}
+
+impl
+    ::std::convert::From<
+        Box<
+            WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant1,
+        >,
+    > for WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItem
+{
+    fn from(
+        value: Box<
+            WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedReviewersItemVariant1,
+        >,
+    ) -> Self {
+        Self::Team(value)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestRequestedTeamsItemParentPrivacyEnum
 {

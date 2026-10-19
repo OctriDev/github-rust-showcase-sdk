@@ -3,6 +3,102 @@
 
 use super::*;
 
+impl ReposCreateDeploymentStatusStateEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Error => "error",
+            Self::Failure => "failure",
+            Self::InProgress => "in_progress",
+            Self::Inactive => "inactive",
+            Self::Pending => "pending",
+            Self::Queued => "queued",
+            Self::Success => "success",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ReposCreateDeploymentStatusStateEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposCreateDeploymentStatusStateEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "error" => Self::Error,
+            "failure" => Self::Failure,
+            "in_progress" => Self::InProgress,
+            "inactive" => Self::Inactive,
+            "pending" => Self::Pending,
+            "queued" => Self::Queued,
+            "success" => Self::Success,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposCreateDeploymentStatusStateEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposListForksEnum {
+    #[default]
+    Newest,
+    Oldest,
+    Stargazers,
+    Watchers,
+    Unknown(String),
+}
+
+impl ReposListForksEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Newest => "newest",
+            Self::Oldest => "oldest",
+            Self::Stargazers => "stargazers",
+            Self::Watchers => "watchers",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ReposListForksEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposListForksEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "newest" => Self::Newest,
+            "oldest" => Self::Oldest,
+            "stargazers" => Self::Stargazers,
+            "watchers" => Self::Watchers,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for ReposListForksEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
@@ -172,105 +268,6 @@ impl ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
         match self {
             Self::Legacy => "legacy",
             Self::Workflow => "workflow",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "legacy" => Self::Legacy,
-            "workflow" => Self::Workflow,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposCreateReleaseMakeLatestEnum {
-    #[default]
-    False,
-    Legacy,
-    True,
-    Unknown(String),
-}
-
-impl ReposCreateReleaseMakeLatestEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::False => "false",
-            Self::Legacy => "legacy",
-            Self::True => "true",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposCreateReleaseMakeLatestEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposCreateReleaseMakeLatestEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "false" => Self::False,
-            "legacy" => Self::Legacy,
-            "true" => Self::True,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposCreateReleaseMakeLatestEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposUpdateReleaseMakeLatestEnum {
-    #[default]
-    False,
-    Legacy,
-    True,
-    Unknown(String),
-}
-
-impl ReposUpdateReleaseMakeLatestEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::False => "false",
-            Self::Legacy => "legacy",
-            Self::True => "true",
             Self::Unknown(value) => value.as_str(),
         }
     }

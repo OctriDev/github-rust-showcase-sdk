@@ -3,6 +3,15 @@
 
 // orgs domain models (part 2)
 
+impl serde::Serialize for CustomPropertyValuesEditableByEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
 impl<'de> serde::Deserialize<'de> for CustomPropertyValuesEditableByEnum {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -189,6 +198,18 @@ impl<'de> serde::Deserialize<'de> for CustomPropertySetPayloadDefaultValue {
                 "no CustomPropertySetPayloadDefaultValue branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<String> for CustomPropertySetPayloadDefaultValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for CustomPropertySetPayloadDefaultValue {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }
 
@@ -456,28 +477,5 @@ impl IssueFieldVisibilityEnum {
             Self::All => "all",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for IssueFieldVisibilityEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssueFieldVisibilityEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "organization_members_only" => Self::OrganizationMembersOnly,
-            "all" => Self::All,
-            _ => Self::Unknown(value),
-        })
     }
 }

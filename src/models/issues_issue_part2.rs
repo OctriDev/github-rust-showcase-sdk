@@ -209,6 +209,30 @@ impl<'de> serde::Deserialize<'de> for IssueSuggestionTargetValue {
     }
 }
 
+impl ::std::convert::From<String> for IssueSuggestionTargetValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<f64> for IssueSuggestionTargetValue {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl ::std::convert::From<bool> for IssueSuggestionTargetValue {
+    fn from(value: bool) -> Self {
+        Self::Bool(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for IssueSuggestionTargetValue {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 /// The actor's confidence level in the suggestion.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum IssueSuggestionConfidenceEnum {
@@ -476,40 +500,4 @@ impl IssueTypeChangedIssueEvent {
             intent: None,
         }
     }
-}
-
-/// Issue Type Removed Issue Event
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct IssueTypeRemovedIssueEvent {
-    /// Required `integer` value serialized in the `id` wire field.
-    pub id: i64,
-    /// Required `string` value serialized in the `node_id` wire field.
-    pub node_id: String,
-    /// Required `string` value serialized in the `url` wire field.
-    pub url: String,
-    /// A GitHub user.
-    pub actor: SimpleUser,
-    /// Required `string` value serialized in the `event` wire field.
-    pub event: String,
-    /// Required `string` value serialized in the `commit_id` wire field.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub commit_id: Option<String>,
-    /// Required `string` value serialized in the `commit_url` wire field.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub commit_url: Option<String>,
-    /// Required `string` value serialized in the `created_at` wire field.
-    pub created_at: String,
-    /// GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub performed_via_github_app: Option<NullableIntegration>,
-    /// The type of issue.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub prev_issue_type: Option<IssueTypeWebhook>,
-    /// The intent behind an agent's action on an issue, including the rationale and confidence. Present (and `null` when the event carried no agent intent) on supported event types while the issue suggestions feature is enabled for the repository; the property is omitted entirely when the feature is disabled or the event type does not support intent.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub intent: Option<Option<NullableIssueEventIntent>>,
 }

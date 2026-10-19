@@ -3,6 +3,26 @@
 
 // webhook_pull_request_unlabeled domain models (part 6)
 
+impl WebhookPullRequestUnlabeledPullRequestHeadRepoMergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrBody => "PR_BODY",
+            Self::PrTitle => "PR_TITLE",
+            Self::Blank => "BLANK",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for WebhookPullRequestUnlabeledPullRequestHeadRepoMergeCommitMessageEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
 impl<'de> serde::Deserialize<'de>
     for WebhookPullRequestUnlabeledPullRequestHeadRepoMergeCommitMessageEnum
 {
@@ -317,6 +337,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestUnlabeledPullRequestHead
     }
 }
 
+impl ::std::convert::From<i64> for WebhookPullRequestUnlabeledPullRequestHeadRepoPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPullRequestUnlabeledPullRequestHeadRepoPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The default value for a squash merge commit message:
 ///
 /// \- `PR_BODY` \- default to the pull request's body.
@@ -451,35 +483,5 @@ impl WebhookPullRequestUnlabeledPullRequestHeadRepoVisibilityEnum {
             Self::Internal => "internal",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for WebhookPullRequestUnlabeledPullRequestHeadRepoVisibilityEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhookPullRequestUnlabeledPullRequestHeadRepoVisibilityEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "public" => Self::Public,
-            "private" => Self::Private,
-            "internal" => Self::Internal,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhookPullRequestUnlabeledPullRequestHeadRepoVisibilityEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

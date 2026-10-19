@@ -461,6 +461,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestUnassignedPullRequestHea
     }
 }
 
+impl ::std::convert::From<i64> for WebhookPullRequestUnassignedPullRequestHeadRepoCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPullRequestUnassignedPullRequestHeadRepoCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestUnassignedPullRequestHeadRepoPullRequestCreationPolicyEnum {
@@ -570,15 +582,4 @@ pub enum WebhookPullRequestUnassignedPullRequestHeadRepoMergeCommitMessageEnum {
     PrTitle,
     Blank,
     Unknown(String),
-}
-
-impl WebhookPullRequestUnassignedPullRequestHeadRepoMergeCommitMessageEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::PrBody => "PR_BODY",
-            Self::PrTitle => "PR_TITLE",
-            Self::Blank => "BLANK",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
 }

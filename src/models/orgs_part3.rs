@@ -3,6 +3,29 @@
 
 // orgs domain models (part 3)
 
+impl serde::Serialize for IssueFieldVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssueFieldVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "organization_members_only" => Self::OrganizationMembersOnly,
+            "all" => Self::All,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for IssueFieldVisibilityEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
@@ -461,29 +484,4 @@ pub enum OrganizationCreateIssueTypeColorEnum {
     Pink,
     Purple,
     Unknown(String),
-}
-
-impl OrganizationCreateIssueTypeColorEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Gray => "gray",
-            Self::Blue => "blue",
-            Self::Green => "green",
-            Self::Yellow => "yellow",
-            Self::Orange => "orange",
-            Self::Red => "red",
-            Self::Pink => "pink",
-            Self::Purple => "purple",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for OrganizationCreateIssueTypeColorEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
 }

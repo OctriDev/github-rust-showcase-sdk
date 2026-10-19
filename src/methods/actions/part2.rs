@@ -322,8 +322,10 @@ impl<'de> serde::Deserialize<'de> for ActionsReviewCustomGatesForRun {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ActionsListJobsForWorkflowRunResponse {
-    pub total_count: i64,
-    pub jobs: Vec<Job>,
+impl ::std::convert::From<Box<ReviewCustomGatesCommentRequired>>
+    for ActionsReviewCustomGatesForRun
+{
+    fn from(value: Box<ReviewCustomGatesCommentRequired>) -> Self {
+        Self::ReviewCustomGatesCommentRequired(value)
+    }
 }

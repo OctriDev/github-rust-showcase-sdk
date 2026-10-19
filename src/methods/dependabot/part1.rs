@@ -83,6 +83,20 @@ impl<'de> serde::Deserialize<'de> for DependabotListAlertsForEnterprise {
     }
 }
 
+impl ::std::convert::From<String> for DependabotListAlertsForEnterprise {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Vec<DependabotListAlertsForEnterpriseVariant1ItemEnum>>
+    for DependabotListAlertsForEnterprise
+{
+    fn from(value: Vec<DependabotListAlertsForEnterpriseVariant1ItemEnum>) -> Self {
+        Self::Variant1ItemEnumArray(value)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum DependabotListAlertsForOrgVariant1ItemEnum {
     #[default]
@@ -163,6 +177,20 @@ impl<'de> serde::Deserialize<'de> for DependabotListAlertsForOrg {
     }
 }
 
+impl ::std::convert::From<String> for DependabotListAlertsForOrg {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Vec<DependabotListAlertsForOrgVariant1ItemEnum>>
+    for DependabotListAlertsForOrg
+{
+    fn from(value: Vec<DependabotListAlertsForOrgVariant1ItemEnum>) -> Self {
+        Self::Variant1ItemEnumArray(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct DependabotListOrgSecretsResponse {
     pub total_count: i64,
@@ -204,6 +232,18 @@ impl<'de> serde::Deserialize<'de> for DependabotCreateOrUpdateOrgSecretSelectedR
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no DependabotCreateOrUpdateOrgSecretSelectedRepositoryIdsItem branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64> for DependabotCreateOrUpdateOrgSecretSelectedRepositoryIdsItem {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for DependabotCreateOrUpdateOrgSecretSelectedRepositoryIdsItem {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
@@ -260,46 +300,5 @@ impl DependabotListRepoSecretsResponse {
             total_count,
             secrets,
         }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum DependabotListAlertsForEnterpriseEnum {
-    #[default]
-    Development,
-    Runtime,
-    Unknown(String),
-}
-
-impl DependabotListAlertsForEnterpriseEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Development => "development",
-            Self::Runtime => "runtime",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for DependabotListAlertsForEnterpriseEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for DependabotListAlertsForEnterpriseEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "development" => Self::Development,
-            "runtime" => Self::Runtime,
-            _ => Self::Unknown(value),
-        })
     }
 }

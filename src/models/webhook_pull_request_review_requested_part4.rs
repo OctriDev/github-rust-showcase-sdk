@@ -3,6 +3,30 @@
 
 // webhook_pull_request_review_requested domain models (part 4)
 
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoSquashMergeCommitTitleEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "PR_TITLE" => Self::PrTitle,
+            "COMMIT_OR_PR_TITLE" => Self::CommitOrPrTitle,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoSquashMergeCommitTitleEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoVisibilityEnum {
     #[default]

@@ -97,6 +97,18 @@ impl<'de> serde::Deserialize<'de> for GistsCreatePublic {
     }
 }
 
+impl ::std::convert::From<bool> for GistsCreatePublic {
+    fn from(value: bool) -> Self {
+        Self::Bool(value)
+    }
+}
+
+impl ::std::convert::From<GistsCreatePublicVariant1Enum> for GistsCreatePublic {
+    fn from(value: GistsCreatePublicVariant1Enum) -> Self {
+        Self::Literal(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct GistsUpdateFilesValue {
     /// The new content of the file.
@@ -429,31 +441,6 @@ pub fn gists_update(
             operation_id: "gists_update",
             options,
             errors: &[("404", "BasicError"), ("422", "ValidationError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Deletes a specific gist. Use `gist_id` to identify the gist you want to remove; the operation returns no response body when deletion completes.
-///
-/// # Arguments
-///
-/// * `gist_id` - The unique identifier of the gist.
-pub fn gists_delete(
-    config: &ClientConfig,
-    gist_id: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!("/gists/{}", crate::client::encode_path_segment(&gist_id)),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "gists_delete",
-            options,
-            errors: &[("403", "BasicError"), ("404", "BasicError")],
             ..Default::default()
         },
     )?

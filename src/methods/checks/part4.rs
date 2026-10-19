@@ -73,6 +73,18 @@ impl<'de> serde::Deserialize<'de> for ChecksUpdate {
     }
 }
 
+impl ::std::convert::From<Box<ChecksUpdateVariant0>> for ChecksUpdate {
+    fn from(value: Box<ChecksUpdateVariant0>) -> Self {
+        Self::Completed(value)
+    }
+}
+
+impl ::std::convert::From<Box<ChecksUpdateVariant1>> for ChecksUpdate {
+    fn from(value: Box<ChecksUpdateVariant1>) -> Self {
+        Self::Object(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ChecksSetSuitesPreferencesAutoTriggerChecksItem {
     /// The `id` of the GitHub App.
@@ -273,29 +285,5 @@ impl ChecksListForSuiteEnum {
             Self::Queued => "queued",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for ChecksListForSuiteEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ChecksListForSuiteEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "completed" => Self::Completed,
-            "in_progress" => Self::InProgress,
-            "queued" => Self::Queued,
-            _ => Self::Unknown(value),
-        })
     }
 }

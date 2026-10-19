@@ -51,6 +51,34 @@ impl<'de> serde::Deserialize<'de> for WebhookProjectsV2ItemEditedChangesVariant0
     }
 }
 
+impl ::std::convert::From<String> for WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<Box<ProjectsV2SingleSelectOption>>
+    for WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom
+{
+    fn from(value: Box<ProjectsV2SingleSelectOption>) -> Self {
+        Self::ProjectsV2SingleSelectOption(value)
+    }
+}
+
+impl ::std::convert::From<Box<ProjectsV2IterationSetting>>
+    for WebhookProjectsV2ItemEditedChangesVariant0FieldValueFrom
+{
+    fn from(value: Box<ProjectsV2IterationSetting>) -> Self {
+        Self::ProjectsV2IterationSetting(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo {
@@ -96,6 +124,34 @@ impl<'de> serde::Deserialize<'de> for WebhookProjectsV2ItemEditedChangesVariant0
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<String> for WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<Box<ProjectsV2SingleSelectOption>>
+    for WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo
+{
+    fn from(value: Box<ProjectsV2SingleSelectOption>) -> Self {
+        Self::ProjectsV2SingleSelectOption(value)
+    }
+}
+
+impl ::std::convert::From<Box<ProjectsV2IterationSetting>>
+    for WebhookProjectsV2ItemEditedChangesVariant0FieldValueTo
+{
+    fn from(value: Box<ProjectsV2IterationSetting>) -> Self {
+        Self::ProjectsV2IterationSetting(value)
     }
 }
 

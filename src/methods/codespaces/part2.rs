@@ -153,6 +153,22 @@ impl<'de> serde::Deserialize<'de> for CodespacesCreateForAuthenticatedUser {
     }
 }
 
+impl ::std::convert::From<Box<CodespacesCreateForAuthenticatedUserVariant0>>
+    for CodespacesCreateForAuthenticatedUser
+{
+    fn from(value: Box<CodespacesCreateForAuthenticatedUserVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Box<CodespacesCreateForAuthenticatedUserVariant1>>
+    for CodespacesCreateForAuthenticatedUser
+{
+    fn from(value: Box<CodespacesCreateForAuthenticatedUserVariant1>) -> Self {
+        Self::Object2(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CodespacesListSecretsForAuthenticatedUserResponse {
     pub total_count: i64,
@@ -196,6 +212,22 @@ impl<'de> serde::Deserialize<'de>
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no CodespacesCreateOrUpdateSecretForAuthenticatedUserSelectedRepositoryIdsItem branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64>
+    for CodespacesCreateOrUpdateSecretForAuthenticatedUserSelectedRepositoryIdsItem
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for CodespacesCreateOrUpdateSecretForAuthenticatedUserSelectedRepositoryIdsItem
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
@@ -279,25 +311,5 @@ impl<'de> serde::Deserialize<'de> for CodespacesSetCodespacesAccessVisibilityEnu
 impl std::fmt::Display for CodespacesSetCodespacesAccessVisibilityEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
-    #[default]
-    All,
-    Private,
-    Selected,
-    Unknown(String),
-}
-
-impl CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::All => "all",
-            Self::Private => "private",
-            Self::Selected => "selected",
-            Self::Unknown(value) => value.as_str(),
-        }
     }
 }

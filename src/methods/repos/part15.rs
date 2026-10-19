@@ -10,6 +10,194 @@ use crate::types::{
     RepositoryRulesetBypassActor, RuleSuite, RuleSuites,
 };
 
+/// Get all the repository rulesets for an organization.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `targets` - A comma-separated list of rule targets to filter by. If
+///   provided, only rulesets that apply to the specified targets will be
+///   returned. For example, `branch,tag,push`.
+pub fn repos_get_org_rulesets(
+    config: &ClientConfig,
+    org: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    targets: Option<String>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<RepositoryRuleset>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = targets {
+        __query.push(("targets", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<RepositoryRuleset>>(
+        "GET",
+        &format!(
+            "/orgs/{}/rulesets",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "repos_get_org_rulesets",
+            options,
+            errors: &[("404", "BasicError"), ("500", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct ReposCreateOrgRulesetParams {
+    pub org: String,
+    pub name: String,
+    pub enforcement: RepositoryRuleEnforcement,
+    pub target: Option<ReposCreateOrgRulesetTargetEnum>,
+    pub bypass_actors: Option<Vec<RepositoryRulesetBypassActor>>,
+    pub conditions: Option<OrgRulesetConditions>,
+    pub rules: Option<Vec<OrgRules>>,
+}
+
+/// Creates a repository ruleset for an organization. Set the required `name` and `enforcement`, and optionally configure the target, bypass actors, conditions, and rules. Use `evaluate` to test rules before enforcing them; this enforcement level is available only with GitHub Enterprise.
+///
+/// Create a repository ruleset for an organization.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `name` - The name of the ruleset.
+/// * `enforcement` - The enforcement level of the ruleset. `evaluate` allows
+///   admins to test rules before enforcing them. Admins can view insights on the
+///   Rule Insights page (`evaluate` is only available with GitHub Enterprise).
+/// * `target` - The target of the ruleset
+/// * `bypass_actors` - The actors that can bypass the rules in this ruleset
+/// * `conditions` - Conditions for an organization ruleset. The branch and tag
+///   rulesets conditions object should contain both `repository_name` and
+///   `ref_name` properties, or both `repository_id` and `ref_name` properties, or
+///   both `repository_property` and `ref_name` properties. The push rulesets
+///   conditions object does not require the `ref_name` property. For repository
+///   policy rulesets, the conditions object should only contain the
+///   `repository_name`, the `repository_id`, or the `repository_property`.
+/// * `rules` - An array of rules within the ruleset.
+pub fn repos_create_org_ruleset(
+    config: &ClientConfig,
+    params: ReposCreateOrgRulesetParams,
+    options: Option<&RequestOptions>,
+) -> Result<RepositoryRuleset, SdkError> {
+    let ReposCreateOrgRulesetParams {
+        org,
+        name,
+        enforcement,
+        target,
+        bypass_actors,
+        conditions,
+        rules,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "name".to_string(),
+        serde_json::to_value(name).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    __body_map.insert(
+        "enforcement".to_string(),
+        serde_json::to_value(enforcement).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = target {
+        __body_map.insert(
+            "target".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = bypass_actors {
+        __body_map.insert(
+            "bypass_actors".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = conditions {
+        __body_map.insert(
+            "conditions".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = rules {
+        __body_map.insert(
+            "rules".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<RepositoryRuleset>(
+        "POST",
+        &format!(
+            "/orgs/{}/rulesets",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "repos_create_org_ruleset",
+            options,
+            errors: &[
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+                ("500", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct ReposGetOrgRuleSuitesParams {
     pub org: String,

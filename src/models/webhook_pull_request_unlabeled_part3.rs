@@ -32,6 +32,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestUnlabeledPullRequestBase
     }
 }
 
+impl ::std::convert::From<i64> for WebhookPullRequestUnlabeledPullRequestBaseRepoCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPullRequestUnlabeledPullRequestBaseRepoCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestUnlabeledPullRequestBaseRepoPullRequestCreationPolicyEnum {
@@ -480,16 +492,8 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestUnlabeledPullRequestBase
     }
 }
 
-/// The default value for a squash merge commit message:
-///
-/// \- `PR_BODY` \- default to the pull request's body.
-/// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
-/// \- `BLANK` \- default to a blank commit message.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestUnlabeledPullRequestBaseRepoSquashMergeCommitMessageEnum {
-    #[default]
-    PrBody,
-    CommitMessages,
-    Blank,
-    Unknown(String),
+impl ::std::convert::From<i64> for WebhookPullRequestUnlabeledPullRequestBaseRepoPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
 }

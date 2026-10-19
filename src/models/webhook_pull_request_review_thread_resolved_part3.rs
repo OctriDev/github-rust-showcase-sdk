@@ -27,6 +27,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoCreatedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoCreatedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPullRequestCreationPolicyEnum {
@@ -366,6 +382,22 @@ impl<'de> serde::Deserialize<'de>
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPushedAt branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPushedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewThreadResolvedPullRequestBaseRepoPushedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

@@ -8,6 +8,73 @@ use crate::types::{
     WebhookConfigSecret, WebhookConfigUrl,
 };
 
+impl ReposSetTeamAccessRestrictionsVariant0 {
+    pub fn new(teams: Vec<String>) -> Self {
+        Self { teams }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum ReposSetTeamAccessRestrictions {
+    Object(Box<ReposSetTeamAccessRestrictionsVariant0>),
+    StringArray(Vec<String>),
+}
+
+impl<'de> serde::Deserialize<'de> for ReposSetTeamAccessRestrictions {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
+        let mut lossy = None;
+        if let Ok(branch) =
+            serde_json::from_value::<Box<ReposSetTeamAccessRestrictionsVariant0>>(value.clone())
+        {
+            let candidate = Self::Object(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
+            let candidate = Self::StringArray(branch);
+            if crate::client::keeps_every_key(&value, &candidate) {
+                return Ok(candidate);
+            }
+            lossy.get_or_insert(candidate);
+        }
+        lossy.ok_or_else(|| {
+            serde::de::Error::custom(
+                "no ReposSetTeamAccessRestrictions branch accepts this payload",
+            )
+        })
+    }
+}
+
+impl ::std::convert::From<Box<ReposSetTeamAccessRestrictionsVariant0>>
+    for ReposSetTeamAccessRestrictions
+{
+    fn from(value: Box<ReposSetTeamAccessRestrictionsVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ReposSetTeamAccessRestrictions {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ReposRemoveTeamAccessRestrictionsVariant0 {
+    /// The slug values for teams
+    pub teams: Vec<String>,
+}
+
+impl ReposRemoveTeamAccessRestrictionsVariant0 {
+    pub fn new(teams: Vec<String>) -> Self {
+        Self { teams }
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ReposRemoveTeamAccessRestrictions {
@@ -40,6 +107,20 @@ impl<'de> serde::Deserialize<'de> for ReposRemoveTeamAccessRestrictions {
                 "no ReposRemoveTeamAccessRestrictions branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<Box<ReposRemoveTeamAccessRestrictionsVariant0>>
+    for ReposRemoveTeamAccessRestrictions
+{
+    fn from(value: Box<ReposRemoveTeamAccessRestrictionsVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for ReposRemoveTeamAccessRestrictions {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }
 
@@ -235,89 +316,4 @@ pub struct ReposCreateWebhookConfig {
     pub secret: Option<WebhookConfigSecret>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub insecure_ssl: Option<WebhookConfigInsecureSsl>,
-}
-
-impl ReposCreateWebhookConfig {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.url.as_ref() {
-            crate::validation::validate_uri("url", value)?;
-        }
-        Ok(())
-    }
-
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            url: None,
-            content_type: None,
-            secret: None,
-            insecure_ssl: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
-}
-
-/// The repository directory that includes the source files for the Pages site. Allowed paths are `/` or `/docs`. Default: `/`
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposCreatePagesSiteSourcePathEnum {
-    #[default]
-    Unknown2,
-    Docs,
-    Unknown(String),
-}
-
-impl ReposCreatePagesSiteSourcePathEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Unknown2 => "/",
-            Self::Docs => "/docs",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposCreatePagesSiteSourcePathEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposCreatePagesSiteSourcePathEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "/" => Self::Unknown2,
-            "/docs" => Self::Docs,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposCreatePagesSiteSourcePathEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The source branch and directory used to publish your Pages site.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ReposCreatePagesSiteSource {
-    /// The repository branch used to publish your site's source files.
-    pub branch: String,
-    /// The repository directory that includes the source files for the Pages site. Allowed paths are `/` or `/docs`. Default: `/`
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub path: Option<ReposCreatePagesSiteSourcePathEnum>,
-}
-
-impl ReposCreatePagesSiteSource {
-    pub fn new(branch: String) -> Self {
-        Self { branch, path: None }
-    }
 }

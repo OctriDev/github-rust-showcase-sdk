@@ -3,6 +3,60 @@
 
 // webhook_pull_request_review_thread_unresolved domain models (part 10)
 
+/// The level at which the comment is targeted, can be a diff line or a file.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestReviewThreadUnresolvedThreadCommentsItemSubjectTypeEnum {
+    #[default]
+    Line,
+    File,
+    Unknown(String),
+}
+
+impl WebhookPullRequestReviewThreadUnresolvedThreadCommentsItemSubjectTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Line => "line",
+            Self::File => "file",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize
+    for WebhookPullRequestReviewThreadUnresolvedThreadCommentsItemSubjectTypeEnum
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de>
+    for WebhookPullRequestReviewThreadUnresolvedThreadCommentsItemSubjectTypeEnum
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "line" => Self::Line,
+            "file" => Self::File,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display
+    for WebhookPullRequestReviewThreadUnresolvedThreadCommentsItemSubjectTypeEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// Optional enumerated value serialized in the `type` wire field.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewThreadUnresolvedThreadCommentsItemUserTypeEnum {
