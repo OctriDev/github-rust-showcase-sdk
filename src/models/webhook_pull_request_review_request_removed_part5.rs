@@ -123,6 +123,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestHeadRepoCreatedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewRequestRemovedVariant0PullRequestHeadRepoCreatedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestHeadRepoPullRequestCreationPolicyEnum
@@ -504,23 +520,4 @@ pub struct WebhookPullRequestReviewRequestRemovedVariant0PullRequestHeadRepoPerm
     pub push: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub triage: Option<bool>,
-}
-
-impl WebhookPullRequestReviewRequestRemovedVariant0PullRequestHeadRepoPermissions {
-    pub fn new(admin: bool, pull: bool, push: bool) -> Self {
-        Self {
-            admin,
-            maintain: None,
-            pull,
-            push,
-            triage: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum WebhookPullRequestReviewRequestRemovedVariant0PullRequestHeadRepoPushedAt {
-    Integer(i64),
-    String(String),
 }

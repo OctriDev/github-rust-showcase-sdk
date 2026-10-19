@@ -3,6 +3,30 @@
 
 // webhooks_pull_request5 domain models (part 7)
 
+impl serde::Serialize for WebhooksPullRequest5HeadRepoVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5HeadRepoVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "public" => Self::Public,
+            "private" => Self::Private,
+            "internal" => Self::Internal,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
 impl std::fmt::Display for WebhooksPullRequest5HeadRepoVisibilityEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())

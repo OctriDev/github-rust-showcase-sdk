@@ -3,6 +3,46 @@
 
 use super::*;
 
+impl serde::Serialize for SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "epss_percentage" => Self::EpssPercentage,
+            "epss_percentile" => Self::EpssPercentile,
+            "published" => Self::Published,
+            "updated" => Self::Updated,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum SecurityAdvisoriesListOrgRepositoryAdvisoriesEnum {
+    #[default]
+    Created,
+    Published,
+    Updated,
+    Unknown(String),
+}
+
 impl SecurityAdvisoriesListOrgRepositoryAdvisoriesEnum {
     pub fn as_str(&self) -> &str {
         match self {

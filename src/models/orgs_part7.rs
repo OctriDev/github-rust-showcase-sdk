@@ -3,6 +3,141 @@
 
 // orgs domain models (part 7)
 
+/// The user's membership type in the organization.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum OrgMembershipRoleEnum {
+    #[default]
+    Admin,
+    Member,
+    BillingManager,
+    Unknown(String),
+}
+
+impl OrgMembershipRoleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Admin => "admin",
+            Self::Member => "member",
+            Self::BillingManager => "billing_manager",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for OrgMembershipRoleEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for OrgMembershipRoleEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "admin" => Self::Admin,
+            "member" => Self::Member,
+            "billing_manager" => Self::BillingManager,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for OrgMembershipRoleEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// Optional object value serialized in the `permissions` wire field.
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct OrgMembershipPermissions {
+    /// Required `boolean` value serialized in the `can_create_repository` wire field.
+    pub can_create_repository: bool,
+}
+
+impl OrgMembershipPermissions {
+    pub fn new(can_create_repository: bool) -> Self {
+        Self {
+            can_create_repository,
+        }
+    }
+}
+
+/// Org Membership
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct OrgMembership {
+    /// Required `uri`-formatted value serialized in the `url` wire field.
+    pub url: String,
+    /// The state of the member in the organization. The `pending` state indicates the user has not yet accepted an invitation.
+    pub state: OrgMembershipStateEnum,
+    /// The user's membership type in the organization.
+    pub role: OrgMembershipRoleEnum,
+    /// Whether the user has direct membership in the organization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub direct_membership: Option<bool>,
+    /// The slugs of the enterprise teams providing the user with indirect membership in the organization.
+    /// A limit of 100 enterprise team slugs is returned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise_teams_providing_indirect_membership: Option<Vec<String>>,
+    /// Required `uri`-formatted value serialized in the `organization_url` wire field.
+    pub organization_url: String,
+    /// A GitHub organization.
+    pub organization: OrganizationSimple,
+    /// A GitHub user.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub user: Option<NullableSimpleUser>,
+    /// Optional object value serialized in the `permissions` wire field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<OrgMembershipPermissions>,
+}
+
+impl OrgMembership {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_uri("url", &self.url)?;
+        if let Some(value) = self.enterprise_teams_providing_indirect_membership.as_ref() {
+            crate::validation::validate_items(
+                "enterprise_teams_providing_indirect_membership",
+                value.as_slice(),
+                crate::validation::LengthOpts {
+                    max: Some(100),
+                    ..Default::default()
+                },
+            )?;
+        }
+        crate::validation::validate_uri("organization_url", &self.organization_url)?;
+        Ok(())
+    }
+
+    pub fn new(
+        url: String,
+        state: OrgMembershipStateEnum,
+        role: OrgMembershipRoleEnum,
+        organization_url: String,
+        organization: OrganizationSimple,
+        user: Option<NullableSimpleUser>,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            url,
+            state,
+            role,
+            direct_membership: None,
+            enterprise_teams_providing_indirect_membership: None,
+            organization_url,
+            organization,
+            user,
+            permissions: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 /// List of custom property values for a repository
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct OrgRepoCustomPropertyValues {
@@ -323,139 +458,5 @@ impl<'de> serde::Deserialize<'de> for UserRoleAssignmentAssignmentEnum {
 impl std::fmt::Display for UserRoleAssignmentAssignmentEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-/// The Relationship a User has with a role.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct UserRoleAssignment {
-    /// Determines if the user has a direct, indirect, or mixed relationship to a role
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub assignment: Option<UserRoleAssignmentAssignmentEnum>,
-    /// Team the user has gotten the role through
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub inherited_from: Option<Vec<TeamSimple>>,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub name: Option<Option<String>>,
-    /// Optional `string` value serialized in the `email` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub email: Option<Option<String>>,
-    /// Required `string` value serialized in the `login` wire field.
-    pub login: String,
-    /// Required `integer` value serialized in the `id` wire field.
-    pub id: i64,
-    /// Required `string` value serialized in the `node_id` wire field.
-    pub node_id: String,
-    /// Required `uri`-formatted value serialized in the `avatar_url` wire field.
-    pub avatar_url: String,
-    /// Required `string` value serialized in the `gravatar_id` wire field.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub gravatar_id: Option<String>,
-    /// Required `uri`-formatted value serialized in the `url` wire field.
-    pub url: String,
-    /// Required `uri`-formatted value serialized in the `html_url` wire field.
-    pub html_url: String,
-    /// Required `uri`-formatted value serialized in the `followers_url` wire field.
-    pub followers_url: String,
-    /// Required `string` value serialized in the `following_url` wire field.
-    pub following_url: String,
-    /// Required `string` value serialized in the `gists_url` wire field.
-    pub gists_url: String,
-    /// Required `string` value serialized in the `starred_url` wire field.
-    pub starred_url: String,
-    /// Required `uri`-formatted value serialized in the `subscriptions_url` wire field.
-    pub subscriptions_url: String,
-    /// Required `uri`-formatted value serialized in the `organizations_url` wire field.
-    pub organizations_url: String,
-    /// Required `uri`-formatted value serialized in the `repos_url` wire field.
-    pub repos_url: String,
-    /// Required `string` value serialized in the `events_url` wire field.
-    pub events_url: String,
-    /// Required `uri`-formatted value serialized in the `received_events_url` wire field.
-    pub received_events_url: String,
-    /// Required `string` value serialized in the `type` wire field.
-    #[serde(rename = "type")]
-    pub type_: String,
-    /// Required `boolean` value serialized in the `site_admin` wire field.
-    pub site_admin: bool,
-    /// Optional `string` value serialized in the `starred_at` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starred_at: Option<String>,
-    /// Optional `string` value serialized in the `user_view_type` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_view_type: Option<String>,
-}
-
-impl UserRoleAssignment {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("avatar_url", &self.avatar_url)?;
-        crate::validation::validate_uri("url", &self.url)?;
-        crate::validation::validate_uri("html_url", &self.html_url)?;
-        crate::validation::validate_uri("followers_url", &self.followers_url)?;
-        crate::validation::validate_uri("subscriptions_url", &self.subscriptions_url)?;
-        crate::validation::validate_uri("organizations_url", &self.organizations_url)?;
-        crate::validation::validate_uri("repos_url", &self.repos_url)?;
-        crate::validation::validate_uri("received_events_url", &self.received_events_url)?;
-        Ok(())
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        login: String,
-        id: i64,
-        node_id: String,
-        avatar_url: String,
-        gravatar_id: Option<String>,
-        url: String,
-        html_url: String,
-        followers_url: String,
-        following_url: String,
-        gists_url: String,
-        starred_url: String,
-        subscriptions_url: String,
-        organizations_url: String,
-        repos_url: String,
-        events_url: String,
-        received_events_url: String,
-        type_: String,
-        site_admin: bool,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            assignment: None,
-            inherited_from: None,
-            name: None,
-            email: None,
-            login,
-            id,
-            node_id,
-            avatar_url,
-            gravatar_id,
-            url,
-            html_url,
-            followers_url,
-            following_url,
-            gists_url,
-            starred_url,
-            subscriptions_url,
-            organizations_url,
-            repos_url,
-            events_url,
-            received_events_url,
-            type_,
-            site_admin,
-            starred_at: None,
-            user_view_type: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
     }
 }

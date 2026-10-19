@@ -3,6 +3,45 @@
 
 use super::*;
 
+impl serde::Serialize for ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "private" => Self::Private,
+            "selected" => Self::Selected,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ActionsCreateSelfHostedRunnerGroupForOrgVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ActionsUpdateSelfHostedRunnerGroupForOrgVisibilityEnum {
+    #[default]
+    All,
+    Private,
+    Selected,
+    Unknown(String),
+}
+
 impl ActionsUpdateSelfHostedRunnerGroupForOrgVisibilityEnum {
     pub fn as_str(&self) -> &str {
         match self {
@@ -241,23 +280,5 @@ impl<'de> serde::Deserialize<'de> for ActionsGetActionsCacheListEnum {
 impl std::fmt::Display for ActionsGetActionsCacheListEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    #[default]
-    Asc,
-    Desc,
-    Unknown(String),
-}
-
-impl SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
     }
 }

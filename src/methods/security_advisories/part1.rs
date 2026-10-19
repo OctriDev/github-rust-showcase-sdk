@@ -34,6 +34,18 @@ impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisories {
     }
 }
 
+impl ::std::convert::From<String> for SecurityAdvisoriesListGlobalAdvisories {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for SecurityAdvisoriesListGlobalAdvisories {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum SecurityAdvisoriesListGlobalAdvisoriese3e10aaf {
@@ -64,6 +76,18 @@ impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriese3e1
                 "no SecurityAdvisoriesListGlobalAdvisoriese3e10aaf branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<String> for SecurityAdvisoriesListGlobalAdvisoriese3e10aaf {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for SecurityAdvisoriesListGlobalAdvisoriese3e10aaf {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }
 
@@ -240,44 +264,4 @@ impl SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
             Self::Unknown(value) => value.as_str(),
         }
     }
-}
-
-impl serde::Serialize for SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "epss_percentage" => Self::EpssPercentage,
-            "epss_percentile" => Self::EpssPercentile,
-            "published" => Self::Published,
-            "updated" => Self::Updated,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for SecurityAdvisoriesListGlobalAdvisoriesEnumf39a7485 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum SecurityAdvisoriesListOrgRepositoryAdvisoriesEnum {
-    #[default]
-    Created,
-    Published,
-    Updated,
-    Unknown(String),
 }

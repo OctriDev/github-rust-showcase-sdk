@@ -3,6 +3,105 @@
 
 use super::*;
 
+impl serde::Serialize for ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "legacy" => Self::Legacy,
+            "workflow" => Self::Workflow,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposUpdateInformationAboutPagesSiteBuildTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposCreateReleaseMakeLatestEnum {
+    #[default]
+    False,
+    Legacy,
+    True,
+    Unknown(String),
+}
+
+impl ReposCreateReleaseMakeLatestEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::False => "false",
+            Self::Legacy => "legacy",
+            Self::True => "true",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ReposCreateReleaseMakeLatestEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposCreateReleaseMakeLatestEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "false" => Self::False,
+            "legacy" => Self::Legacy,
+            "true" => Self::True,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposCreateReleaseMakeLatestEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposUpdateReleaseMakeLatestEnum {
+    #[default]
+    False,
+    Legacy,
+    True,
+    Unknown(String),
+}
+
+impl ReposUpdateReleaseMakeLatestEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::False => "false",
+            Self::Legacy => "legacy",
+            Self::True => "true",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for ReposUpdateReleaseMakeLatestEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -177,108 +276,5 @@ impl<'de> serde::Deserialize<'de> for ReposCreateCommitStatusStateEnum {
             "success" => Self::Success,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display for ReposCreateCommitStatusStateEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposGetClonesEnum {
-    #[default]
-    Day,
-    Week,
-    Unknown(String),
-}
-
-impl ReposGetClonesEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Day => "day",
-            Self::Week => "week",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposGetClonesEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposGetClonesEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "day" => Self::Day,
-            "week" => Self::Week,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposGetClonesEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposListForAuthenticatedUserEnum {
-    #[default]
-    All,
-    Private,
-    Public,
-    Unknown(String),
-}
-
-impl ReposListForAuthenticatedUserEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::All => "all",
-            Self::Private => "private",
-            Self::Public => "public",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposListForAuthenticatedUserEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposListForAuthenticatedUserEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "all" => Self::All,
-            "private" => Self::Private,
-            "public" => Self::Public,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposListForAuthenticatedUserEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

@@ -3,7 +3,7 @@
 
 use super::*;
 
-impl serde::Serialize for IssuesListForRepoEnum {
+impl serde::Serialize for SecurityAdvisoriesListGlobalAdvisoriesEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -12,7 +12,165 @@ impl serde::Serialize for IssuesListForRepoEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for IssuesListForRepoEnum {
+impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriesEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "asc" => Self::Asc,
+            "desc" => Self::Desc,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for SecurityAdvisoriesListGlobalAdvisoriesEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesListForOrgEnum {
+    #[default]
+    All,
+    Assigned,
+    Created,
+    Mentioned,
+    Repos,
+    Subscribed,
+    Unknown(String),
+}
+
+impl IssuesListForOrgEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::Assigned => "assigned",
+            Self::Created => "created",
+            Self::Mentioned => "mentioned",
+            Self::Repos => "repos",
+            Self::Subscribed => "subscribed",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListForOrgEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListForOrgEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "assigned" => Self::Assigned,
+            "created" => Self::Created,
+            "mentioned" => Self::Mentioned,
+            "repos" => Self::Repos,
+            "subscribed" => Self::Subscribed,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesListForOrgEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesListForOrgEnum5317c381 {
+    #[default]
+    All,
+    Closed,
+    Open,
+    Unknown(String),
+}
+
+impl IssuesListForOrgEnum5317c381 {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::Closed => "closed",
+            Self::Open => "open",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListForOrgEnum5317c381 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListForOrgEnum5317c381 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "closed" => Self::Closed,
+            "open" => Self::Open,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for IssuesListForOrgEnum5317c381 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum IssuesListForOrgEnum75c05bfe {
+    #[default]
+    Comments,
+    Created,
+    Updated,
+    Unknown(String),
+}
+
+impl IssuesListForOrgEnum75c05bfe {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Comments => "comments",
+            Self::Created => "created",
+            Self::Updated => "updated",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for IssuesListForOrgEnum75c05bfe {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for IssuesListForOrgEnum75c05bfe {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -27,117 +185,25 @@ impl<'de> serde::Deserialize<'de> for IssuesListForRepoEnum {
     }
 }
 
-impl std::fmt::Display for IssuesListForRepoEnum {
+impl std::fmt::Display for IssuesListForOrgEnum75c05bfe {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum AppsListAccountsForPlanEnum {
+pub enum IssuesListForRepoEnum1f53ffcf {
     #[default]
-    Created,
-    Updated,
-    Unknown(String),
-}
-
-impl AppsListAccountsForPlanEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Created => "created",
-            Self::Updated => "updated",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for AppsListAccountsForPlanEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for AppsListAccountsForPlanEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "created" => Self::Created,
-            "updated" => Self::Updated,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for AppsListAccountsForPlanEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesListCommentsForRepoEnum {
-    #[default]
-    Asc,
-    Desc,
-    Unknown(String),
-}
-
-impl IssuesListCommentsForRepoEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesListCommentsForRepoEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesListCommentsForRepoEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesListCommentsForRepoEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateStateEnum {
-    #[default]
+    All,
     Closed,
     Open,
     Unknown(String),
 }
 
-impl IssuesUpdateStateEnum {
+impl IssuesListForRepoEnum1f53ffcf {
     pub fn as_str(&self) -> &str {
         match self {
+            Self::All => "all",
             Self::Closed => "closed",
             Self::Open => "open",
             Self::Unknown(value) => value.as_str(),
@@ -145,7 +211,7 @@ impl IssuesUpdateStateEnum {
     }
 }
 
-impl serde::Serialize for IssuesUpdateStateEnum {
+impl serde::Serialize for IssuesListForRepoEnum1f53ffcf {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -154,13 +220,14 @@ impl serde::Serialize for IssuesUpdateStateEnum {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for IssuesUpdateStateEnum {
+impl<'de> serde::Deserialize<'de> for IssuesListForRepoEnum1f53ffcf {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         let value = <String as serde::Deserialize>::deserialize(deserializer)?;
         Ok(match value.as_str() {
+            "all" => Self::All,
             "closed" => Self::Closed,
             "open" => Self::Open,
             _ => Self::Unknown(value),
@@ -168,114 +235,28 @@ impl<'de> serde::Deserialize<'de> for IssuesUpdateStateEnum {
     }
 }
 
-impl std::fmt::Display for IssuesUpdateStateEnum {
+impl std::fmt::Display for IssuesListForRepoEnum1f53ffcf {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateStateReasonEnum {
+pub enum IssuesListForRepoEnum {
     #[default]
-    Completed,
-    Duplicate,
-    NotPlanned,
-    Reopened,
+    Comments,
+    Created,
+    Updated,
     Unknown(String),
 }
 
-impl IssuesUpdateStateReasonEnum {
+impl IssuesListForRepoEnum {
     pub fn as_str(&self) -> &str {
         match self {
-            Self::Completed => "completed",
-            Self::Duplicate => "duplicate",
-            Self::NotPlanned => "not_planned",
-            Self::Reopened => "reopened",
+            Self::Comments => "comments",
+            Self::Created => "created",
+            Self::Updated => "updated",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateStateReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesUpdateStateReasonEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "completed" => Self::Completed,
-            "duplicate" => Self::Duplicate,
-            "not_planned" => Self::NotPlanned,
-            "reopened" => Self::Reopened,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateStateReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesLockLockReasonEnum {
-    #[default]
-    OffTopic,
-    Resolved,
-    Spam,
-    TooHeated,
-    Unknown(String),
-}
-
-impl IssuesLockLockReasonEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::OffTopic => "off-topic",
-            Self::Resolved => "resolved",
-            Self::Spam => "spam",
-            Self::TooHeated => "too heated",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesLockLockReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesLockLockReasonEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "off-topic" => Self::OffTopic,
-            "resolved" => Self::Resolved,
-            "spam" => Self::Spam,
-            "too heated" => Self::TooHeated,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesLockLockReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

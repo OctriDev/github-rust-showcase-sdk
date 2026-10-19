@@ -3,6 +3,124 @@
 
 // orgs domain models (part 6)
 
+/// Organization roles
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+pub struct OrganizationRole {
+    /// The unique identifier of the role.
+    pub id: i64,
+    /// The name of the role.
+    pub name: String,
+    /// A short description about who this role is for or what permissions it grants.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub description: Option<Option<String>>,
+    /// The system role from which this role inherits permissions.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub base_role: Option<Option<OrganizationRoleBaseRoleEnum>>,
+    /// Source answers the question, "where did this role come from?"
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::client::double_option"
+    )]
+    pub source: Option<Option<OrganizationRoleSourceEnum>>,
+    /// A list of permissions included in this role.
+    pub permissions: Vec<String>,
+    /// A GitHub user.
+    #[serde(deserialize_with = "Option::deserialize")]
+    pub organization: Option<NullableSimpleUser>,
+    /// The date and time the role was created.
+    pub created_at: String,
+    /// The date and time the role was last updated.
+    pub updated_at: String,
+}
+
+impl OrganizationRole {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
+        Ok(())
+    }
+
+    pub fn new(
+        id: i64,
+        name: String,
+        permissions: Vec<String>,
+        organization: Option<NullableSimpleUser>,
+        created_at: String,
+        updated_at: String,
+    ) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            id,
+            name,
+            description: None,
+            base_role: None,
+            source: None,
+            permissions,
+            organization,
+            created_at,
+            updated_at,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
+/// The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues). Only used when the visibility settings feature is enabled.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum OrganizationUpdateIssueFieldVisibilityEnum {
+    #[default]
+    OrganizationMembersOnly,
+    All,
+    Unknown(String),
+}
+
+impl OrganizationUpdateIssueFieldVisibilityEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::OrganizationMembersOnly => "organization_members_only",
+            Self::All => "all",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for OrganizationUpdateIssueFieldVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for OrganizationUpdateIssueFieldVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "organization_members_only" => Self::OrganizationMembersOnly,
+            "all" => Self::All,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for OrganizationUpdateIssueFieldVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// Color for the option.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum OrganizationUpdateIssueFieldOptionsItemColorEnum {
@@ -385,140 +503,5 @@ impl<'de> serde::Deserialize<'de> for OrgMembershipStateEnum {
 impl std::fmt::Display for OrgMembershipStateEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
-    }
-}
-
-/// The user's membership type in the organization.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum OrgMembershipRoleEnum {
-    #[default]
-    Admin,
-    Member,
-    BillingManager,
-    Unknown(String),
-}
-
-impl OrgMembershipRoleEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Admin => "admin",
-            Self::Member => "member",
-            Self::BillingManager => "billing_manager",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for OrgMembershipRoleEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for OrgMembershipRoleEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "admin" => Self::Admin,
-            "member" => Self::Member,
-            "billing_manager" => Self::BillingManager,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for OrgMembershipRoleEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Optional object value serialized in the `permissions` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct OrgMembershipPermissions {
-    /// Required `boolean` value serialized in the `can_create_repository` wire field.
-    pub can_create_repository: bool,
-}
-
-impl OrgMembershipPermissions {
-    pub fn new(can_create_repository: bool) -> Self {
-        Self {
-            can_create_repository,
-        }
-    }
-}
-
-/// Org Membership
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct OrgMembership {
-    /// Required `uri`-formatted value serialized in the `url` wire field.
-    pub url: String,
-    /// The state of the member in the organization. The `pending` state indicates the user has not yet accepted an invitation.
-    pub state: OrgMembershipStateEnum,
-    /// The user's membership type in the organization.
-    pub role: OrgMembershipRoleEnum,
-    /// Whether the user has direct membership in the organization.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub direct_membership: Option<bool>,
-    /// The slugs of the enterprise teams providing the user with indirect membership in the organization.
-    /// A limit of 100 enterprise team slugs is returned.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enterprise_teams_providing_indirect_membership: Option<Vec<String>>,
-    /// Required `uri`-formatted value serialized in the `organization_url` wire field.
-    pub organization_url: String,
-    /// A GitHub organization.
-    pub organization: OrganizationSimple,
-    /// A GitHub user.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub user: Option<NullableSimpleUser>,
-    /// Optional object value serialized in the `permissions` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<OrgMembershipPermissions>,
-}
-
-impl OrgMembership {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        crate::validation::validate_uri("url", &self.url)?;
-        if let Some(value) = self.enterprise_teams_providing_indirect_membership.as_ref() {
-            crate::validation::validate_items(
-                "enterprise_teams_providing_indirect_membership",
-                value.as_slice(),
-                crate::validation::LengthOpts {
-                    max: Some(100),
-                    ..Default::default()
-                },
-            )?;
-        }
-        crate::validation::validate_uri("organization_url", &self.organization_url)?;
-        Ok(())
-    }
-
-    pub fn new(
-        url: String,
-        state: OrgMembershipStateEnum,
-        role: OrgMembershipRoleEnum,
-        organization_url: String,
-        organization: OrganizationSimple,
-        user: Option<NullableSimpleUser>,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            url,
-            state,
-            role,
-            direct_membership: None,
-            enterprise_teams_providing_indirect_membership: None,
-            organization_url,
-            organization,
-            user,
-            permissions: None,
-        };
-        value.validate_constraints()?;
-        Ok(value)
     }
 }

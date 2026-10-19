@@ -441,6 +441,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoCreatedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoCreatedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoPullRequestCreationPolicyEnum
@@ -579,13 +595,5 @@ impl<'de> serde::Deserialize<'de>
             "BLANK" => Self::Blank,
             _ => Self::Unknown(value),
         })
-    }
-}
-
-impl std::fmt::Display
-    for WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoMergeCommitMessageEnum
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

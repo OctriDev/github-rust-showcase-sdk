@@ -421,6 +421,18 @@ impl<'de> serde::Deserialize<'de> for WebhookIssuesTransferredChangesNewReposito
     }
 }
 
+impl ::std::convert::From<i64> for WebhookIssuesTransferredChangesNewRepositoryCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookIssuesTransferredChangesNewRepositoryCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookIssuesTransferredChangesNewRepositoryPullRequestCreationPolicyEnum {
@@ -489,31 +501,4 @@ pub struct WebhookIssuesTransferredChangesNewRepositoryLicense {
     /// Required `uri`-formatted value serialized in the `url` wire field.
     #[serde(deserialize_with = "Option::deserialize")]
     pub url: Option<String>,
-}
-
-impl WebhookIssuesTransferredChangesNewRepositoryLicense {
-    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.url.as_ref() {
-            crate::validation::validate_uri("url", value)?;
-        }
-        Ok(())
-    }
-
-    pub fn new(
-        key: String,
-        name: String,
-        node_id: String,
-        spdx_id: String,
-        url: Option<String>,
-    ) -> Result<Self, crate::errors::SdkError> {
-        let value = Self {
-            key,
-            name,
-            node_id,
-            spdx_id,
-            url,
-        };
-        value.validate_constraints()?;
-        Ok(value)
-    }
 }

@@ -4,6 +4,116 @@
 use super::*;
 use crate::types::{ProjectsV2FieldIterationConfiguration, ProjectsV2FieldSingleSelectOption};
 
+impl ProjectsAddFieldForUserVariant0DataTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Text => "text",
+            Self::Number => "number",
+            Self::Date => "date",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ProjectsAddFieldForUserVariant0DataTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsAddFieldForUserVariant0DataTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "text" => Self::Text,
+            "number" => Self::Number,
+            "date" => Self::Date,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ProjectsAddFieldForUserVariant0DataTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ProjectsAddFieldForUserVariant0 {
+    /// The name of the field.
+    pub name: String,
+    /// The field's data type.
+    pub data_type: ProjectsAddFieldForUserVariant0DataTypeEnum,
+}
+
+impl ProjectsAddFieldForUserVariant0 {
+    pub fn new(name: String, data_type: ProjectsAddFieldForUserVariant0DataTypeEnum) -> Self {
+        Self { name, data_type }
+    }
+}
+
+/// The field's data type.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ProjectsAddFieldForUserVariant1DataTypeEnum {
+    #[default]
+    SingleSelect,
+    Unknown(String),
+}
+
+impl ProjectsAddFieldForUserVariant1DataTypeEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::SingleSelect => "single_select",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ProjectsAddFieldForUserVariant1DataTypeEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ProjectsAddFieldForUserVariant1DataTypeEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "single_select" => Self::SingleSelect,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ProjectsAddFieldForUserVariant1DataTypeEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ProjectsAddFieldForUserVariant1 {
+    /// The name of the field.
+    pub name: String,
+    /// The field's data type.
+    pub data_type: ProjectsAddFieldForUserVariant1DataTypeEnum,
+    /// The options available for single select fields. At least one option must be provided when creating a single select field.
+    pub single_select_options: Vec<ProjectsV2FieldSingleSelectOption>,
+}
+
 impl ProjectsAddFieldForUserVariant1 {
     pub fn new(
         name: String,
@@ -132,6 +242,24 @@ impl<'de> serde::Deserialize<'de> for ProjectsAddFieldForUser {
     }
 }
 
+impl ::std::convert::From<Box<ProjectsAddFieldForUserVariant0>> for ProjectsAddFieldForUser {
+    fn from(value: Box<ProjectsAddFieldForUserVariant0>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Box<ProjectsAddFieldForUserVariant1>> for ProjectsAddFieldForUser {
+    fn from(value: Box<ProjectsAddFieldForUserVariant1>) -> Self {
+        Self::SingleSelect(value)
+    }
+}
+
+impl ::std::convert::From<Box<ProjectsAddFieldForUserVariant2>> for ProjectsAddFieldForUser {
+    fn from(value: Box<ProjectsAddFieldForUserVariant2>) -> Self {
+        Self::Iteration(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum ProjectsListItemsForUser {
@@ -163,156 +291,14 @@ impl<'de> serde::Deserialize<'de> for ProjectsListItemsForUser {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum ProjectsGetUserItem {
-    String(String),
-    StringArray(Vec<String>),
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsGetUserItem {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
-            let candidate = Self::String(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
-            let candidate = Self::StringArray(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| {
-            serde::de::Error::custom("no ProjectsGetUserItem branch accepts this payload")
-        })
+impl ::std::convert::From<String> for ProjectsListItemsForUser {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum ProjectsUpdateItemForUserFieldsItemValue {
-    String(String),
-    Number(f64),
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsUpdateItemForUserFieldsItemValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
-            let candidate = Self::String(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
-            let candidate = Self::Number(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| {
-            serde::de::Error::custom(
-                "no ProjectsUpdateItemForUserFieldsItemValue branch accepts this payload",
-            )
-        })
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ProjectsUpdateItemForUserFieldsItem {
-    /// The ID of the project field to update.
-    pub id: i64,
-    /// The new value for the field:
-    /// \- For text, number, and date fields, provide the new value directly.
-    /// \- For single select and iteration fields, provide the ID of the option or iteration.
-    /// \- To clear the field, set this to null.
-    #[serde(deserialize_with = "Option::deserialize")]
-    pub value: Option<ProjectsUpdateItemForUserFieldsItemValue>,
-}
-
-impl ProjectsUpdateItemForUserFieldsItem {
-    pub fn new(id: i64, value: Option<ProjectsUpdateItemForUserFieldsItemValue>) -> Self {
-        Self { id, value }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum ProjectsListViewItemsForUser {
-    String(String),
-    StringArray(Vec<String>),
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsListViewItemsForUser {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
-            let candidate = Self::String(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<Vec<String>>(value.clone()) {
-            let candidate = Self::StringArray(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| {
-            serde::de::Error::custom("no ProjectsListViewItemsForUser branch accepts this payload")
-        })
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ProjectsAddItemForOrgTypeEnum {
-    #[default]
-    Issue,
-    Pullrequest,
-    Unknown(String),
-}
-
-impl ProjectsAddItemForOrgTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Issue => "Issue",
-            Self::Pullrequest => "PullRequest",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ProjectsAddItemForOrgTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ProjectsAddItemForOrgTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "Issue" => Self::Issue,
-            "PullRequest" => Self::Pullrequest,
-            _ => Self::Unknown(value),
-        })
+impl ::std::convert::From<Vec<String>> for ProjectsListItemsForUser {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }

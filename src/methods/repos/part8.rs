@@ -3,6 +3,100 @@
 
 use super::*;
 
+impl serde::Serialize for ReposUpdateVisibilityEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposUpdateVisibilityEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "private" => Self::Private,
+            "public" => Self::Public,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposUpdateVisibilityEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposUpdatePullRequestCreationPolicyEnum {
+    #[default]
+    All,
+    CollaboratorsOnly,
+    Unknown(String),
+}
+
+impl ReposUpdatePullRequestCreationPolicyEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::CollaboratorsOnly => "collaborators_only",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for ReposUpdatePullRequestCreationPolicyEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for ReposUpdatePullRequestCreationPolicyEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "all" => Self::All,
+            "collaborators_only" => Self::CollaboratorsOnly,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for ReposUpdatePullRequestCreationPolicyEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum ReposUpdateSquashMergeCommitTitleEnum {
+    #[default]
+    CommitOrPrTitle,
+    PrTitle,
+    Unknown(String),
+}
+
+impl ReposUpdateSquashMergeCommitTitleEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::CommitOrPrTitle => "COMMIT_OR_PR_TITLE",
+            Self::PrTitle => "PR_TITLE",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for ReposUpdateSquashMergeCommitTitleEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -185,99 +279,4 @@ pub enum SecurityAdvisoriesListGlobalAdvisoriesEnum {
     Asc,
     Desc,
     Unknown(String),
-}
-
-impl SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Asc => "asc",
-            Self::Desc => "desc",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "asc" => Self::Asc,
-            "desc" => Self::Desc,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for SecurityAdvisoriesListGlobalAdvisoriesEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum ReposListActivitiesEnum {
-    #[default]
-    Day,
-    Month,
-    Quarter,
-    Week,
-    Year,
-    Unknown(String),
-}
-
-impl ReposListActivitiesEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Day => "day",
-            Self::Month => "month",
-            Self::Quarter => "quarter",
-            Self::Week => "week",
-            Self::Year => "year",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for ReposListActivitiesEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for ReposListActivitiesEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "day" => Self::Day,
-            "month" => Self::Month,
-            "quarter" => Self::Quarter,
-            "week" => Self::Week,
-            "year" => Self::Year,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for ReposListActivitiesEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
 }

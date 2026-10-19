@@ -5,21 +5,12 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{Issue, Label, Milestone};
+use crate::types::{Label, Milestone};
 use crate::validation::validate_date_time;
 
-#[derive(Debug, Clone, Default)]
-pub struct IssuesUpdateMilestoneParams {
-    pub owner: String,
-    pub repo: String,
-    pub milestone_number: i64,
-    pub title: Option<String>,
-    pub state: Option<IssuesUpdateMilestoneStateEnum>,
-    pub description: Option<String>,
-    pub due_on: Option<String>,
-}
-
-/// Updates an existing milestone in a repository. Identify it with `milestone_number` and provide only the milestone properties you want to change; `state` can be `open` or `closed`.
+/// Lists labels in a repository. Use `owner` and `repo` to identify the repository, and use `page` and `per_page` to paginate the results.
+///
+/// Lists all labels for a repository.
 ///
 /// # Arguments
 ///
@@ -27,22 +18,450 @@ pub struct IssuesUpdateMilestoneParams {
 ///   sensitive.
 /// * `repo` - The name of the repository without the `.git` extension. The name
 ///   is not case sensitive.
-/// * `milestone_number` - The number that identifies the milestone.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn issues_list_labels_for_repo(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    per_page: Option<i64>,
+    page: Option<i64>,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<Label>, SdkError> {
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<Label>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/labels",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_list_labels_for_repo",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesCreateLabelParams {
+    pub owner: String,
+    pub repo: String,
+    pub name: String,
+    pub color: Option<String>,
+    pub description: Option<String>,
+}
+
+/// Creates a label for the specified repository with the given name and color. The name and color parameters are required. The color must be a valid [hexadecimal color code](http://www.color-hex.com/).
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `name` - The name of the label. Emoji can be added to label names, using
+///   either native emoji or colon-style markup. For example, typing
+///   `:strawberry:` will render the emoji
+///   ![:strawberry:](https://github.githubassets.com/images/icons/emoji/unicode/1
+///   f353.png ":strawberry:"). For a full list of available emoji and codes, see
+///   "[Emoji cheat sheet](https://github.com/ikatyang/emoji-cheat-sheet)."
+/// * `color` - The [hexadecimal color code](http://www.color-hex.com/) for the
+///   label, without the leading `#`.
+/// * `description` - A short description of the label. Must be 100 characters
+///   or fewer.
+pub fn issues_create_label(
+    config: &ClientConfig,
+    params: IssuesCreateLabelParams,
+    options: Option<&RequestOptions>,
+) -> Result<Label, SdkError> {
+    let IssuesCreateLabelParams {
+        owner,
+        repo,
+        name,
+        color,
+        description,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    __body_map.insert(
+        "name".to_string(),
+        serde_json::to_value(name).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
+    if let Some(ref value) = color {
+        __body_map.insert(
+            "color".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = description {
+        __body_map.insert(
+            "description".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Label>(
+        "POST",
+        &format!(
+            "/repos/{}/{}/labels",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_create_label",
+            options,
+            errors: &[("404", "BasicError"), ("422", "ValidationError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Retrieves a label from a repository by its name. Use `owner` and `repo` to identify the repository and `name` to specify the label.
+///
+/// Gets a label using the given name.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn issues_get_label(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    name: String,
+    options: Option<&RequestOptions>,
+) -> Result<Label, SdkError> {
+    Ok(sdk_request::<Label>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/labels/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_get_label",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesUpdateLabelParams {
+    pub owner: String,
+    pub repo: String,
+    pub name: String,
+    pub new_name: Option<String>,
+    pub color: Option<String>,
+    pub description: Option<String>,
+    pub archived: Option<bool>,
+}
+
+/// Updates a label in a repository using its current name. Supply any fields you want to change; all body fields are optional, and `description` can contain at most 100 characters. Set `archived` to archive or unarchive the label.
+///
+/// Updates a label using the given label name.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `new_name` - The new name of the label. Emoji can be added to label names,
+///   using either native emoji or colon-style markup. For example, typing
+///   `:strawberry:` will render the emoji
+///   ![:strawberry:](https://github.githubassets.com/images/icons/emoji/unicode/1
+///   f353.png ":strawberry:"). For a full list of available emoji and codes, see
+///   "[Emoji cheat sheet](https://github.com/ikatyang/emoji-cheat-sheet)."
+/// * `color` - The [hexadecimal color code](http://www.color-hex.com/) for the
+///   label, without the leading `#`.
+/// * `description` - A short description of the label. Must be 100 characters
+///   or fewer.
+/// * `archived` - Whether to archive or unarchive the label. Archived labels
+///   cannot be added to issues or pull requests. For more information, see
+///   "[Archiving
+///   labels](https://docs.github.com/issues/organizing-your-work-with-labels/mana
+///   ging-labels)."
+pub fn issues_update_label(
+    config: &ClientConfig,
+    params: IssuesUpdateLabelParams,
+    options: Option<&RequestOptions>,
+) -> Result<Label, SdkError> {
+    let IssuesUpdateLabelParams {
+        owner,
+        repo,
+        name,
+        new_name,
+        color,
+        description,
+        archived,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = new_name {
+        __body_map.insert(
+            "new_name".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = color {
+        __body_map.insert(
+            "color".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = description {
+        __body_map.insert(
+            "description".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = archived {
+        __body_map.insert(
+            "archived".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<Label>(
+        "PATCH",
+        &format!(
+            "/repos/{}/{}/labels/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&name)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_update_label",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Deletes a label from a repository using its name. Identify the repository with `owner` and `repo`, and specify the label to remove with `name`.
+///
+/// Deletes a label using the given label name.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+pub fn issues_delete_label(
+    config: &ClientConfig,
+    owner: String,
+    repo: String,
+    name: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/repos/{}/{}/labels/{}",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo),
+            crate::client::encode_path_segment(&name)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "issues_delete_label",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesListMilestonesParams {
+    pub owner: String,
+    pub repo: String,
+    pub state: Option<IssuesListMilestonesEnum>,
+    pub sort: Option<IssuesListMilestonesEnum5ec18b58>,
+    pub direction: Option<IssuesListMilestonesEnum0a6da649>,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+}
+
+/// Lists milestones for a repository. Filter by `state` and control ordering with `sort` and `direction`; use `page` and `per_page` to paginate the results.
+///
+/// Lists milestones for a repository.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
+/// * `state` - The state of the milestone. Either `open`, `closed`, or `all`.
+/// * `sort` - What to sort results by. Either `due_on` or `completeness`.
+/// * `direction` - The direction of the sort. Either `asc` or `desc`.
+/// * `per_page` - The number of results per page (max 100). For more
+///   information, see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+/// * `page` - The page number of the results to fetch. For more information,
+///   see "[Using pagination in the REST
+///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
+///   -rest-api)."
+pub fn issues_list_milestones(
+    config: &ClientConfig,
+    params: IssuesListMilestonesParams,
+    options: Option<&RequestOptions>,
+) -> Result<Vec<Milestone>, SdkError> {
+    let IssuesListMilestonesParams {
+        owner,
+        repo,
+        state,
+        sort,
+        direction,
+        per_page,
+        page,
+    } = params;
+    let mut __query: Vec<(&str, String)> = Vec::with_capacity(5);
+    if let Some(ref v) = state {
+        __query.push(("state", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = sort {
+        __query.push(("sort", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = direction {
+        __query.push(("direction", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = per_page {
+        __query.push(("per_page", crate::client::query_value(v)));
+    }
+    if let Some(ref v) = page {
+        __query.push(("page", crate::client::query_value(v)));
+    }
+
+    Ok(sdk_request::<Vec<Milestone>>(
+        "GET",
+        &format!(
+            "/repos/{}/{}/milestones",
+            crate::client::encode_path_segment(&owner),
+            crate::client::encode_path_segment(&repo)
+        ),
+        config,
+        RequestOpts {
+            query: &__query,
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "issues_list_milestones",
+            options,
+            errors: &[("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct IssuesCreateMilestoneParams {
+    pub owner: String,
+    pub repo: String,
+    pub title: String,
+    pub state: Option<IssuesCreateMilestoneStateEnum>,
+    pub description: Option<String>,
+    pub due_on: Option<String>,
+}
+
+/// Creates a milestone in a repository. Provide a `title` and optionally set its `state`, `description`, and `due_on` date. A 201 response returns the created milestone with its generated identifier and milestone details.
+///
+/// Creates a milestone.
+///
+/// # Arguments
+///
+/// * `owner` - The account owner of the repository. The name is not case
+///   sensitive.
+/// * `repo` - The name of the repository without the `.git` extension. The name
+///   is not case sensitive.
 /// * `title` - The title of the milestone.
 /// * `state` - The state of the milestone. Either `open` or `closed`.
 /// * `description` - A description of the milestone.
 /// * `due_on` - The milestone due date. This is a timestamp in [ISO
 ///   8601](https://en.wikipedia.org/wiki/ISO_8601) format:
 ///   `YYYY-MM-DDTHH:MM:SSZ`.
-pub fn issues_update_milestone(
+pub fn issues_create_milestone(
     config: &ClientConfig,
-    params: IssuesUpdateMilestoneParams,
+    params: IssuesCreateMilestoneParams,
     options: Option<&RequestOptions>,
 ) -> Result<Milestone, SdkError> {
-    let IssuesUpdateMilestoneParams {
+    let IssuesCreateMilestoneParams {
         owner,
         repo,
-        milestone_number,
         title,
         state,
         description,
@@ -53,17 +472,15 @@ pub fn issues_update_milestone(
     }
 
     let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = title {
-        __body_map.insert(
-            "title".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
+    __body_map.insert(
+        "title".to_string(),
+        serde_json::to_value(title).map_err(|e| {
+            SdkError::Network(SdkNetworkError {
+                message: format!("encode body field: {}", e),
+                request_id: None,
+            })
+        })?,
+    );
     if let Some(ref value) = state {
         __body_map.insert(
             "state".to_string(),
@@ -100,26 +517,26 @@ pub fn issues_update_milestone(
     let __body = serde_json::Value::Object(__body_map);
 
     Ok(sdk_request::<Milestone>(
-        "PATCH",
+        "POST",
         &format!(
-            "/repos/{}/{}/milestones/{}",
+            "/repos/{}/{}/milestones",
             crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&milestone_number)
+            crate::client::encode_path_segment(&repo)
         ),
         config,
         RequestOpts {
             body: Some(__body),
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_update_milestone",
+            operation_id: "issues_create_milestone",
             options,
+            errors: &[("404", "BasicError"), ("422", "ValidationError")],
             ..Default::default()
         },
     )?
     .data)
 }
 
-/// Deletes a milestone using the given milestone number.
+/// Gets a milestone using the given milestone number.
 ///
 /// # Arguments
 ///
@@ -128,15 +545,15 @@ pub fn issues_update_milestone(
 /// * `repo` - The name of the repository without the `.git` extension. The name
 ///   is not case sensitive.
 /// * `milestone_number` - The number that identifies the milestone.
-pub fn issues_delete_milestone(
+pub fn issues_get_milestone(
     config: &ClientConfig,
     owner: String,
     repo: String,
     milestone_number: i64,
     options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
+) -> Result<Milestone, SdkError> {
+    Ok(sdk_request::<Milestone>(
+        "GET",
         &format!(
             "/repos/{}/{}/milestones/{}",
             crate::client::encode_path_segment(&owner),
@@ -145,171 +562,8 @@ pub fn issues_delete_milestone(
         ),
         config,
         RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "issues_delete_milestone",
-            options,
-            errors: &[("404", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct IssuesListLabelsForMilestoneParams {
-    pub owner: String,
-    pub repo: String,
-    pub milestone_number: i64,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// Lists labels for issues in a milestone.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository without the `.git` extension. The name
-///   is not case sensitive.
-/// * `milestone_number` - The number that identifies the milestone.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn issues_list_labels_for_milestone(
-    config: &ClientConfig,
-    params: IssuesListLabelsForMilestoneParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Label>, SdkError> {
-    let IssuesListLabelsForMilestoneParams {
-        owner,
-        repo,
-        milestone_number,
-        per_page,
-        page,
-    } = params;
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Label>>(
-        "GET",
-        &format!(
-            "/repos/{}/{}/milestones/{}/labels",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo),
-            crate::client::encode_path_segment(&milestone_number)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_list_labels_for_milestone",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct IssuesListForAuthenticatedUserParams {
-    pub filter: Option<IssuesListForAuthenticatedUserEnum>,
-    pub state: Option<IssuesListForAuthenticatedUserEnum0c8713b3>,
-    pub labels: Option<String>,
-    pub sort: Option<IssuesListForAuthenticatedUserEnum317b1d71>,
-    pub direction: Option<SecurityAdvisoriesListGlobalAdvisoriesEnum>,
-    pub since: Option<String>,
-    pub per_page: Option<i64>,
-    pub page: Option<i64>,
-}
-
-/// List issues across owned and member repositories assigned to the authenticated user. \> [!NOTE] \> GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull request id, use the "[List pull requests](https://docs.github.com/rest/pulls/pulls#list-pull-requests)" endpoint. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type. \- \*\*`application/vnd.github.text\+json`\*\*: Returns a text only representation of the markdown body. Response will include `body_text`. \- \*\*`application/vnd.github.html\+json`\*\*: Returns HTML rendered from the body's markdown. Response will include `body_html`. \- \*\*`application/vnd.github.full\+json`\*\*: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
-///
-/// # Arguments
-///
-/// * `filter` - Indicates which sorts of issues to return. `assigned` means
-///   issues assigned to you. `created` means issues created by you. `mentioned`
-///   means issues mentioning you. `subscribed` means issues you're subscribed to
-///   updates for. `all` or `repos` means all issues you can see, regardless of
-///   participation or creation.
-/// * `state` - Indicates the state of the issues to return.
-/// * `labels` - A list of comma separated label names. Example: `bug,ui,@high`
-/// * `sort` - What to sort results by.
-/// * `direction` - The direction to sort the results by.
-/// * `since` - Only show results that were last updated after the given time.
-///   This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)
-///   format: `YYYY-MM-DDTHH:MM:SSZ`.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn issues_list_for_authenticated_user(
-    config: &ClientConfig,
-    params: IssuesListForAuthenticatedUserParams,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Issue>, SdkError> {
-    let IssuesListForAuthenticatedUserParams {
-        filter,
-        state,
-        labels,
-        sort,
-        direction,
-        since,
-        per_page,
-        page,
-    } = params;
-    if let Some(ref since_v) = since {
-        validate_date_time("since", since_v)?;
-    }
-
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(8);
-    if let Some(ref v) = filter {
-        __query.push(("filter", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = state {
-        __query.push(("state", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = labels {
-        __query.push(("labels", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = sort {
-        __query.push(("sort", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = direction {
-        __query.push(("direction", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = since {
-        __query.push(("since", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Issue>>(
-        "GET",
-        "/user/issues",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "issues_list_for_authenticated_user",
+            operation_id: "issues_get_milestone",
             options,
             errors: &[("404", "BasicError")],
             ..Default::default()

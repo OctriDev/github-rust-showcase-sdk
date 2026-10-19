@@ -5,8 +5,27 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{CodespacesOrgSecret, CodespacesPublicKey};
 use crate::validation::{validate_items, LengthOpts};
+
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
+    #[default]
+    All,
+    Private,
+    Selected,
+    Unknown(String),
+}
+
+impl CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::All => "all",
+            Self::Private => "private",
+            Self::Selected => "selected",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
 
 impl serde::Serialize for CodespacesCreateOrUpdateOrgSecretVisibilityEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -437,63 +456,6 @@ pub fn codespaces_list_org_secrets(
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "codespaces_list_org_secrets",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets a public key for an organization, which is required in order to encrypt secrets. You need to encrypt the value of a secret before you can create or update secrets. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-pub fn codespaces_get_org_public_key(
-    config: &ClientConfig,
-    org: String,
-    options: Option<&RequestOptions>,
-) -> Result<CodespacesPublicKey, SdkError> {
-    Ok(sdk_request::<CodespacesPublicKey>(
-        "GET",
-        &format!(
-            "/orgs/{}/codespaces/secrets/public-key",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "codespaces_get_org_public_key",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Gets an organization development environment secret without revealing its encrypted value. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `secret_name` - The name of the secret.
-pub fn codespaces_get_org_secret(
-    config: &ClientConfig,
-    org: String,
-    secret_name: String,
-    options: Option<&RequestOptions>,
-) -> Result<CodespacesOrgSecret, SdkError> {
-    Ok(sdk_request::<CodespacesOrgSecret>(
-        "GET",
-        &format!(
-            "/orgs/{}/codespaces/secrets/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&secret_name)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "codespaces_get_org_secret",
             options,
             ..Default::default()
         },

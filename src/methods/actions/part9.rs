@@ -5,7 +5,118 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::RunnerGroupsOrg;
+use crate::types::{
+    ActionsPolicy, ActionsPolicyOrgConditions, ActionsRule, RepositoryRuleEnforcement,
+    RunnerGroupsOrg,
+};
+
+#[derive(Debug, Clone, Default)]
+pub struct ActionsUpdateOrgActionsPolicyParams {
+    pub org: String,
+    pub policy_id: i64,
+    pub name: Option<String>,
+    pub enforcement: Option<RepositoryRuleEnforcement>,
+    pub conditions: Option<ActionsPolicyOrgConditions>,
+    pub rules: Option<Vec<ActionsRule>>,
+}
+
+/// Update an Actions policy for an organization. Omitting `workflow_path` preserves the policy's existing workflow targeting.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `policy_id` - The ID of the policy.
+/// * `name` - The name of the policy.
+/// * `enforcement` - The enforcement level of the ruleset. `evaluate` allows
+///   admins to test rules before enforcing them. Admins can view insights on the
+///   Rule Insights page (`evaluate` is only available with GitHub Enterprise).
+/// * `conditions` - Conditions for an organization Actions policy. The
+///   conditions object should contain one of `repository_name`, `repository_id`,
+///   or `repository_property`, and may also contain `workflow_path`.
+/// * `rules` - An array of rules within the policy.
+pub fn actions_update_org_actions_policy(
+    config: &ClientConfig,
+    params: ActionsUpdateOrgActionsPolicyParams,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsPolicy, SdkError> {
+    let ActionsUpdateOrgActionsPolicyParams {
+        org,
+        policy_id,
+        name,
+        enforcement,
+        conditions,
+        rules,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = name {
+        __body_map.insert(
+            "name".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = enforcement {
+        __body_map.insert(
+            "enforcement".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = conditions {
+        __body_map.insert(
+            "conditions".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = rules {
+        __body_map.insert(
+            "rules".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<ActionsPolicy>(
+        "PUT",
+        &format!(
+            "/orgs/{}/actions/policies/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&policy_id)
+        ),
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_update_org_actions_policy",
+            options,
+            errors: &[
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+                ("500", "BasicError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Deletes an organization-level Actions policy. Use `org` and `policy_id` to identify the organization and policy to remove; the policy must belong to that organization.
 ///
@@ -583,72 +694,6 @@ pub fn actions_set_repo_access_to_self_hosted_runner_group_in_org(
             body: Some(__body),
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "actions_set_repo_access_to_self_hosted_runner_group_in_org",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Adds a repository to the list of repositories that can access a self-hosted runner group. The runner group must have `visibility` set to `selected`. For more information, see "Create a self-hosted runner group for an organization." OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `runner_group_id` - Unique identifier of the self-hosted runner group.
-/// * `repository_id` - The unique identifier of the repository.
-pub fn actions_add_repo_access_to_self_hosted_runner_group_in_org(
-    config: &ClientConfig,
-    org: String,
-    runner_group_id: i64,
-    repository_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "PUT",
-        &format!(
-            "/orgs/{}/actions/runner-groups/{}/repositories/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&runner_group_id),
-            crate::client::encode_path_segment(&repository_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_add_repo_access_to_self_hosted_runner_group_in_org",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Removes a repository from the list of selected repositories that can access a self-hosted runner group. The runner group must have `visibility` set to `selected`. For more information, see "Create a self-hosted runner group for an organization." OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `runner_group_id` - Unique identifier of the self-hosted runner group.
-/// * `repository_id` - The unique identifier of the repository.
-pub fn actions_remove_repo_access_to_self_hosted_runner_group_in_org(
-    config: &ClientConfig,
-    org: String,
-    runner_group_id: i64,
-    repository_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/orgs/{}/actions/runner-groups/{}/repositories/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&runner_group_id),
-            crate::client::encode_path_segment(&repository_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_remove_repo_access_to_self_hosted_runner_group_in_org",
             options,
             ..Default::default()
         },

@@ -469,6 +469,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoCreatedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoCreatedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The policy controlling who can create pull requests: all or collaborators_only.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoPullRequestCreationPolicyEnum {
@@ -485,16 +501,5 @@ impl WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoPullRequestCrea
             Self::CollaboratorsOnly => "collaborators_only",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize
-    for WebhookPullRequestReviewRequestedVariant0PullRequestBaseRepoPullRequestCreationPolicyEnum
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
     }
 }

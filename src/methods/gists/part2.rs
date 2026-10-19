@@ -7,6 +7,31 @@ use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{BaseGist, GistComment, GistCommit, GistSimple};
 use crate::validation::{validate_date_time, validate_length, LengthOpts};
 
+/// Deletes a specific gist. Use `gist_id` to identify the gist you want to remove; the operation returns no response body when deletion completes.
+///
+/// # Arguments
+///
+/// * `gist_id` - The unique identifier of the gist.
+pub fn gists_delete(
+    config: &ClientConfig,
+    gist_id: String,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!("/gists/{}", crate::client::encode_path_segment(&gist_id)),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "gists_delete",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Lists the comments on a gist. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw markdown. This is the default if you do not pass any specific media type.
 ///
 /// # Arguments

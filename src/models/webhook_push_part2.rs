@@ -195,6 +195,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPushRepositoryPushedAt {
     }
 }
 
+impl ::std::convert::From<i64> for WebhookPushRepositoryPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPushRepositoryPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// Required enumerated value serialized in the `visibility` wire field.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum WebhookPushRepositoryVisibilityEnum {

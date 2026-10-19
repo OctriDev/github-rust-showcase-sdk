@@ -3,6 +3,25 @@
 
 // webhook_pull_request_review_requested domain models (part 6)
 
+impl WebhookPullRequestReviewRequestedVariant0PullRequestHeadRepoPermissions {
+    pub fn new(admin: bool, pull: bool, push: bool) -> Self {
+        Self {
+            admin,
+            maintain: None,
+            pull,
+            push,
+            triage: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum WebhookPullRequestReviewRequestedVariant0PullRequestHeadRepoPushedAt {
+    Integer(i64),
+    String(String),
+}
+
 impl<'de> serde::Deserialize<'de>
     for WebhookPullRequestReviewRequestedVariant0PullRequestHeadRepoPushedAt
 {
@@ -24,6 +43,22 @@ impl<'de> serde::Deserialize<'de>
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewRequestedVariant0PullRequestHeadRepoPushedAt branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestHeadRepoPushedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewRequestedVariant0PullRequestHeadRepoPushedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

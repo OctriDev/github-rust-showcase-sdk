@@ -6,11 +6,39 @@ use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{
-    ActionsCacheStorageLimitForOrganization, ActionsCacheUsageOrgEnterprise, ActionsHostedRunner,
-    ActionsHostedRunnerCustomImage, ActionsHostedRunnerCustomImageVersion,
-    ActionsHostedRunnerLimits,
+    ActionsCacheRetentionLimitForOrganization, ActionsCacheStorageLimitForOrganization,
+    ActionsCacheUsageOrgEnterprise, ActionsHostedRunner, ActionsHostedRunnerCustomImage,
+    ActionsHostedRunnerCustomImageVersion, ActionsHostedRunnerLimits,
 };
 use crate::validation::validate_pattern;
+
+/// Gets GitHub Actions cache retention limit for an organization. All repositories under this organization may not set a higher cache retention limit. OAuth tokens and personal access tokens (classic) need the `admin:organization` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+pub fn actions_get_actions_cache_retention_limit_for_organization(
+    config: &ClientConfig,
+    org: String,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsCacheRetentionLimitForOrganization, SdkError> {
+    Ok(sdk_request::<ActionsCacheRetentionLimitForOrganization>(
+        "GET",
+        &format!(
+            "/organizations/{}/actions/cache/retention-limit",
+            crate::client::encode_path_segment(&org)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_actions_cache_retention_limit_for_organization",
+            options,
+            errors: &[("403", "BasicError"), ("404", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// Sets GitHub Actions cache retention limit for an organization. All repositories under this organization may not set a higher cache retention limit. OAuth tokens and personal access tokens (classic) need the `admin:organization` scope to use this endpoint.
 ///
@@ -727,34 +755,4 @@ pub fn actions_get_hosted_runners_platforms_for_org(
         )?
         .data,
     )
-}
-
-/// Gets a GitHub-hosted runner configured in an organization. OAuth app tokens and personal access tokens (classic) need the `manage_runners:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `hosted_runner_id` - Unique identifier of the GitHub-hosted runner.
-pub fn actions_get_hosted_runner_for_org(
-    config: &ClientConfig,
-    org: String,
-    hosted_runner_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsHostedRunner, SdkError> {
-    Ok(sdk_request::<ActionsHostedRunner>(
-        "GET",
-        &format!(
-            "/orgs/{}/actions/hosted-runners/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&hosted_runner_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_get_hosted_runner_for_org",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
 }

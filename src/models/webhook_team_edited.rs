@@ -217,6 +217,18 @@ impl<'de> serde::Deserialize<'de> for WebhookTeamEditedRepositoryCreatedAt {
     }
 }
 
+impl ::std::convert::From<i64> for WebhookTeamEditedRepositoryCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookTeamEditedRepositoryCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// Required object value serialized in the `license` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookTeamEditedRepositoryLicense {

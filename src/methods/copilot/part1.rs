@@ -264,6 +264,28 @@ impl<'de> serde::Deserialize<'de> for CopilotSetCopilotContentExclusionForOrgani
     }
 }
 
+impl ::std::convert::From<String> for CopilotSetCopilotContentExclusionForOrganizationValueItem {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant1>>
+    for CopilotSetCopilotContentExclusionForOrganizationValueItem
+{
+    fn from(value: Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant1>) -> Self {
+        Self::Object(value)
+    }
+}
+
+impl ::std::convert::From<Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant2>>
+    for CopilotSetCopilotContentExclusionForOrganizationValueItem
+{
+    fn from(value: Box<CopilotSetCopilotContentExclusionForOrganizationValueItemVariant2>) -> Self {
+        Self::Object2(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CopilotSetCopilotContentExclusionForOrganizationResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -274,34 +296,5 @@ impl CopilotSetCopilotContentExclusionForOrganizationResponse {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self { message: None }
-    }
-}
-
-/// The enabled review tools for Copilot cloud agent.
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools {
-    /// Whether the CodeQL tool is enabled for the Copilot cloud agent.
-    pub codeql: bool,
-    /// Whether the Copilot code review tool is enabled for the Copilot cloud agent.
-    pub copilot_code_review: bool,
-    /// Whether the secret scanning tool is enabled for the Copilot cloud agent.
-    pub secret_scanning: bool,
-    /// Whether the dependency vulnerability checks tool is enabled for the Copilot cloud agent.
-    pub dependency_vulnerability_checks: bool,
-}
-
-impl CopilotGetCopilotCloudAgentConfigurationResponseEnabledTools {
-    pub fn new(
-        codeql: bool,
-        copilot_code_review: bool,
-        secret_scanning: bool,
-        dependency_vulnerability_checks: bool,
-    ) -> Self {
-        Self {
-            codeql,
-            copilot_code_review,
-            secret_scanning,
-            dependency_vulnerability_checks,
-        }
     }
 }

@@ -4,8 +4,37 @@
 use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
-use crate::errors::{SdkError, SdkNetworkError};
+use crate::errors::SdkError;
 use crate::validation::{validate_date_time, validate_range, RangeOpts};
+
+impl serde::Serialize for AgentTasksListTasksForRepoEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for AgentTasksListTasksForRepoEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "created_at" => Self::CreatedAt,
+            "updated_at" => Self::UpdatedAt,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for AgentTasksListTasksForRepoEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum AgentTasksListTasksForRepoEnumc1a47ffb {
@@ -266,141 +295,6 @@ pub fn agent_tasks_list_tasks_for_repo(
             query: &__query,
             decoder: crate::client::ResponseDecoder::Json,
             operation_id: "agent_tasks_list_tasks_for_repo",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct AgentTasksCreateTaskInRepoParams {
-    pub owner: String,
-    pub repo: String,
-    pub prompt: String,
-    pub model: Option<String>,
-    pub custom_agent: Option<String>,
-    pub create_pull_request: Option<bool>,
-    pub base_ref: Option<String>,
-    pub head_ref: Option<String>,
-}
-
-/// \> [!NOTE] \> This endpoint is in public preview and is subject to change. Starts a new Copilot cloud agent task for a repository. This endpoint is only available to users with a Copilot Business or Copilot Enterprise subscription. \*\*Fine-grained access tokens for "Start a task"\*\* This endpoint works with the following fine-grained token types: \* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app) \* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token) The fine-grained token must have the following permission set: \* "Agent tasks" repository permissions (read and write) GitHub App installation access tokens are not supported for this endpoint.
-///
-/// # Arguments
-///
-/// * `owner` - The account owner of the repository. The name is not case
-///   sensitive.
-/// * `repo` - The name of the repository. The name is not case sensitive.
-/// * `prompt` - The user's prompt for the agent
-/// * `model` - The model to use for this task. The allowed models may change
-///   over time and depend on the user's GitHub Copilot plan and organization
-///   policies. Currently supported values: `claude-sonnet-4.6`,
-///   `claude-opus-4.6`, `gpt-5.2-codex`, `gpt-5.3-codex`, `gpt-5.4`,
-///   `claude-sonnet-4.5`, `claude-opus-4.5`
-/// * `custom_agent` - Optional identifier for a custom agent to use for this
-///   task. Use the custom agent's filename without the extension \- for example,
-///   for a `.github/agents/performance-optimizer.agent.md` custom agent, use
-///   `performance-optimizer`.
-/// * `create_pull_request` - Whether to create a PR.
-/// * `base_ref` - Base ref for new branch/PR
-/// * `head_ref` - Head ref for existing branch/PR. If provided with `base_ref`,
-///   the agent looks up open PR context for `head_ref` targeting `base_ref` and
-///   commits to `head_ref` instead of creating a new branch.
-pub fn agent_tasks_create_task_in_repo(
-    config: &ClientConfig,
-    params: AgentTasksCreateTaskInRepoParams,
-    options: Option<&RequestOptions>,
-) -> Result<AgentTasksCreateTaskInRepoResponse, SdkError> {
-    let AgentTasksCreateTaskInRepoParams {
-        owner,
-        repo,
-        prompt,
-        model,
-        custom_agent,
-        create_pull_request,
-        base_ref,
-        head_ref,
-    } = params;
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "prompt".to_string(),
-        serde_json::to_value(prompt).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = model {
-        __body_map.insert(
-            "model".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = custom_agent {
-        __body_map.insert(
-            "custom_agent".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = create_pull_request {
-        __body_map.insert(
-            "create_pull_request".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = base_ref {
-        __body_map.insert(
-            "base_ref".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = head_ref {
-        __body_map.insert(
-            "head_ref".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<AgentTasksCreateTaskInRepoResponse>(
-        "POST",
-        &format!(
-            "/agents/repos/{}/{}/tasks",
-            crate::client::encode_path_segment(&owner),
-            crate::client::encode_path_segment(&repo)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "agent_tasks_create_task_in_repo",
             options,
             ..Default::default()
         },

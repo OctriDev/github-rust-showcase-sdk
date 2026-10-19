@@ -11,6 +11,36 @@ use crate::types::{
     RepositoryRuleEnforcement, SelectedActions, SelfHostedRunnersSettings,
 };
 
+/// Removes a repository from the list of selected repositories that are enabled for GitHub Actions in an organization. To use this endpoint, the organization permission policy for `enabled_repositories` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for an organization." OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `repository_id` - The unique identifier of the repository.
+pub fn actions_disable_selected_repository_github_actions_organization(
+    config: &ClientConfig,
+    org: String,
+    repository_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/orgs/{}/actions/permissions/repositories/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&repository_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_disable_selected_repository_github_actions_organization",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Gets the selected actions and reusable workflows that are allowed in an organization. To use this endpoint, the organization permission policy for `allowed_actions` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for an organization." OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -627,114 +657,6 @@ pub fn actions_get_org_actions_policy(
             operation_id: "actions_get_org_actions_policy",
             options,
             errors: &[("404", "BasicError"), ("500", "BasicError")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct ActionsUpdateOrgActionsPolicyParams {
-    pub org: String,
-    pub policy_id: i64,
-    pub name: Option<String>,
-    pub enforcement: Option<RepositoryRuleEnforcement>,
-    pub conditions: Option<ActionsPolicyOrgConditions>,
-    pub rules: Option<Vec<ActionsRule>>,
-}
-
-/// Update an Actions policy for an organization. Omitting `workflow_path` preserves the policy's existing workflow targeting.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `policy_id` - The ID of the policy.
-/// * `name` - The name of the policy.
-/// * `enforcement` - The enforcement level of the ruleset. `evaluate` allows
-///   admins to test rules before enforcing them. Admins can view insights on the
-///   Rule Insights page (`evaluate` is only available with GitHub Enterprise).
-/// * `conditions` - Conditions for an organization Actions policy. The
-///   conditions object should contain one of `repository_name`, `repository_id`,
-///   or `repository_property`, and may also contain `workflow_path`.
-/// * `rules` - An array of rules within the policy.
-pub fn actions_update_org_actions_policy(
-    config: &ClientConfig,
-    params: ActionsUpdateOrgActionsPolicyParams,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsPolicy, SdkError> {
-    let ActionsUpdateOrgActionsPolicyParams {
-        org,
-        policy_id,
-        name,
-        enforcement,
-        conditions,
-        rules,
-    } = params;
-    let mut __body_map = serde_json::Map::new();
-    if let Some(ref value) = name {
-        __body_map.insert(
-            "name".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = enforcement {
-        __body_map.insert(
-            "enforcement".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = conditions {
-        __body_map.insert(
-            "conditions".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    if let Some(ref value) = rules {
-        __body_map.insert(
-            "rules".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<ActionsPolicy>(
-        "PUT",
-        &format!(
-            "/orgs/{}/actions/policies/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&policy_id)
-        ),
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_update_org_actions_policy",
-            options,
-            errors: &[
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-                ("500", "BasicError"),
-            ],
             ..Default::default()
         },
     )?

@@ -3,6 +3,14 @@
 
 // webhook_pull_request_review_request_removed domain models (part 16)
 
+impl std::fmt::Display
+    for WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoMergeCommitMessageEnum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
 /// The default value for a merge commit title.
 ///
 /// \- `PR_TITLE` \- default to the pull request's title.
@@ -277,6 +285,22 @@ impl<'de> serde::Deserialize<'de>
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoPushedAt branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoPushedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewRequestRemovedVariant1PullRequestHeadRepoPushedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

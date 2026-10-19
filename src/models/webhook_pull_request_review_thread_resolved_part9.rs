@@ -3,6 +3,65 @@
 
 // webhook_pull_request_review_thread_resolved domain models (part 9)
 
+impl WebhookPullRequestReviewThreadResolvedPullRequestUser {
+    pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
+        if let Some(value) = self.avatar_url.as_ref() {
+            crate::validation::validate_uri("avatar_url", value)?;
+        }
+        if let Some(value) = self.followers_url.as_ref() {
+            crate::validation::validate_uri("followers_url", value)?;
+        }
+        if let Some(value) = self.html_url.as_ref() {
+            crate::validation::validate_uri("html_url", value)?;
+        }
+        if let Some(value) = self.organizations_url.as_ref() {
+            crate::validation::validate_uri("organizations_url", value)?;
+        }
+        if let Some(value) = self.received_events_url.as_ref() {
+            crate::validation::validate_uri("received_events_url", value)?;
+        }
+        if let Some(value) = self.repos_url.as_ref() {
+            crate::validation::validate_uri("repos_url", value)?;
+        }
+        if let Some(value) = self.subscriptions_url.as_ref() {
+            crate::validation::validate_uri("subscriptions_url", value)?;
+        }
+        if let Some(value) = self.url.as_ref() {
+            crate::validation::validate_uri("url", value)?;
+        }
+        Ok(())
+    }
+
+    pub fn new(id: i64, login: String) -> Result<Self, crate::errors::SdkError> {
+        let value = Self {
+            avatar_url: None,
+            deleted: None,
+            email: None,
+            events_url: None,
+            followers_url: None,
+            following_url: None,
+            gists_url: None,
+            gravatar_id: None,
+            html_url: None,
+            id,
+            login,
+            name: None,
+            node_id: None,
+            organizations_url: None,
+            received_events_url: None,
+            repos_url: None,
+            site_admin: None,
+            starred_url: None,
+            subscriptions_url: None,
+            type_: None,
+            url: None,
+            user_view_type: None,
+        };
+        value.validate_constraints()?;
+        Ok(value)
+    }
+}
+
 /// Required object value serialized in the `pull_request` wire field.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct WebhookPullRequestReviewThreadResolvedPullRequest {
@@ -495,56 +554,6 @@ impl<'de> serde::Deserialize<'de>
 }
 
 impl std::fmt::Display for WebhookPullRequestReviewThreadResolvedThreadCommentsItemStartSideEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The level at which the comment is targeted, can be a diff line or a file.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookPullRequestReviewThreadResolvedThreadCommentsItemSubjectTypeEnum {
-    #[default]
-    Line,
-    File,
-    Unknown(String),
-}
-
-impl WebhookPullRequestReviewThreadResolvedThreadCommentsItemSubjectTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Line => "line",
-            Self::File => "file",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhookPullRequestReviewThreadResolvedThreadCommentsItemSubjectTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de>
-    for WebhookPullRequestReviewThreadResolvedThreadCommentsItemSubjectTypeEnum
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "line" => Self::Line,
-            "file" => Self::File,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhookPullRequestReviewThreadResolvedThreadCommentsItemSubjectTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.as_str())
     }

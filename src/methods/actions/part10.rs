@@ -11,6 +11,72 @@ use crate::types::{
 };
 use crate::validation::{validate_items, LengthOpts};
 
+/// Adds a repository to the list of repositories that can access a self-hosted runner group. The runner group must have `visibility` set to `selected`. For more information, see "Create a self-hosted runner group for an organization." OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `runner_group_id` - Unique identifier of the self-hosted runner group.
+/// * `repository_id` - The unique identifier of the repository.
+pub fn actions_add_repo_access_to_self_hosted_runner_group_in_org(
+    config: &ClientConfig,
+    org: String,
+    runner_group_id: i64,
+    repository_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "PUT",
+        &format!(
+            "/orgs/{}/actions/runner-groups/{}/repositories/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_group_id),
+            crate::client::encode_path_segment(&repository_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_add_repo_access_to_self_hosted_runner_group_in_org",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+/// Removes a repository from the list of selected repositories that can access a self-hosted runner group. The runner group must have `visibility` set to `selected`. For more information, see "Create a self-hosted runner group for an organization." OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `runner_group_id` - Unique identifier of the self-hosted runner group.
+/// * `repository_id` - The unique identifier of the repository.
+pub fn actions_remove_repo_access_to_self_hosted_runner_group_in_org(
+    config: &ClientConfig,
+    org: String,
+    runner_group_id: i64,
+    repository_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<serde_json::Value, SdkError> {
+    Ok(sdk_request::<serde_json::Value>(
+        "DELETE",
+        &format!(
+            "/orgs/{}/actions/runner-groups/{}/repositories/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&runner_group_id),
+            crate::client::encode_path_segment(&repository_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Empty,
+            operation_id: "actions_remove_repo_access_to_self_hosted_runner_group_in_org",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 /// Lists self-hosted runners that are in a specific organization group. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -704,52 +770,6 @@ pub fn actions_remove_custom_label_from_self_hosted_runner_for_org(
             operation_id: "actions_remove_custom_label_from_self_hosted_runner_for_org",
             options,
             errors: &[("404", "BasicError"), ("422", "ValidationErrorSimple")],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists all secrets available in an organization without revealing their encrypted values. Authenticated users must have collaborator access to a repository to create, update, or read secrets. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint. If the repository is private, the `repo` scope is also required.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn actions_list_org_secrets(
-    config: &ClientConfig,
-    org: String,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<ActionsListOrgSecretsResponse, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<ActionsListOrgSecretsResponse>(
-        "GET",
-        &format!(
-            "/orgs/{}/actions/secrets",
-            crate::client::encode_path_segment(&org)
-        ),
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "actions_list_org_secrets",
-            options,
             ..Default::default()
         },
     )?

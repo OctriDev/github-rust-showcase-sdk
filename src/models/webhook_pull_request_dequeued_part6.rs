@@ -3,6 +3,17 @@
 
 // webhook_pull_request_dequeued domain models (part 6)
 
+impl WebhookPullRequestDequeuedPullRequestHeadRepoMergeCommitMessageEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::PrBody => "PR_BODY",
+            Self::PrTitle => "PR_TITLE",
+            Self::Blank => "BLANK",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
 impl serde::Serialize for WebhookPullRequestDequeuedPullRequestHeadRepoMergeCommitMessageEnum {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -329,6 +340,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestDequeuedPullRequestHeadR
     }
 }
 
+impl ::std::convert::From<i64> for WebhookPullRequestDequeuedPullRequestHeadRepoPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPullRequestDequeuedPullRequestHeadRepoPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The default value for a squash merge commit message:
 ///
 /// \- `PR_BODY` \- default to the pull request's body.
@@ -461,29 +484,5 @@ impl WebhookPullRequestDequeuedPullRequestHeadRepoVisibilityEnum {
             Self::Internal => "internal",
             Self::Unknown(value) => value.as_str(),
         }
-    }
-}
-
-impl serde::Serialize for WebhookPullRequestDequeuedPullRequestHeadRepoVisibilityEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhookPullRequestDequeuedPullRequestHeadRepoVisibilityEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "public" => Self::Public,
-            "private" => Self::Private,
-            "internal" => Self::Internal,
-            _ => Self::Unknown(value),
-        })
     }
 }

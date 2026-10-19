@@ -70,6 +70,18 @@ impl<'de> serde::Deserialize<'de> for ActivityListStargazersForRepoResponse {
     }
 }
 
+impl ::std::convert::From<Vec<SimpleUser>> for ActivityListStargazersForRepoResponse {
+    fn from(value: Vec<SimpleUser>) -> Self {
+        Self::SimpleUserArray(value)
+    }
+}
+
+impl ::std::convert::From<Vec<Stargazer>> for ActivityListStargazersForRepoResponse {
+    fn from(value: Vec<Stargazer>) -> Self {
+        Self::StargazerArray(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ActivityGetStargazerCountForRepoResponse {
     pub count: i64,
@@ -125,6 +137,18 @@ impl<'de> serde::Deserialize<'de> for ActivityListReposStarredByUserResponse {
                 "no ActivityListReposStarredByUserResponse branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<Vec<StarredRepository>> for ActivityListReposStarredByUserResponse {
+    fn from(value: Vec<StarredRepository>) -> Self {
+        Self::StarredRepositoryArray(value)
+    }
+}
+
+impl ::std::convert::From<Vec<Repository>> for ActivityListReposStarredByUserResponse {
+    fn from(value: Vec<Repository>) -> Self {
+        Self::RepositoryArray(value)
     }
 }
 

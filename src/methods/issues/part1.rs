@@ -32,6 +32,18 @@ impl<'de> serde::Deserialize<'de> for IssuesCreateTitle {
     }
 }
 
+impl ::std::convert::From<String> for IssuesCreateTitle {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for IssuesCreateTitle {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum IssuesCreateMilestone {
@@ -60,6 +72,18 @@ impl<'de> serde::Deserialize<'de> for IssuesCreateMilestone {
         lossy.ok_or_else(|| {
             serde::de::Error::custom("no IssuesCreateMilestone branch accepts this payload")
         })
+    }
+}
+
+impl ::std::convert::From<String> for IssuesCreateMilestone {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for IssuesCreateMilestone {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
     }
 }
 
@@ -101,6 +125,24 @@ impl<'de> serde::Deserialize<'de> for IssuesCreateIssueFieldValuesItemValue {
                 "no IssuesCreateIssueFieldValuesItemValue branch accepts this payload",
             )
         })
+    }
+}
+
+impl ::std::convert::From<String> for IssuesCreateIssueFieldValuesItemValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<f64> for IssuesCreateIssueFieldValuesItemValue {
+    fn from(value: f64) -> Self {
+        Self::Number(value)
+    }
+}
+
+impl ::std::convert::From<Vec<String>> for IssuesCreateIssueFieldValuesItemValue {
+    fn from(value: Vec<String>) -> Self {
+        Self::StringArray(value)
     }
 }
 
@@ -149,6 +191,18 @@ impl<'de> serde::Deserialize<'de> for IssuesUpdateTitle {
     }
 }
 
+impl ::std::convert::From<String> for IssuesUpdateTitle {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for IssuesUpdateTitle {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
 #[derive(Debug, Clone, serde::Serialize)]
 #[serde(untagged)]
 pub enum IssuesUpdateMilestone {
@@ -177,6 +231,18 @@ impl<'de> serde::Deserialize<'de> for IssuesUpdateMilestone {
         lossy.ok_or_else(|| {
             serde::de::Error::custom("no IssuesUpdateMilestone branch accepts this payload")
         })
+    }
+}
+
+impl ::std::convert::From<String> for IssuesUpdateMilestone {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+impl ::std::convert::From<i64> for IssuesUpdateMilestone {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
     }
 }
 
@@ -221,82 +287,8 @@ impl<'de> serde::Deserialize<'de> for IssuesUpdateIssueFieldValuesItemValue {
     }
 }
 
-/// The confidence level for this field value choice.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum IssuesUpdateIssueFieldValuesItemConfidenceEnum {
-    #[default]
-    Low,
-    Medium,
-    High,
-    Unknown(String),
-}
-
-impl IssuesUpdateIssueFieldValuesItemConfidenceEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Low => "low",
-            Self::Medium => "medium",
-            Self::High => "high",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for IssuesUpdateIssueFieldValuesItemConfidenceEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for IssuesUpdateIssueFieldValuesItemConfidenceEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "low" => Self::Low,
-            "medium" => Self::Medium,
-            "high" => Self::High,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for IssuesUpdateIssueFieldValuesItemConfidenceEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IssuesUpdateIssueFieldValuesItem {
-    /// The ID of the issue field to set
-    pub field_id: i64,
-    /// The value to set for the field. For multi-select fields, provide an array of option names.
-    pub value: IssuesUpdateIssueFieldValuesItemValue,
-    /// Optional reasoning for setting this field value.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rationale: Option<String>,
-    /// If `true`, the change is stored as a pending suggestion for human review rather than applied directly.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub suggest: Option<bool>,
-    /// The confidence level for this field value choice.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub confidence: Option<IssuesUpdateIssueFieldValuesItemConfidenceEnum>,
-}
-
-impl IssuesUpdateIssueFieldValuesItem {
-    pub fn new(field_id: i64, value: IssuesUpdateIssueFieldValuesItemValue) -> Self {
-        Self {
-            field_id,
-            value,
-            rationale: None,
-            suggest: None,
-            confidence: None,
-        }
+impl ::std::convert::From<String> for IssuesUpdateIssueFieldValuesItemValue {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }

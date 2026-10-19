@@ -126,6 +126,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestReviewEditedPullRequestH
     }
 }
 
+impl ::std::convert::From<i64> for WebhookPullRequestReviewEditedPullRequestHeadRepoCreatedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPullRequestReviewEditedPullRequestHeadRepoCreatedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// Required object value serialized in the `license` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct WebhookPullRequestReviewEditedPullRequestHeadRepoLicense {
@@ -409,6 +421,18 @@ impl<'de> serde::Deserialize<'de> for WebhookPullRequestReviewEditedPullRequestH
             lossy.get_or_insert(candidate);
         }
         lossy.ok_or_else(|| serde::de::Error::custom("no WebhookPullRequestReviewEditedPullRequestHeadRepoPushedAt branch accepts this payload"))
+    }
+}
+
+impl ::std::convert::From<i64> for WebhookPullRequestReviewEditedPullRequestHeadRepoPushedAt {
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String> for WebhookPullRequestReviewEditedPullRequestHeadRepoPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 

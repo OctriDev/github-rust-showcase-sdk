@@ -12,6 +12,36 @@ use crate::types::{
     ShaPinningRequired,
 };
 
+/// Gets a GitHub-hosted runner configured in an organization. OAuth app tokens and personal access tokens (classic) need the `manage_runners:org` scope to use this endpoint.
+///
+/// # Arguments
+///
+/// * `org` - The organization name. The name is not case sensitive.
+/// * `hosted_runner_id` - Unique identifier of the GitHub-hosted runner.
+pub fn actions_get_hosted_runner_for_org(
+    config: &ClientConfig,
+    org: String,
+    hosted_runner_id: i64,
+    options: Option<&RequestOptions>,
+) -> Result<ActionsHostedRunner, SdkError> {
+    Ok(sdk_request::<ActionsHostedRunner>(
+        "GET",
+        &format!(
+            "/orgs/{}/actions/hosted-runners/{}",
+            crate::client::encode_path_segment(&org),
+            crate::client::encode_path_segment(&hosted_runner_id)
+        ),
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "actions_get_hosted_runner_for_org",
+            options,
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct ActionsUpdateHostedRunnerForOrgParams {
     pub org: String,
@@ -719,36 +749,6 @@ pub fn actions_enable_selected_repository_github_actions_organization(
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Empty,
             operation_id: "actions_enable_selected_repository_github_actions_organization",
-            options,
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Removes a repository from the list of selected repositories that are enabled for GitHub Actions in an organization. To use this endpoint, the organization permission policy for `enabled_repositories` must be configured to `selected`. For more information, see "Set GitHub Actions permissions for an organization." OAuth tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `org` - The organization name. The name is not case sensitive.
-/// * `repository_id` - The unique identifier of the repository.
-pub fn actions_disable_selected_repository_github_actions_organization(
-    config: &ClientConfig,
-    org: String,
-    repository_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/orgs/{}/actions/permissions/repositories/{}",
-            crate::client::encode_path_segment(&org),
-            crate::client::encode_path_segment(&repository_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "actions_disable_selected_repository_github_actions_organization",
             options,
             ..Default::default()
         },

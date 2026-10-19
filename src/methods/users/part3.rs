@@ -5,7 +5,221 @@ use super::*;
 use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
-use crate::types::{Email, GpgKey, Key, SimpleUser};
+use crate::types::{Email, PrivateUser, SimpleUser};
+
+impl UsersGetContextForUserEnum {
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Issue => "issue",
+            Self::Organization => "organization",
+            Self::PullRequest => "pull_request",
+            Self::Repository => "repository",
+            Self::Unknown(value) => value.as_str(),
+        }
+    }
+}
+
+impl serde::Serialize for UsersGetContextForUserEnum {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+
+impl<'de> serde::Deserialize<'de> for UsersGetContextForUserEnum {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
+        Ok(match value.as_str() {
+            "issue" => Self::Issue,
+            "organization" => Self::Organization,
+            "pull_request" => Self::PullRequest,
+            "repository" => Self::Repository,
+            _ => Self::Unknown(value),
+        })
+    }
+}
+
+impl std::fmt::Display for UsersGetContextForUserEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+/// OAuth app tokens and personal access tokens (classic) need the `read:user` scope, or the broader `user` scope, for this endpoint to return the private user response. The private user response includes additional fields such as `private_gists`, `total_private_repos`, `owned_private_repos`, `disk_usage`, `collaborators`, and `two_factor_authentication`. Tokens without these scopes receive the public user response. The private and public user response types are unrelated to the [private profile](https://docs.github.com/account-and-profile/concepts/personal-profile#private-profiles) setting. A token without scopes still authenticates as the token's owner, so values subject to private profile visibility, such as `followers` and `following`, may differ from an unauthenticated response.
+pub fn users_get_authenticated(
+    config: &ClientConfig,
+    options: Option<&RequestOptions>,
+) -> Result<UsersGetAuthenticatedResponse, SdkError> {
+    Ok(sdk_request::<UsersGetAuthenticatedResponse>(
+        "GET",
+        "/user",
+        config,
+        RequestOpts {
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_get_authenticated",
+            options,
+            errors: &[("401", "BasicError"), ("403", "BasicError")],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct UsersUpdateAuthenticatedParams {
+    pub name: Option<String>,
+    pub email: Option<String>,
+    pub blog: Option<String>,
+    pub twitter_username: Option<Option<String>>,
+    pub company: Option<String>,
+    pub location: Option<String>,
+    pub hireable: Option<bool>,
+    pub bio: Option<String>,
+}
+
+/// \*\*Note:\*\* If your email is set to private and you send an `email` parameter as part of this request to update your profile, your privacy settings are still enforced: the email address will not be displayed on your public profile or via the API.
+///
+/// # Arguments
+///
+/// * `name` - The new name of the user.
+/// * `email` - The publicly visible email address of the user.
+/// * `blog` - The new blog URL of the user.
+/// * `twitter_username` - The new Twitter username of the user.
+/// * `company` - The new company of the user.
+/// * `location` - The new location of the user.
+/// * `hireable` - The new hiring availability of the user.
+/// * `bio` - The new short biography of the user.
+pub fn users_update_authenticated(
+    config: &ClientConfig,
+    params: UsersUpdateAuthenticatedParams,
+    options: Option<&RequestOptions>,
+) -> Result<PrivateUser, SdkError> {
+    let UsersUpdateAuthenticatedParams {
+        name,
+        email,
+        blog,
+        twitter_username,
+        company,
+        location,
+        hireable,
+        bio,
+    } = params;
+    let mut __body_map = serde_json::Map::new();
+    if let Some(ref value) = name {
+        __body_map.insert(
+            "name".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = email {
+        __body_map.insert(
+            "email".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = blog {
+        __body_map.insert(
+            "blog".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = twitter_username {
+        __body_map.insert(
+            "twitter_username".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = company {
+        __body_map.insert(
+            "company".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = location {
+        __body_map.insert(
+            "location".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = hireable {
+        __body_map.insert(
+            "hireable".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    if let Some(ref value) = bio {
+        __body_map.insert(
+            "bio".to_string(),
+            serde_json::to_value(value).map_err(|e| {
+                SdkError::Network(SdkNetworkError {
+                    message: format!("encode body field: {}", e),
+                    request_id: None,
+                })
+            })?,
+        );
+    }
+    let __body = serde_json::Value::Object(__body_map);
+
+    Ok(sdk_request::<PrivateUser>(
+        "PATCH",
+        "/user",
+        config,
+        RequestOpts {
+            body: Some(__body),
+            decoder: crate::client::ResponseDecoder::Json,
+            operation_id: "users_update_authenticated",
+            options,
+            errors: &[
+                ("401", "BasicError"),
+                ("403", "BasicError"),
+                ("404", "BasicError"),
+                ("422", "ValidationError"),
+            ],
+            ..Default::default()
+        },
+    )?
+    .data)
+}
 
 /// List the users you've blocked on your personal account.
 ///
@@ -455,251 +669,6 @@ pub fn users_follow(
                 ("403", "BasicError"),
                 ("404", "BasicError"),
                 ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// OAuth app tokens and personal access tokens (classic) need the `user:follow` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `username` - The handle for the GitHub user account.
-pub fn users_unfollow(
-    config: &ClientConfig,
-    username: String,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/user/following/{}",
-            crate::client::encode_path_segment(&username)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_unfollow",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the current user's GPG keys. OAuth app tokens and personal access tokens (classic) need the `read:gpg_key` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_gpg_keys_for_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<GpgKey>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<GpgKey>>(
-        "GET",
-        "/user/gpg_keys",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_gpg_keys_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Adds a GPG key to the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `write:gpg_key` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `armored_public_key` - A GPG key in ASCII-armored format.
-/// * `name` - A descriptive name for the new key.
-pub fn users_create_gpg_key_for_authenticated_user(
-    config: &ClientConfig,
-    armored_public_key: String,
-    name: Option<String>,
-    options: Option<&RequestOptions>,
-) -> Result<GpgKey, SdkError> {
-    let mut __body_map = serde_json::Map::new();
-    __body_map.insert(
-        "armored_public_key".to_string(),
-        serde_json::to_value(armored_public_key).map_err(|e| {
-            SdkError::Network(SdkNetworkError {
-                message: format!("encode body field: {}", e),
-                request_id: None,
-            })
-        })?,
-    );
-    if let Some(ref value) = name {
-        __body_map.insert(
-            "name".to_string(),
-            serde_json::to_value(value).map_err(|e| {
-                SdkError::Network(SdkNetworkError {
-                    message: format!("encode body field: {}", e),
-                    request_id: None,
-                })
-            })?,
-        );
-    }
-    let __body = serde_json::Value::Object(__body_map);
-
-    Ok(sdk_request::<GpgKey>(
-        "POST",
-        "/user/gpg_keys",
-        config,
-        RequestOpts {
-            body: Some(__body),
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_create_gpg_key_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// View extended details for a single GPG key. OAuth app tokens and personal access tokens (classic) need the `read:gpg_key` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `gpg_key_id` - The unique identifier of the GPG key.
-pub fn users_get_gpg_key_for_authenticated_user(
-    config: &ClientConfig,
-    gpg_key_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<GpgKey, SdkError> {
-    Ok(sdk_request::<GpgKey>(
-        "GET",
-        &format!(
-            "/user/gpg_keys/{}",
-            crate::client::encode_path_segment(&gpg_key_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_get_gpg_key_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Removes a GPG key from the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `admin:gpg_key` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `gpg_key_id` - The unique identifier of the GPG key.
-pub fn users_delete_gpg_key_for_authenticated_user(
-    config: &ClientConfig,
-    gpg_key_id: i64,
-    options: Option<&RequestOptions>,
-) -> Result<serde_json::Value, SdkError> {
-    Ok(sdk_request::<serde_json::Value>(
-        "DELETE",
-        &format!(
-            "/user/gpg_keys/{}",
-            crate::client::encode_path_segment(&gpg_key_id)
-        ),
-        config,
-        RequestOpts {
-            decoder: crate::client::ResponseDecoder::Empty,
-            operation_id: "users_delete_gpg_key_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
-                ("422", "ValidationError"),
-            ],
-            ..Default::default()
-        },
-    )?
-    .data)
-}
-
-/// Lists the public SSH keys for the authenticated user's GitHub account. OAuth app tokens and personal access tokens (classic) need the `read:public_key` scope to use this endpoint.
-///
-/// # Arguments
-///
-/// * `per_page` - The number of results per page (max 100). For more
-///   information, see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-/// * `page` - The page number of the results to fetch. For more information,
-///   see "[Using pagination in the REST
-///   API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the
-///   -rest-api)."
-pub fn users_list_public_ssh_keys_for_authenticated_user(
-    config: &ClientConfig,
-    per_page: Option<i64>,
-    page: Option<i64>,
-    options: Option<&RequestOptions>,
-) -> Result<Vec<Key>, SdkError> {
-    let mut __query: Vec<(&str, String)> = Vec::with_capacity(2);
-    if let Some(ref v) = per_page {
-        __query.push(("per_page", crate::client::query_value(v)));
-    }
-    if let Some(ref v) = page {
-        __query.push(("page", crate::client::query_value(v)));
-    }
-
-    Ok(sdk_request::<Vec<Key>>(
-        "GET",
-        "/user/keys",
-        config,
-        RequestOpts {
-            query: &__query,
-            decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "users_list_public_ssh_keys_for_authenticated_user",
-            options,
-            errors: &[
-                ("401", "BasicError"),
-                ("403", "BasicError"),
-                ("404", "BasicError"),
             ],
             ..Default::default()
         },

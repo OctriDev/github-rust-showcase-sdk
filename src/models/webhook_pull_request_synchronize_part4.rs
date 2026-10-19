@@ -3,6 +3,26 @@
 
 // webhook_pull_request_synchronize domain models (part 4)
 
+impl ::std::convert::From<String> for WebhookPullRequestSynchronizePullRequestBaseRepoPushedAt {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
+/// The default value for a squash merge commit message:
+///
+/// \- `PR_BODY` \- default to the pull request's body.
+/// \- `COMMIT_MESSAGES` \- default to the branch's commit messages.
+/// \- `BLANK` \- default to a blank commit message.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub enum WebhookPullRequestSynchronizePullRequestBaseRepoSquashMergeCommitMessageEnum {
+    #[default]
+    PrBody,
+    CommitMessages,
+    Blank,
+    Unknown(String),
+}
+
 impl WebhookPullRequestSynchronizePullRequestBaseRepoSquashMergeCommitMessageEnum {
     pub fn as_str(&self) -> &str {
         match self {

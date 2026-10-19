@@ -119,6 +119,22 @@ impl<'de> serde::Deserialize<'de> for EnvironmentProtectionRulesItemVariant1Revi
     }
 }
 
+impl ::std::convert::From<Box<SimpleUser>>
+    for EnvironmentProtectionRulesItemVariant1ReviewersItemReviewer
+{
+    fn from(value: Box<SimpleUser>) -> Self {
+        Self::SimpleUser(value)
+    }
+}
+
+impl ::std::convert::From<Box<Team>>
+    for EnvironmentProtectionRulesItemVariant1ReviewersItemReviewer
+{
+    fn from(value: Box<Team>) -> Self {
+        Self::Team(value)
+    }
+}
+
 /// Required object value serialized in the `reviewers[]` wire field.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct EnvironmentProtectionRulesItemVariant1ReviewersItem {

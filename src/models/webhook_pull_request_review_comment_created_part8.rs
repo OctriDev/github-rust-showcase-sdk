@@ -195,6 +195,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 
+impl ::std::convert::From<i64>
+    for WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoPushedAt
+{
+    fn from(value: i64) -> Self {
+        Self::Integer(value)
+    }
+}
+
+impl ::std::convert::From<String>
+    for WebhookPullRequestReviewCommentCreatedPullRequestHeadRepoPushedAt
+{
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 /// The default value for a squash merge commit message:
 ///
 /// \- `PR_BODY` \- default to the pull request's body.
