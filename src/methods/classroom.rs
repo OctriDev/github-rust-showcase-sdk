@@ -5,6 +5,11 @@ use crate::client::ClientConfig;
 use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::SdkError;
 
+#[derive(Debug, Clone, Default)]
+pub struct ClassroomGetAnAssignmentParams {
+    pub assignment_id: i64,
+}
+
 /// Retrieves a classroom assignment by its unique identifier. This operation is closing down and will be removed on August 28, 2026\. Use the `assignment_id` path parameter to identify the classroom assignment.
 ///
 /// \> [!WARNING] \> \*\*Closed notice:\*\* This operation is no longer available as of August 28, 2026\. \> For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).
@@ -18,9 +23,10 @@ use crate::errors::SdkError;
 /// This operation is deprecated and may be removed in a future release.
 pub fn classroom_get_an_assignment(
     config: &ClientConfig,
-    assignment_id: i64,
+    params: ClassroomGetAnAssignmentParams,
     options: Option<&RequestOptions>,
 ) -> Result<(), SdkError> {
+    let ClassroomGetAnAssignmentParams { assignment_id } = params;
     let _ = sdk_request::<serde_json::Value>(
         "GET",
         &format!(
@@ -39,6 +45,11 @@ pub fn classroom_get_an_assignment(
     Ok(())
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct ClassroomListAcceptedAssignmentsForAnAssignmentParams {
+    pub assignment_id: i64,
+}
+
 /// Lists accepted assignments for a classroom assignment. This operation is closing down and will be removed on August 28, 2026\. Use the `assignment_id` path parameter to select the assignment whose accepted assignments you want to retrieve.
 ///
 /// \> [!WARNING] \> \*\*Closed notice:\*\* This operation is no longer available as of August 28, 2026\. \> For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).
@@ -52,9 +63,10 @@ pub fn classroom_get_an_assignment(
 /// This operation is deprecated and may be removed in a future release.
 pub fn classroom_list_accepted_assignments_for_an_assignment(
     config: &ClientConfig,
-    assignment_id: i64,
+    params: ClassroomListAcceptedAssignmentsForAnAssignmentParams,
     options: Option<&RequestOptions>,
 ) -> Result<(), SdkError> {
+    let ClassroomListAcceptedAssignmentsForAnAssignmentParams { assignment_id } = params;
     let _ = sdk_request::<serde_json::Value>(
         "GET",
         &format!(
@@ -73,6 +85,11 @@ pub fn classroom_list_accepted_assignments_for_an_assignment(
     Ok(())
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct ClassroomGetAssignmentGradesParams {
+    pub assignment_id: i64,
+}
+
 /// Retrieves grades for a classroom assignment. Supply the `assignment_id` to identify the assignment whose grades you need. This operation is no longer available as of August 28, 2026.
 ///
 /// \> [!WARNING] \> \*\*Closed notice:\*\* This operation is no longer available as of August 28, 2026\. \> For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).
@@ -86,9 +103,10 @@ pub fn classroom_list_accepted_assignments_for_an_assignment(
 /// This operation is deprecated and may be removed in a future release.
 pub fn classroom_get_assignment_grades(
     config: &ClientConfig,
-    assignment_id: i64,
+    params: ClassroomGetAssignmentGradesParams,
     options: Option<&RequestOptions>,
 ) -> Result<(), SdkError> {
+    let ClassroomGetAssignmentGradesParams { assignment_id } = params;
     let _ = sdk_request::<serde_json::Value>(
         "GET",
         &format!(
@@ -133,6 +151,11 @@ pub fn classroom_list_classrooms(
     Ok(())
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct ClassroomGetAclassroomParams {
+    pub classroom_id: i64,
+}
+
 /// Retrieves a classroom by its unique identifier. Supply `classroom_id` to identify the classroom you want to retrieve. This operation is no longer available as of August 28, 2026.
 ///
 /// \> [!WARNING] \> \*\*Closed notice:\*\* This operation is no longer available as of August 28, 2026\. \> For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).
@@ -146,9 +169,10 @@ pub fn classroom_list_classrooms(
 /// This operation is deprecated and may be removed in a future release.
 pub fn classroom_get_aclassroom(
     config: &ClientConfig,
-    classroom_id: i64,
+    params: ClassroomGetAclassroomParams,
     options: Option<&RequestOptions>,
 ) -> Result<(), SdkError> {
+    let ClassroomGetAclassroomParams { classroom_id } = params;
     let _ = sdk_request::<serde_json::Value>(
         "GET",
         &format!(
@@ -167,6 +191,11 @@ pub fn classroom_get_aclassroom(
     Ok(())
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct ClassroomListAssignmentsForAclassroomParams {
+    pub classroom_id: i64,
+}
+
 /// Lists assignments for a classroom. Supply `classroom_id` to identify the classroom whose assignments you want to retrieve. This operation is no longer available as of August 28, 2026.
 ///
 /// \> [!WARNING] \> \*\*Closed notice:\*\* This operation is no longer available as of August 28, 2026\. \> For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).
@@ -180,9 +209,10 @@ pub fn classroom_get_aclassroom(
 /// This operation is deprecated and may be removed in a future release.
 pub fn classroom_list_assignments_for_aclassroom(
     config: &ClientConfig,
-    classroom_id: i64,
+    params: ClassroomListAssignmentsForAclassroomParams,
     options: Option<&RequestOptions>,
 ) -> Result<(), SdkError> {
+    let ClassroomListAssignmentsForAclassroomParams { classroom_id } = params;
     let _ = sdk_request::<serde_json::Value>(
         "GET",
         &format!(

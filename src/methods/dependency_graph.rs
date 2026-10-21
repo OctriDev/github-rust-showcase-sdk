@@ -46,6 +46,14 @@ impl DependencyGraphCreateRepositorySnapshotResponse {
     }
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct DependencyGraphDiffRangeParams {
+    pub owner: String,
+    pub repo: String,
+    pub basehead: String,
+    pub name: Option<String>,
+}
+
 /// Gets the diff of the dependency changes between two commits of a repository, based on the changes to the dependency manifests made in those commits.
 ///
 /// # Arguments
@@ -62,12 +70,15 @@ impl DependencyGraphCreateRepositorySnapshotResponse {
 ///   manifest file.
 pub fn dependency_graph_diff_range(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
-    basehead: String,
-    name: Option<String>,
+    params: DependencyGraphDiffRangeParams,
     options: Option<&RequestOptions>,
 ) -> Result<DependencyGraphDiff, SdkError> {
+    let DependencyGraphDiffRangeParams {
+        owner,
+        repo,
+        basehead,
+        name,
+    } = params;
     let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
     if let Some(ref v) = name {
         __query.push(("name", crate::client::query_value(v)));
@@ -100,6 +111,12 @@ pub fn dependency_graph_diff_range(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct DependencyGraphExportSbomParams {
+    pub owner: String,
+    pub repo: String,
+}
+
 /// \> [!WARNING] \> \*\*Closing down notice:\*\* This operation is closing down and will not be accessible after November 13, 2026\. Please migrate to the asynchronous flow. Use "[Request generation of a software bill of materials (SBOM) for a repository](https://docs.github.com/rest/dependency-graph/sboms#request-generation-of-a-software-bill-of-materials-sbom-for-a-repository)" to trigger the report, then "[Fetch a software bill of materials (SBOM) for a repository](https://docs.github.com/rest/dependency-graph/sboms#fetch-a-software-bill-of-materials-sbom-for-a-repository)" to retrieve it. For more information, see the [changelog](https://github.blog/changelog/2026-05-12-synchronous-sbom-api-deprecated/). Exports the software bill of materials (SBOM) for a repository in SPDX JSON format.
 ///
 /// # Arguments
@@ -114,10 +131,10 @@ pub fn dependency_graph_diff_range(
 /// This operation is deprecated and may be removed in a future release.
 pub fn dependency_graph_export_sbom(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
+    params: DependencyGraphExportSbomParams,
     options: Option<&RequestOptions>,
 ) -> Result<DependencyGraphSpdxSbom, SdkError> {
+    let DependencyGraphExportSbomParams { owner, repo } = params;
     Ok(sdk_request::<DependencyGraphSpdxSbom>(
         "GET",
         &format!(
@@ -137,6 +154,13 @@ pub fn dependency_graph_export_sbom(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct DependencyGraphFetchSbomReportParams {
+    pub owner: String,
+    pub repo: String,
+    pub sbom_uuid: String,
+}
+
 /// Fetches a previously generated software bill of materials (SBOM) for a repository. When the SBOM is ready, the response is a 302 redirect to a temporary download URL for the SBOM in SPDX JSON format. The generated SBOM report may be retained for up to one week from the original request. The temporary download URL returned by this endpoint expires separately, and its expiry is set when the fetch request is made.
 ///
 /// # Arguments
@@ -148,11 +172,14 @@ pub fn dependency_graph_export_sbom(
 /// * `sbom_uuid` - The unique identifier of the SBOM export.
 pub fn dependency_graph_fetch_sbom_report(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
-    sbom_uuid: String,
+    params: DependencyGraphFetchSbomReportParams,
     options: Option<&RequestOptions>,
 ) -> Result<serde_json::Value, SdkError> {
+    let DependencyGraphFetchSbomReportParams {
+        owner,
+        repo,
+        sbom_uuid,
+    } = params;
     Ok(sdk_request::<serde_json::Value>(
         "GET",
         &format!(
@@ -173,6 +200,12 @@ pub fn dependency_graph_fetch_sbom_report(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct DependencyGraphGenerateSbomReportParams {
+    pub owner: String,
+    pub repo: String,
+}
+
 /// Triggers a job to generate a software bill of materials (SBOM) for a repository in SPDX JSON format.
 ///
 /// # Arguments
@@ -183,10 +216,10 @@ pub fn dependency_graph_fetch_sbom_report(
 ///   is not case sensitive.
 pub fn dependency_graph_generate_sbom_report(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
+    params: DependencyGraphGenerateSbomReportParams,
     options: Option<&RequestOptions>,
 ) -> Result<DependencyGraphGenerateSbomReportResponse, SdkError> {
+    let DependencyGraphGenerateSbomReportParams { owner, repo } = params;
     Ok(sdk_request::<DependencyGraphGenerateSbomReportResponse>(
         "GET",
         &format!(

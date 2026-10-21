@@ -52,6 +52,13 @@ impl std::fmt::Display for MarkdownRenderModeEnum {
     }
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct MarkdownRenderParams {
+    pub text: String,
+    pub mode: Option<MarkdownRenderModeEnum>,
+    pub context: Option<String>,
+}
+
 /// Depending on what is rendered in the Markdown, you may need to provide additional token scopes for labels, such as `issues:read` or `pull_requests:read`.
 ///
 /// # Arguments
@@ -64,11 +71,14 @@ impl std::fmt::Display for MarkdownRenderModeEnum {
 ///   `octo-org/octo-repo` repository.
 pub fn markdown_render(
     config: &ClientConfig,
-    text: String,
-    mode: Option<MarkdownRenderModeEnum>,
-    context: Option<String>,
+    params: MarkdownRenderParams,
     options: Option<&RequestOptions>,
 ) -> Result<String, SdkError> {
+    let MarkdownRenderParams {
+        text,
+        mode,
+        context,
+    } = params;
     let mut __body_map = serde_json::Map::new();
     __body_map.insert(
         "text".to_string(),
@@ -118,15 +128,21 @@ pub fn markdown_render(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct MarkdownRenderRawParams {
+    pub body: Option<String>,
+    pub content_type: Option<String>,
+}
+
 /// Renders Markdown submitted as plain text into HTML. Send the Markdown in the request body with a `Content-Type` of `text/plain` or `text/x-markdown`; raw mode does not support GitHub Flavored Markdown, and the content must be 400 KB or less.
 ///
 /// You must send Markdown as plain text (using a `Content-Type` header of `text/plain` or `text/x-markdown`) to this endpoint, rather than using JSON format. In raw mode, [GitHub Flavored Markdown](https://github.github.com/gfm/) is not supported and Markdown will be rendered in plain format like a README.md file. Markdown content must be 400 KB or less.
 pub fn markdown_render_raw(
     config: &ClientConfig,
-    body: Option<String>,
-    content_type: Option<String>,
+    params: MarkdownRenderRawParams,
     options: Option<&RequestOptions>,
 ) -> Result<String, SdkError> {
+    let MarkdownRenderRawParams { body, content_type } = params;
     Ok(sdk_request::<String>(
         "POST",
         "/markdown/raw",

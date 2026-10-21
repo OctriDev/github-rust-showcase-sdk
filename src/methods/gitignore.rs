@@ -7,7 +7,7 @@ use crate::errors::SdkError;
 use crate::types::GitignoreTemplate;
 
 /// List all templates available to pass as an option when [creating a repository](https://docs.github.com/rest/repos/repos#create-a-repository-for-the-authenticated-user).
-pub fn gitignore_get_all_templates(
+pub fn list_templates(
     config: &ClientConfig,
     options: Option<&RequestOptions>,
 ) -> Result<Vec<String>, SdkError> {
@@ -17,7 +17,7 @@ pub fn gitignore_get_all_templates(
         config,
         RequestOpts {
             decoder: crate::client::ResponseDecoder::Json,
-            operation_id: "gitignore_get_all_templates",
+            operation_id: "list_templates",
             options,
             ..Default::default()
         },
@@ -25,14 +25,20 @@ pub fn gitignore_get_all_templates(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct GitignoreGetTemplateParams {
+    pub name: String,
+}
+
 /// Retrieves the content of a gitignore template by name. The `application/vnd.github.raw\+json` media type returns the raw `.gitignore` contents; the response object includes the template name and source.
 ///
 /// Get the content of a gitignore template. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw .gitignore contents.
 pub fn gitignore_get_template(
     config: &ClientConfig,
-    name: String,
+    params: GitignoreGetTemplateParams,
     options: Option<&RequestOptions>,
 ) -> Result<GitignoreTemplate, SdkError> {
+    let GitignoreGetTemplateParams { name } = params;
     Ok(sdk_request::<GitignoreTemplate>(
         "GET",
         &format!(

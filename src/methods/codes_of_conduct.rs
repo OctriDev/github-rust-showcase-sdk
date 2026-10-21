@@ -27,14 +27,20 @@ pub fn codes_of_conduct_get_all_codes_of_conduct(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct CodesOfConductGetConductCodeParams {
+    pub key: String,
+}
+
 /// Retrieves information about a specific code of conduct. Supply the code's `key` to select the code whose details you need.
 ///
 /// Returns information about the specified GitHub code of conduct.
 pub fn codes_of_conduct_get_conduct_code(
     config: &ClientConfig,
-    key: String,
+    params: CodesOfConductGetConductCodeParams,
     options: Option<&RequestOptions>,
 ) -> Result<CodeOfConduct, SdkError> {
+    let CodesOfConductGetConductCodeParams { key } = params;
     Ok(sdk_request::<CodeOfConduct>(
         "GET",
         &format!(

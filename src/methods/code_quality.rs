@@ -197,6 +197,13 @@ pub fn code_quality_list_findings_for_repo(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct CodeQualityGetFindingParams {
+    pub owner: String,
+    pub repo: String,
+    pub finding_number: i64,
+}
+
 /// Gets a single code quality finding. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
 ///
 /// # Arguments
@@ -208,11 +215,14 @@ pub fn code_quality_list_findings_for_repo(
 /// * `finding_number` - The number that identifies a finding.
 pub fn code_quality_get_finding(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
-    finding_number: i64,
+    params: CodeQualityGetFindingParams,
     options: Option<&RequestOptions>,
 ) -> Result<CodeQualityFinding, SdkError> {
+    let CodeQualityGetFindingParams {
+        owner,
+        repo,
+        finding_number,
+    } = params;
     Ok(sdk_request::<CodeQualityFinding>(
         "GET",
         &format!(
@@ -237,6 +247,12 @@ pub fn code_quality_get_finding(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct CodeQualityGetSetupParams {
+    pub owner: String,
+    pub repo: String,
+}
+
 /// Gets a code quality setup configuration. OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
 ///
 /// # Arguments
@@ -247,10 +263,10 @@ pub fn code_quality_get_finding(
 ///   is not case sensitive.
 pub fn code_quality_get_setup(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
+    params: CodeQualityGetSetupParams,
     options: Option<&RequestOptions>,
 ) -> Result<CodeQualitySetup, SdkError> {
+    let CodeQualityGetSetupParams { owner, repo } = params;
     Ok(sdk_request::<CodeQualitySetup>(
         "GET",
         &format!(

@@ -44,6 +44,11 @@ pub fn meta_get(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct MetaGetOctocatParams {
+    pub s: Option<String>,
+}
+
 /// Returns Octocat as ASCII art. Supply the optional `s` query parameter to set the words in Octocat's speech bubble.
 ///
 /// Get the octocat as ASCII art
@@ -53,9 +58,10 @@ pub fn meta_get(
 /// * `s` - The words to show in Octocat's speech bubble
 pub fn meta_get_octocat(
     config: &ClientConfig,
-    s: Option<String>,
+    params: MetaGetOctocatParams,
     options: Option<&RequestOptions>,
 ) -> Result<String, SdkError> {
+    let MetaGetOctocatParams { s } = params;
     let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
     if let Some(ref v) = s {
         __query.push(("s", crate::client::query_value(v)));

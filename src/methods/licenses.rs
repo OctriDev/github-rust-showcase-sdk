@@ -6,6 +6,13 @@ use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::SdkError;
 use crate::types::{CodeScanningRef, License, LicenseContent, LicenseSimple};
 
+#[derive(Debug, Clone, Default)]
+pub struct LicensesGetAllCommonlyUsedParams {
+    pub featured: Option<bool>,
+    pub per_page: Option<i64>,
+    pub page: Option<i64>,
+}
+
 /// Lists commonly used licenses available on GitHub. Use `featured` to filter the results to featured licenses, and use `page` and `per_page` to paginate the results.
 ///
 /// Lists the most commonly used licenses on GitHub. For more information, see "[Licensing a repository ](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)."
@@ -22,11 +29,14 @@ use crate::types::{CodeScanningRef, License, LicenseContent, LicenseSimple};
 ///   -rest-api)."
 pub fn licenses_get_all_commonly_used(
     config: &ClientConfig,
-    featured: Option<bool>,
-    per_page: Option<i64>,
-    page: Option<i64>,
+    params: LicensesGetAllCommonlyUsedParams,
     options: Option<&RequestOptions>,
 ) -> Result<Vec<LicenseSimple>, SdkError> {
+    let LicensesGetAllCommonlyUsedParams {
+        featured,
+        per_page,
+        page,
+    } = params;
     let mut __query: Vec<(&str, String)> = Vec::with_capacity(3);
     if let Some(ref v) = featured {
         __query.push(("featured", crate::client::query_value(v)));
@@ -53,14 +63,20 @@ pub fn licenses_get_all_commonly_used(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct LicensesGetParams {
+    pub license: String,
+}
+
 /// Retrieves information about a specific license. Use `license` to identify the license whose details you need, including its permissions, conditions, limitations, and license text.
 ///
 /// Gets information about a specific license. For more information, see "[Licensing a repository ](https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)."
 pub fn licenses_get(
     config: &ClientConfig,
-    license: String,
+    params: LicensesGetParams,
     options: Option<&RequestOptions>,
 ) -> Result<License, SdkError> {
+    let LicensesGetParams { license } = params;
     Ok(sdk_request::<License>(
         "GET",
         &format!("/licenses/{}", crate::client::encode_path_segment(&license)),
@@ -74,6 +90,13 @@ pub fn licenses_get(
         },
     )?
     .data)
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct LicensesGetForRepoParams {
+    pub owner: String,
+    pub repo: String,
+    pub ref_: Option<CodeScanningRef>,
 }
 
 /// This method returns the contents of the repository's license file, if one is detected. This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)." \- \*\*`application/vnd.github.raw\+json`\*\*: Returns the raw contents of the license. \- \*\*`application/vnd.github.html\+json`\*\*: Returns the license contents in HTML. Markup languages are rendered to HTML using GitHub's open-source [Markup library](https://github.com/github/markup).
@@ -90,11 +113,10 @@ pub fn licenses_get(
 ///   `refs/pull/<number\>/merge`.
 pub fn licenses_get_for_repo(
     config: &ClientConfig,
-    owner: String,
-    repo: String,
-    ref_: Option<CodeScanningRef>,
+    params: LicensesGetForRepoParams,
     options: Option<&RequestOptions>,
 ) -> Result<LicenseContent, SdkError> {
+    let LicensesGetForRepoParams { owner, repo, ref_ } = params;
     let mut __query: Vec<(&str, String)> = Vec::with_capacity(1);
     if let Some(ref v) = ref_ {
         __query.push(("ref", crate::client::query_value(v)));
