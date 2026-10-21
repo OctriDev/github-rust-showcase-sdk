@@ -6,6 +6,11 @@ use crate::client::{sdk_request, RequestOptions, RequestOpts};
 use crate::errors::{SdkError, SdkNetworkError};
 use crate::types::{EmptyObject, OidcCustomPropertyInclusion, OidcCustomSub};
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcListOidcCustomPropertyInclusionsForEnterpriseParams {
+    pub enterprise: String,
+}
+
 /// Lists the repository custom properties that are included in the OIDC token for repository actions in an enterprise. OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint. \> [!NOTE] \> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 ///
 /// # Arguments
@@ -13,9 +18,10 @@ use crate::types::{EmptyObject, OidcCustomPropertyInclusion, OidcCustomSub};
 /// * `enterprise` - The slug version of the enterprise name.
 pub fn oidc_list_oidc_custom_property_inclusions_for_enterprise(
     config: &ClientConfig,
-    enterprise: String,
+    params: OidcListOidcCustomPropertyInclusionsForEnterpriseParams,
     options: Option<&RequestOptions>,
 ) -> Result<Vec<OidcCustomPropertyInclusion>, SdkError> {
+    let OidcListOidcCustomPropertyInclusionsForEnterpriseParams { enterprise } = params;
     Ok(sdk_request::<Vec<OidcCustomPropertyInclusion>>(
         "GET",
         &format!(
@@ -34,6 +40,12 @@ pub fn oidc_list_oidc_custom_property_inclusions_for_enterprise(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcCreateOidcCustomPropertyInclusionForEnterpriseParams {
+    pub enterprise: String,
+    pub custom_property_name: String,
+}
+
 /// Adds a repository custom property to be included in the OIDC token for repository actions in an enterprise. OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint. \> [!NOTE] \> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 ///
 /// # Arguments
@@ -43,10 +55,13 @@ pub fn oidc_list_oidc_custom_property_inclusions_for_enterprise(
 ///   OIDC token
 pub fn oidc_create_oidc_custom_property_inclusion_for_enterprise(
     config: &ClientConfig,
-    enterprise: String,
-    custom_property_name: String,
+    params: OidcCreateOidcCustomPropertyInclusionForEnterpriseParams,
     options: Option<&RequestOptions>,
 ) -> Result<OidcCustomPropertyInclusion, SdkError> {
+    let OidcCreateOidcCustomPropertyInclusionForEnterpriseParams {
+        enterprise,
+        custom_property_name,
+    } = params;
     let mut __body_map = serde_json::Map::new();
     __body_map.insert(
         "custom_property_name".to_string(),
@@ -78,6 +93,12 @@ pub fn oidc_create_oidc_custom_property_inclusion_for_enterprise(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcDeleteOidcCustomPropertyInclusionForEnterpriseParams {
+    pub enterprise: String,
+    pub custom_property_name: String,
+}
+
 /// Removes a repository custom property from being included in the OIDC token for repository actions in an enterprise. OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint. \> [!NOTE] \> The "Enterprise administration" fine-grained permission is not available to callers. To use this API, you must use an OAuth app token or a personal access token (classic).
 ///
 /// # Arguments
@@ -87,10 +108,13 @@ pub fn oidc_create_oidc_custom_property_inclusion_for_enterprise(
 ///   OIDC token inclusion
 pub fn oidc_delete_oidc_custom_property_inclusion_for_enterprise(
     config: &ClientConfig,
-    enterprise: String,
-    custom_property_name: String,
+    params: OidcDeleteOidcCustomPropertyInclusionForEnterpriseParams,
     options: Option<&RequestOptions>,
 ) -> Result<serde_json::Value, SdkError> {
+    let OidcDeleteOidcCustomPropertyInclusionForEnterpriseParams {
+        enterprise,
+        custom_property_name,
+    } = params;
     Ok(sdk_request::<serde_json::Value>(
         "DELETE",
         &format!(
@@ -110,6 +134,11 @@ pub fn oidc_delete_oidc_custom_property_inclusion_for_enterprise(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcListOidcCustomPropertyInclusionsForOrgParams {
+    pub org: String,
+}
+
 /// Lists the repository custom properties that are included in the OIDC token for repository actions in an organization. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -117,9 +146,10 @@ pub fn oidc_delete_oidc_custom_property_inclusion_for_enterprise(
 /// * `org` - The organization name. The name is not case sensitive.
 pub fn oidc_list_oidc_custom_property_inclusions_for_org(
     config: &ClientConfig,
-    org: String,
+    params: OidcListOidcCustomPropertyInclusionsForOrgParams,
     options: Option<&RequestOptions>,
 ) -> Result<Vec<OidcCustomPropertyInclusion>, SdkError> {
+    let OidcListOidcCustomPropertyInclusionsForOrgParams { org } = params;
     Ok(sdk_request::<Vec<OidcCustomPropertyInclusion>>(
         "GET",
         &format!(
@@ -138,6 +168,12 @@ pub fn oidc_list_oidc_custom_property_inclusions_for_org(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcCreateOidcCustomPropertyInclusionForOrgParams {
+    pub org: String,
+    pub custom_property_name: String,
+}
+
 /// Adds a repository custom property to be included in the OIDC token for repository actions in an organization. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -147,10 +183,13 @@ pub fn oidc_list_oidc_custom_property_inclusions_for_org(
 ///   OIDC token
 pub fn oidc_create_oidc_custom_property_inclusion_for_org(
     config: &ClientConfig,
-    org: String,
-    custom_property_name: String,
+    params: OidcCreateOidcCustomPropertyInclusionForOrgParams,
     options: Option<&RequestOptions>,
 ) -> Result<OidcCustomPropertyInclusion, SdkError> {
+    let OidcCreateOidcCustomPropertyInclusionForOrgParams {
+        org,
+        custom_property_name,
+    } = params;
     let mut __body_map = serde_json::Map::new();
     __body_map.insert(
         "custom_property_name".to_string(),
@@ -182,6 +221,12 @@ pub fn oidc_create_oidc_custom_property_inclusion_for_org(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcDeleteOidcCustomPropertyInclusionForOrgParams {
+    pub org: String,
+    pub custom_property_name: String,
+}
+
 /// Removes a repository custom property from being included in the OIDC token for repository actions in an organization. OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -191,10 +236,13 @@ pub fn oidc_create_oidc_custom_property_inclusion_for_org(
 ///   OIDC token inclusion
 pub fn oidc_delete_oidc_custom_property_inclusion_for_org(
     config: &ClientConfig,
-    org: String,
-    custom_property_name: String,
+    params: OidcDeleteOidcCustomPropertyInclusionForOrgParams,
     options: Option<&RequestOptions>,
 ) -> Result<serde_json::Value, SdkError> {
+    let OidcDeleteOidcCustomPropertyInclusionForOrgParams {
+        org,
+        custom_property_name,
+    } = params;
     Ok(sdk_request::<serde_json::Value>(
         "DELETE",
         &format!(
@@ -214,6 +262,11 @@ pub fn oidc_delete_oidc_custom_property_inclusion_for_org(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcGetOidcCustomSubTemplateForOrgParams {
+    pub org: String,
+}
+
 /// Gets the customization template for an OpenID Connect (OIDC) subject claim. OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -221,9 +274,10 @@ pub fn oidc_delete_oidc_custom_property_inclusion_for_org(
 /// * `org` - The organization name. The name is not case sensitive.
 pub fn oidc_get_oidc_custom_sub_template_for_org(
     config: &ClientConfig,
-    org: String,
+    params: OidcGetOidcCustomSubTemplateForOrgParams,
     options: Option<&RequestOptions>,
 ) -> Result<OidcCustomSub, SdkError> {
+    let OidcGetOidcCustomSubTemplateForOrgParams { org } = params;
     Ok(sdk_request::<OidcCustomSub>(
         "GET",
         &format!(
@@ -241,6 +295,13 @@ pub fn oidc_get_oidc_custom_sub_template_for_org(
     .data)
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct OidcUpdateOidcCustomSubTemplateForOrgParams {
+    pub org: String,
+    pub include_claim_keys: Option<Vec<String>>,
+    pub use_immutable_subject: Option<bool>,
+}
+
 /// Creates or updates the customization template for an OpenID Connect (OIDC) subject claim. OAuth app tokens and personal access tokens (classic) need the `write:org` scope to use this endpoint.
 ///
 /// # Arguments
@@ -253,11 +314,14 @@ pub fn oidc_get_oidc_custom_sub_template_for_org(
 ///   stable, repository-ID-based `sub` claim instead of the name-based format.
 pub fn oidc_update_oidc_custom_sub_template_for_org(
     config: &ClientConfig,
-    org: String,
-    include_claim_keys: Option<Vec<String>>,
-    use_immutable_subject: Option<bool>,
+    params: OidcUpdateOidcCustomSubTemplateForOrgParams,
     options: Option<&RequestOptions>,
 ) -> Result<EmptyObject, SdkError> {
+    let OidcUpdateOidcCustomSubTemplateForOrgParams {
+        org,
+        include_claim_keys,
+        use_immutable_subject,
+    } = params;
     let mut __body_map = serde_json::Map::new();
     if let Some(ref value) = include_claim_keys {
         __body_map.insert(

@@ -3,447 +3,119 @@
 
 // webhooks_pull_request5 domain models
 
-/// Required object value serialized in the `comments` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksComments {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksComments {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `commits` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksCommits {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksCommits {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `html` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksHtml {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksHtml {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `issue` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksIssue {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksIssue {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `review_comment` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksReviewComment {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksReviewComment {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `review_comments` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksReviewComments {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksReviewComments {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `self` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksSelf {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksSelf {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `statuses` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5LinksStatuses {
-    /// Required `uri-template`-formatted value serialized in the `href` wire field.
-    pub href: String,
-}
-
-impl WebhooksPullRequest5LinksStatuses {
-    pub fn new(href: String) -> Self {
-        Self { href }
-    }
-}
-
-/// Required object value serialized in the `_links` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5Links {
-    /// Required object value serialized in the `comments` wire field.
-    pub comments: WebhooksPullRequest5LinksComments,
-    /// Required object value serialized in the `commits` wire field.
-    pub commits: WebhooksPullRequest5LinksCommits,
-    /// Required object value serialized in the `html` wire field.
-    pub html: WebhooksPullRequest5LinksHtml,
-    /// Required object value serialized in the `issue` wire field.
-    pub issue: WebhooksPullRequest5LinksIssue,
-    /// Required object value serialized in the `review_comment` wire field.
-    pub review_comment: WebhooksPullRequest5LinksReviewComment,
-    /// Required object value serialized in the `review_comments` wire field.
-    pub review_comments: WebhooksPullRequest5LinksReviewComments,
-    /// Required object value serialized in the `self` wire field.
-    #[serde(rename = "self")]
-    pub self_: WebhooksPullRequest5LinksSelf,
-    /// Required object value serialized in the `statuses` wire field.
-    pub statuses: WebhooksPullRequest5LinksStatuses,
-}
-
-impl WebhooksPullRequest5Links {
-    #[allow(clippy::too_many_arguments)]
-    pub fn new(
-        comments: WebhooksPullRequest5LinksComments,
-        commits: WebhooksPullRequest5LinksCommits,
-        html: WebhooksPullRequest5LinksHtml,
-        issue: WebhooksPullRequest5LinksIssue,
-        review_comment: WebhooksPullRequest5LinksReviewComment,
-        review_comments: WebhooksPullRequest5LinksReviewComments,
-        self_: WebhooksPullRequest5LinksSelf,
-        statuses: WebhooksPullRequest5LinksStatuses,
-    ) -> Self {
-        Self {
-            comments,
-            commits,
-            html,
-            issue,
-            review_comment,
-            review_comments,
-            self_,
-            statuses,
-        }
-    }
-}
-
-/// Required enumerated value serialized in the `active_lock_reason` wire field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhooksPullRequest5ActiveLockReasonEnum {
-    #[default]
-    Resolved,
-    OffTopic,
-    TooHeated,
-    Spam,
-    Unknown(String),
-}
-
-impl WebhooksPullRequest5ActiveLockReasonEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Resolved => "resolved",
-            Self::OffTopic => "off-topic",
-            Self::TooHeated => "too heated",
-            Self::Spam => "spam",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhooksPullRequest5ActiveLockReasonEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5ActiveLockReasonEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "resolved" => Self::Resolved,
-            "off-topic" => Self::OffTopic,
-            "too heated" => Self::TooHeated,
-            "spam" => Self::Spam,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhooksPullRequest5ActiveLockReasonEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Optional enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhooksPullRequest5AssigneeTypeEnum {
-    #[default]
-    Bot,
-    User,
-    Organization,
-    Mannequin,
-    Unknown(String),
-}
-
-impl WebhooksPullRequest5AssigneeTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Bot => "Bot",
-            Self::User => "User",
-            Self::Organization => "Organization",
-            Self::Mannequin => "Mannequin",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhooksPullRequest5AssigneeTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5AssigneeTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "Bot" => Self::Bot,
-            "User" => Self::User,
-            "Organization" => Self::Organization,
-            "Mannequin" => Self::Mannequin,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhooksPullRequest5AssigneeTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// Required object value serialized in the `assignee` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhooksPullRequest5Assignee {
-    /// Optional `uri`-formatted value serialized in the `avatar_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub avatar_url: Option<String>,
-    /// Optional `boolean` value serialized in the `deleted` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-    /// Optional `string` value serialized in the `email` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub email: Option<Option<String>>,
-    /// Optional `uri-template`-formatted value serialized in the `events_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub events_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `followers_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub followers_url: Option<String>,
-    /// Optional `uri-template`-formatted value serialized in the `following_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub following_url: Option<String>,
-    /// Optional `uri-template`-formatted value serialized in the `gists_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gists_url: Option<String>,
-    /// Optional `string` value serialized in the `gravatar_id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gravatar_id: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `html_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub html_url: Option<String>,
-    /// Required `integer` value serialized in the `id` wire field.
-    pub id: i64,
-    /// Required `string` value serialized in the `login` wire field.
-    pub login: String,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional `string` value serialized in the `node_id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub node_id: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `organizations_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub organizations_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `received_events_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_events_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `repos_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub repos_url: Option<String>,
-    /// Optional `boolean` value serialized in the `site_admin` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub site_admin: Option<bool>,
-    /// Optional `uri-template`-formatted value serialized in the `starred_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starred_url: Option<String>,
-    /// Optional `uri`-formatted value serialized in the `subscriptions_url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscriptions_url: Option<String>,
-    /// Optional enumerated value serialized in the `type` wire field.
-    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
-    pub type_: Option<WebhooksPullRequest5AssigneeTypeEnum>,
-    /// Optional `uri`-formatted value serialized in the `url` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
-    /// Optional `string` value serialized in the `user_view_type` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_view_type: Option<String>,
-}
-
-impl WebhooksPullRequest5Assignee {
+impl WebhooksPullRequest5 {
     pub(super) fn validate_constraints(&self) -> Result<(), crate::errors::SdkError> {
-        if let Some(value) = self.avatar_url.as_ref() {
-            crate::validation::validate_uri("avatar_url", value)?;
+        if let Some(value) = self.closed_at.as_ref() {
+            crate::validation::validate_model_date_time("closed_at", value)?;
         }
-        if let Some(value) = self.followers_url.as_ref() {
-            crate::validation::validate_uri("followers_url", value)?;
+        crate::validation::validate_uri("comments_url", &self.comments_url)?;
+        crate::validation::validate_uri("commits_url", &self.commits_url)?;
+        crate::validation::validate_model_date_time("created_at", &self.created_at)?;
+        crate::validation::validate_uri("diff_url", &self.diff_url)?;
+        crate::validation::validate_uri("html_url", &self.html_url)?;
+        crate::validation::validate_uri("issue_url", &self.issue_url)?;
+        if let Some(value) = self.merged_at.as_ref() {
+            crate::validation::validate_model_date_time("merged_at", value)?;
         }
-        if let Some(value) = self.html_url.as_ref() {
-            crate::validation::validate_uri("html_url", value)?;
-        }
-        if let Some(value) = self.organizations_url.as_ref() {
-            crate::validation::validate_uri("organizations_url", value)?;
-        }
-        if let Some(value) = self.received_events_url.as_ref() {
-            crate::validation::validate_uri("received_events_url", value)?;
-        }
-        if let Some(value) = self.repos_url.as_ref() {
-            crate::validation::validate_uri("repos_url", value)?;
-        }
-        if let Some(value) = self.subscriptions_url.as_ref() {
-            crate::validation::validate_uri("subscriptions_url", value)?;
-        }
-        if let Some(value) = self.url.as_ref() {
-            crate::validation::validate_uri("url", value)?;
-        }
+        crate::validation::validate_uri("patch_url", &self.patch_url)?;
+        crate::validation::validate_uri("review_comments_url", &self.review_comments_url)?;
+        crate::validation::validate_uri("statuses_url", &self.statuses_url)?;
+        crate::validation::validate_model_date_time("updated_at", &self.updated_at)?;
+        crate::validation::validate_uri("url", &self.url)?;
         Ok(())
     }
 
-    pub fn new(id: i64, login: String) -> Result<Self, crate::errors::SdkError> {
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        links: WebhooksPullRequest5Links,
+        active_lock_reason: Option<WebhooksPullRequest5ActiveLockReasonEnum>,
+        assignee: Option<WebhooksPullRequest5Assignee>,
+        assignees: Vec<Option<WebhooksPullRequest5AssigneesItem>>,
+        author_association: WebhooksPullRequest5AuthorAssociationEnum,
+        auto_merge: Option<WebhooksPullRequest5AutoMerge>,
+        base: WebhooksPullRequest5Base,
+        body: Option<String>,
+        closed_at: Option<String>,
+        comments_url: String,
+        commits_url: String,
+        created_at: String,
+        diff_url: String,
+        draft: bool,
+        head: WebhooksPullRequest5Head,
+        html_url: String,
+        id: i64,
+        issue_url: String,
+        labels: Vec<WebhooksPullRequest5LabelsItem>,
+        locked: bool,
+        merge_commit_sha: Option<String>,
+        merged_at: Option<String>,
+        milestone: Option<WebhooksPullRequest5Milestone>,
+        node_id: String,
+        number: i64,
+        patch_url: String,
+        requested_reviewers: Vec<Option<WebhooksPullRequest5RequestedReviewersItem>>,
+        requested_teams: Vec<WebhooksPullRequest5RequestedTeamsItem>,
+        review_comment_url: String,
+        review_comments_url: String,
+        state: WebhooksPullRequest5StateEnum,
+        statuses_url: String,
+        title: String,
+        updated_at: String,
+        url: String,
+        user: Option<WebhooksPullRequest5User>,
+    ) -> Result<Self, crate::errors::SdkError> {
         let value = Self {
-            avatar_url: None,
-            deleted: None,
-            email: None,
-            events_url: None,
-            followers_url: None,
-            following_url: None,
-            gists_url: None,
-            gravatar_id: None,
-            html_url: None,
+            links,
+            active_lock_reason,
+            additions: None,
+            assignee,
+            assignees,
+            author_association,
+            auto_merge,
+            base,
+            body,
+            changed_files: None,
+            closed_at,
+            comments: None,
+            comments_url,
+            commits: None,
+            commits_url,
+            created_at,
+            deletions: None,
+            diff_url,
+            draft,
+            head,
+            html_url,
             id,
-            login,
-            name: None,
-            node_id: None,
-            organizations_url: None,
-            received_events_url: None,
-            repos_url: None,
-            site_admin: None,
-            starred_url: None,
-            subscriptions_url: None,
-            type_: None,
-            url: None,
-            user_view_type: None,
+            issue_url,
+            labels,
+            locked,
+            maintainer_can_modify: None,
+            merge_commit_sha,
+            mergeable: None,
+            mergeable_state: None,
+            merged: None,
+            merged_at,
+            merged_by: None,
+            milestone,
+            node_id,
+            number,
+            patch_url,
+            rebaseable: None,
+            requested_reviewers,
+            requested_teams,
+            review_comment_url,
+            review_comments: None,
+            review_comments_url,
+            stack: None,
+            state,
+            statuses_url,
+            title,
+            updated_at,
+            url,
+            user,
         };
         value.validate_constraints()?;
         Ok(value)
-    }
-}
-
-/// Optional enumerated value serialized in the `type` wire field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhooksPullRequest5AssigneesItemTypeEnum {
-    #[default]
-    Bot,
-    User,
-    Organization,
-    Mannequin,
-    Unknown(String),
-}
-
-impl WebhooksPullRequest5AssigneesItemTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Bot => "Bot",
-            Self::User => "User",
-            Self::Organization => "Organization",
-            Self::Mannequin => "Mannequin",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhooksPullRequest5AssigneesItemTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhooksPullRequest5AssigneesItemTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "Bot" => Self::Bot,
-            "User" => Self::User,
-            "Organization" => Self::Organization,
-            "Mannequin" => Self::Mannequin,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhooksPullRequest5AssigneesItemTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
     }
 }

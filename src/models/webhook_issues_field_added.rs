@@ -3,483 +3,61 @@
 
 // webhook_issues_field_added domain models
 
-/// Required enumerated value serialized in the `action` wire field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookIssuesFieldAddedActionEnum {
-    #[default]
-    FieldAdded,
-    Unknown(String),
-}
-
-impl WebhookIssuesFieldAddedActionEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::FieldAdded => "field_added",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhookIssuesFieldAddedActionEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldAddedActionEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "field_added" => Self::FieldAdded,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhookIssuesFieldAddedActionEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The data type of the issue field.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub enum WebhookIssuesFieldAddedIssueFieldFieldTypeEnum {
-    #[default]
-    Text,
-    Date,
-    SingleSelect,
-    MultiSelect,
-    Number,
-    Unknown(String),
-}
-
-impl WebhookIssuesFieldAddedIssueFieldFieldTypeEnum {
-    pub fn as_str(&self) -> &str {
-        match self {
-            Self::Text => "text",
-            Self::Date => "date",
-            Self::SingleSelect => "single_select",
-            Self::MultiSelect => "multi_select",
-            Self::Number => "number",
-            Self::Unknown(value) => value.as_str(),
-        }
-    }
-}
-
-impl serde::Serialize for WebhookIssuesFieldAddedIssueFieldFieldTypeEnum {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-
-impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldAddedIssueFieldFieldTypeEnum {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let value = <String as serde::Deserialize>::deserialize(deserializer)?;
-        Ok(match value.as_str() {
-            "text" => Self::Text,
-            "date" => Self::Date,
-            "single_select" => Self::SingleSelect,
-            "multi_select" => Self::MultiSelect,
-            "number" => Self::Number,
-            _ => Self::Unknown(value),
-        })
-    }
-}
-
-impl std::fmt::Display for WebhookIssuesFieldAddedIssueFieldFieldTypeEnum {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-/// The issue field whose value was set or updated on the issue.
+/// Typed representation of the `WebhookIssuesFieldAdded` API schema.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedIssueField {
-    /// The unique identifier of the issue field.
-    pub id: i64,
-    /// The name of the issue field.
-    pub name: String,
-    /// The data type of the issue field.
-    pub field_type: WebhookIssuesFieldAddedIssueFieldFieldTypeEnum,
+pub struct WebhookIssuesFieldAdded {
+    /// Required enumerated value serialized in the `action` wire field.
+    pub action: WebhookIssuesFieldAddedActionEnum,
+    /// An enterprise on GitHub. Webhook payloads contain the `enterprise` property when the webhook is configured
+    /// on an enterprise account or an organization that's part of an enterprise account. For more information,
+    /// see "[About enterprise accounts](https://docs.github.com/admin/overview/about-enterprise-accounts)."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enterprise: Option<EnterpriseWebhooks>,
+    /// The GitHub App installation. Webhook payloads contain the `installation` property when the event is configured
+    /// for and sent to a GitHub App. For more information,
+    /// see "[Using webhooks with GitHub Apps](https://docs.github.com/apps/creating-github-apps/registering-a-github-app/using-webhooks-with-github-apps)."
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installation: Option<SimpleInstallation>,
+    /// The [issue](https://docs.github.com/rest/issues/issues#get-an-issue) itself.
+    pub issue: WebhooksIssue,
+    /// The issue field whose value was set or updated on the issue.
+    pub issue_field: WebhookIssuesFieldAddedIssueField,
+    /// The value that was set or updated for the issue field. When updating an existing value, the previous value is available in `changes`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issue_field_value: Option<WebhookIssuesFieldAddedIssueFieldValue>,
+    /// The previous field value, present when an existing value was updated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub changes: Option<WebhookIssuesFieldAddedChanges>,
+    /// A GitHub organization. Webhook payloads contain the `organization` property when the webhook is configured for an
+    /// organization, or when the event occurs from activity in a repository owned by an organization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub organization: Option<OrganizationSimpleWebhooks>,
+    /// The repository on GitHub where the event occurred. Webhook payloads contain the `repository` property
+    /// when the event occurs from activity in a repository.
+    pub repository: RepositoryWebhooks,
+    /// A GitHub user.
+    pub sender: SimpleUser,
 }
 
-impl WebhookIssuesFieldAddedIssueField {
+impl WebhookIssuesFieldAdded {
     pub fn new(
-        id: i64,
-        name: String,
-        field_type: WebhookIssuesFieldAddedIssueFieldFieldTypeEnum,
+        action: WebhookIssuesFieldAddedActionEnum,
+        issue: WebhooksIssue,
+        issue_field: WebhookIssuesFieldAddedIssueField,
+        repository: RepositoryWebhooks,
+        sender: SimpleUser,
     ) -> Self {
         Self {
-            id,
-            name,
-            field_type,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum WebhookIssuesFieldAddedIssueFieldValueValue {
-    String(String),
-    Number(f64),
-    Integer(i64),
-}
-
-impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldAddedIssueFieldValueValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
-            let candidate = Self::String(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
-            let candidate = Self::Number(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
-            let candidate = Self::Integer(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| {
-            serde::de::Error::custom(
-                "no WebhookIssuesFieldAddedIssueFieldValueValue branch accepts this payload",
-            )
-        })
-    }
-}
-
-impl ::std::convert::From<String> for WebhookIssuesFieldAddedIssueFieldValueValue {
-    fn from(value: String) -> Self {
-        Self::String(value)
-    }
-}
-
-impl ::std::convert::From<f64> for WebhookIssuesFieldAddedIssueFieldValueValue {
-    fn from(value: f64) -> Self {
-        Self::Number(value)
-    }
-}
-
-impl ::std::convert::From<i64> for WebhookIssuesFieldAddedIssueFieldValueValue {
-    fn from(value: i64) -> Self {
-        Self::Integer(value)
-    }
-}
-
-/// The selected option details. Present for single_select field types.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedIssueFieldValueOption {
-    /// Optional `integer` value serialized in the `id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional `string` value serialized in the `color` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub color: Option<String>,
-    /// Optional `string` value serialized in the `description` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub description: Option<Option<String>>,
-}
-
-impl WebhookIssuesFieldAddedIssueFieldValueOption {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            id: None,
-            name: None,
-            color: None,
-            description: None,
-        }
-    }
-}
-
-/// Required object value serialized in the `options[]` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedIssueFieldValueOptionsItem {
-    /// Optional `integer` value serialized in the `id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional `string` value serialized in the `color` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub color: Option<String>,
-    /// Optional `string` value serialized in the `description` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub description: Option<Option<String>>,
-}
-
-impl WebhookIssuesFieldAddedIssueFieldValueOptionsItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            id: None,
-            name: None,
-            color: None,
-            description: None,
-        }
-    }
-}
-
-/// The value that was set or updated for the issue field. When updating an existing value, the previous value is available in `changes`.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedIssueFieldValue {
-    /// The unique identifier of the issue field value.
-    pub id: i64,
-    /// The value of the field. Present for text, date, and number field types.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub value: Option<Option<WebhookIssuesFieldAddedIssueFieldValueValue>>,
-    /// The identifier of the selected option. Present for single_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value_id: Option<i64>,
-    /// The selected option details. Present for single_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub option: Option<WebhookIssuesFieldAddedIssueFieldValueOption>,
-    /// The identifiers of the selected options. Present for multi_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value_ids: Option<Vec<i64>>,
-    /// The selected option details. Present for multi_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<Vec<WebhookIssuesFieldAddedIssueFieldValueOptionsItem>>,
-}
-
-impl WebhookIssuesFieldAddedIssueFieldValue {
-    pub fn new(id: i64) -> Self {
-        Self {
-            id,
-            value: None,
-            value_id: None,
-            option: None,
-            value_ids: None,
-            options: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, serde::Serialize)]
-#[serde(untagged)]
-pub enum WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
-    String(String),
-    Number(f64),
-    Integer(i64),
-}
-
-impl<'de> serde::Deserialize<'de> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = <serde_json::Value as serde::Deserialize>::deserialize(deserializer)?;
-        let mut lossy = None;
-        if let Ok(branch) = serde_json::from_value::<String>(value.clone()) {
-            let candidate = Self::String(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<f64>(value.clone()) {
-            let candidate = Self::Number(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        if let Ok(branch) = serde_json::from_value::<i64>(value.clone()) {
-            let candidate = Self::Integer(branch);
-            if crate::client::keeps_every_key(&value, &candidate) {
-                return Ok(candidate);
-            }
-            lossy.get_or_insert(candidate);
-        }
-        lossy.ok_or_else(|| serde::de::Error::custom("no WebhookIssuesFieldAddedChangesIssueFieldValueFromValue branch accepts this payload"))
-    }
-}
-
-impl ::std::convert::From<String> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
-    fn from(value: String) -> Self {
-        Self::String(value)
-    }
-}
-
-impl ::std::convert::From<f64> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
-    fn from(value: f64) -> Self {
-        Self::Number(value)
-    }
-}
-
-impl ::std::convert::From<i64> for WebhookIssuesFieldAddedChangesIssueFieldValueFromValue {
-    fn from(value: i64) -> Self {
-        Self::Integer(value)
-    }
-}
-
-/// The previously selected option details. Present for single_select field types.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedChangesIssueFieldValueFromOption {
-    /// Optional `integer` value serialized in the `id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional `string` value serialized in the `color` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub color: Option<String>,
-    /// Optional `string` value serialized in the `description` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub description: Option<Option<String>>,
-}
-
-impl WebhookIssuesFieldAddedChangesIssueFieldValueFromOption {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            id: None,
-            name: None,
-            color: None,
-            description: None,
-        }
-    }
-}
-
-/// Required object value serialized in the `options[]` wire field.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedChangesIssueFieldValueFromOptionsItem {
-    /// Optional `integer` value serialized in the `id` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<i64>,
-    /// Optional `string` value serialized in the `name` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Optional `string` value serialized in the `color` wire field.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub color: Option<String>,
-    /// Optional `string` value serialized in the `description` wire field.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub description: Option<Option<String>>,
-}
-
-impl WebhookIssuesFieldAddedChangesIssueFieldValueFromOptionsItem {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            id: None,
-            name: None,
-            color: None,
-            description: None,
-        }
-    }
-}
-
-/// The previous value of the issue field before the update.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedChangesIssueFieldValueFrom {
-    /// The unique identifier of the issue field value.
-    pub id: i64,
-    /// The previous value. Present for text, date, and number field types.
-    #[serde(
-        skip_serializing_if = "Option::is_none",
-        default,
-        with = "crate::client::double_option"
-    )]
-    pub value: Option<Option<WebhookIssuesFieldAddedChangesIssueFieldValueFromValue>>,
-    /// The identifier of the previously selected option. Present for single_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value_id: Option<i64>,
-    /// The previously selected option details. Present for single_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub option: Option<WebhookIssuesFieldAddedChangesIssueFieldValueFromOption>,
-    /// The identifiers of the previously selected options. Present for multi_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value_ids: Option<Vec<i64>>,
-    /// The previously selected option details. Present for multi_select field types.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<Vec<WebhookIssuesFieldAddedChangesIssueFieldValueFromOptionsItem>>,
-}
-
-impl WebhookIssuesFieldAddedChangesIssueFieldValueFrom {
-    pub fn new(id: i64) -> Self {
-        Self {
-            id,
-            value: None,
-            value_id: None,
-            option: None,
-            value_ids: None,
-            options: None,
-        }
-    }
-}
-
-/// The previous issue field value data.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedChangesIssueFieldValue {
-    /// The previous value of the issue field before the update.
-    pub from: WebhookIssuesFieldAddedChangesIssueFieldValueFrom,
-}
-
-impl WebhookIssuesFieldAddedChangesIssueFieldValue {
-    pub fn new(from: WebhookIssuesFieldAddedChangesIssueFieldValueFrom) -> Self {
-        Self { from }
-    }
-}
-
-/// The previous field value, present when an existing value was updated.
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WebhookIssuesFieldAddedChanges {
-    /// The previous issue field value data.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub issue_field_value: Option<WebhookIssuesFieldAddedChangesIssueFieldValue>,
-}
-
-impl WebhookIssuesFieldAddedChanges {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
+            action,
+            enterprise: None,
+            installation: None,
+            issue,
+            issue_field,
             issue_field_value: None,
+            changes: None,
+            organization: None,
+            repository,
+            sender,
         }
     }
 }

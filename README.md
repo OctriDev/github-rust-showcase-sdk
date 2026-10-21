@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ..Default::default()
     };
     let client = GitHubV3REST::new(config);
-    let result = client.search.labels(octridev_github::methods::search::SearchLabelsParams { repository_id: 1, q: "q".to_string(), sort: None, order: None, per_page: None, page: None }, None)?;
+    let result = client.search.labels(octridev_github::methods::search::SearchLabelsParams { repository_id: 1, q: "q".to_string(), ..Default::default() }, None)?;
     println!("{result:#?}");
     Ok(())
 }

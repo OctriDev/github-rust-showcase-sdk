@@ -46613,32 +46613,6 @@
       }
     },
     {
-      "id": "gitignoreGetAllTemplates:gitignore_get_all_templates",
-      "operationId": "gitignoreGetAllTemplates",
-      "methodName": "gitignore_get_all_templates",
-      "namespace": [
-        "gitignore"
-      ],
-      "mode": "normal",
-      "owner": null,
-      "arguments": {},
-      "wireNames": {},
-      "argumentOrder": [],
-      "response": {
-        "kind": "json",
-        "expected": [
-          "Actionscript",
-          "Android",
-          "AppceleratorTitanium",
-          "Autotools",
-          "Bancha",
-          "C",
-          "C++"
-        ],
-        "byteLength": 0
-      }
-    },
-    {
       "id": "gitignoreGetTemplate:gitignore_get_template",
       "operationId": "gitignoreGetTemplate",
       "methodName": "gitignore_get_template",
@@ -57677,6 +57651,32 @@
           "url": "https://example.com",
           "status": "active"
         },
+        "byteLength": 0
+      }
+    },
+    {
+      "id": "listTemplates:list_templates",
+      "operationId": "listTemplates",
+      "methodName": "list_templates",
+      "namespace": [
+        "gitignore"
+      ],
+      "mode": "normal",
+      "owner": null,
+      "arguments": {},
+      "wireNames": {},
+      "argumentOrder": [],
+      "response": {
+        "kind": "json",
+        "expected": [
+          "Actionscript",
+          "Android",
+          "AppceleratorTitanium",
+          "Autotools",
+          "Bancha",
+          "C",
+          "C++"
+        ],
         "byteLength": 0
       }
     },
